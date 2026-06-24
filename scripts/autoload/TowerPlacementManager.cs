@@ -80,10 +80,8 @@ public partial class TowerPlacementManager : Node
         if (!EconomyManager.Instance.SpendMoney(_selectedTowerData.Cost))
             return;
 
-        var tower = GenericTowerScene.Instantiate<Tower>();
-        tower.GlobalPosition = position;
+        var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
         GetTree().CurrentScene.AddChild(tower);
-        tower.Setup(_selectedTowerData);
 
         CancelPlacement();
     }

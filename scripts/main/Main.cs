@@ -4,13 +4,21 @@ public partial class Main : Node2D
 {
     public override void _Ready()
     {
-        var mapScene = GD.Load<PackedScene>("res://scenes/levels/Map1.tscn");
-        var map = mapScene.Instantiate();
-        AddChild(map);
-        
+        SceneManager.Instance.LevelLoaded += OnLevelLoaded;
+        SceneManager.Instance.LoadLevel("res://scenes/levels/Map1.tscn", this);
+    }
+
+    public override void _ExitTree()
+    {
+        if (SceneManager.Instance != null)
+            SceneManager.Instance.LevelLoaded -= OnLevelLoaded;
+    }
+
+    private void OnLevelLoaded(Node levelNode)
+    {
         var hud = GetNode<HUD>("HUD");
-        var tileMap = map.GetNode<TileMapLayer>("TileMapLayer");
-        var spawner = map.GetNode<EnemySpawner>("EnemySpawner");
+        var tileMap = levelNode.GetNode<TileMapLayer>("TileMapLayer");
+        var spawner = levelNode.GetNode<EnemySpawner>("EnemySpawner");
         hud.SetActiveMap(tileMap, spawner);
     }
 }

@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 EconomyManager="*uid://bpabpqj1km1wr"
 EventBus="*uid://bxaicp3urfys8"
 GameManager="*uid://bdyhlaph2hqex"
+SceneManager="*res://scripts/autoload/SceneManager.cs"
 TowerPlacementManager="*uid://b8di4orayi46l"
 
 [display]

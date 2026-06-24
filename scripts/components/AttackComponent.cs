@@ -60,9 +60,7 @@ public partial class AttackComponent : Node
             return;
         }
 
-        var projectile = _projectileScene.Instantiate<Projectile>();
-        projectile.GlobalPosition = GetParent<Node2D>().GlobalPosition;
-        projectile.Initialize(target, _damage);
+        var projectile = ProjectileFactory.Create(_projectileScene, _damage, target, GetParent<Node2D>().GlobalPosition);
         GetTree().CurrentScene.CallDeferred(Node.MethodName.AddChild, projectile);
     }
 }
