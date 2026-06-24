@@ -22,7 +22,7 @@ EventBus="*uid://bxaicp3urfys8"
 GameManager="*uid://bdyhlaph2hqex"
 TowerPlacementManager="*uid://b8di4orayi46l"
 SceneManager="*res://scripts/autoload/SceneManager.cs"
-LevelManager="*res://scripts/autoload/LevelManager.cs"
+LevelManager="*uid://dua280ep3xp8a"
 
 [display]
 

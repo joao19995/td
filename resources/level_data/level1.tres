@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LevelData" format=3 uid="uid://c0d6optg4k8cy"]
+
+[ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/spr_grass_01.png" id="1_eo1xm"]
+[ext_resource type="Script" uid="uid://cfisnkvv8gtmb" path="res://scripts/resources/LevelData.cs" id="1_xjr6e"]
+
+[resource]
+script = ExtResource("1_xjr6e")
+ScenePath = "res://scenes/levels/Map1.tscn"
+PreviewTexture = ExtResource("1_eo1xm")
+StartingMoney = 11
+StartingLives = 11

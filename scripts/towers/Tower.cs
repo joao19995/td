@@ -28,8 +28,11 @@ public partial class Tower : Node2D
         var detectionArea = GetNode<Area2D>("DetectionArea");
         var shape = detectionArea.GetNode<CollisionShape2D>("CollisionShape2D");
 
-        if (shape.Shape is CircleShape2D circle)
-            circle.Radius = _data.Range;
+        // Duplicate so each tower gets its own CircleShape2D instead of sharing
+        // the one baked into Tower.tscn.
+        var circle = (CircleShape2D)((CircleShape2D)shape.Shape).Duplicate();
+        circle.Radius = _data.Range;
+        shape.Shape = circle;
 
         if (_data.Sprite != null)
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
