@@ -4,6 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Selects an attack target from enemies currently inside the tower's detection area.
 /// Strategy is configurable via the exported property.
+/// Parent must be a Node2D.
 /// </summary>
 public enum TargetingStrategy
 {
@@ -24,7 +25,16 @@ public partial class TargetingComponent : Node
 
     public override void _Ready()
     {
-        var detectionArea = GetNode<Area2D>(DetectionAreaPath);
+        if (GetParent() is not Node2D)
+            GD.PushError($"TargetingComponent: parent must be a Node2D (got {GetParent()?.GetClass()}).");
+
+        var detectionArea = GetNodeOrNull<Area2D>(DetectionAreaPath);
+        if (detectionArea == null)
+        {
+            GD.PushError($"TargetingComponent: no Area2D found at DetectionAreaPath='{DetectionAreaPath}'. Targeting will not work.");
+            return;
+        }
+
         detectionArea.AreaEntered += OnAreaEntered;
         detectionArea.AreaExited += OnAreaExited;
     }

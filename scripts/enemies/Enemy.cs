@@ -53,10 +53,10 @@ public partial class Enemy : Area2D
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
     }
 
-    public void TakeDamage(float amount) => _health.TakeDamage(amount);
+    public void TakeDamage(float amount) => _health?.TakeDamage(amount);
 
     /// <summary>Returns the enemy's current health (used by TargetingComponent for Strongest strategy).</summary>
-    public float GetCurrentHealth() => _health.GetCurrentHealth();
+    public float GetCurrentHealth() => _health?.GetCurrentHealth() ?? 0f;
 
     private void OnReachedEnd()
     {

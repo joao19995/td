@@ -3,6 +3,7 @@ using Godot;
 /// <summary>
 /// Manages attack cooldown, projectile creation, and firing logic.
 /// Call TryAttack(target) every frame; the component handles its own rate limiting.
+/// Parent must be a Node2D.
 /// </summary>
 public partial class AttackComponent : Node
 {
@@ -11,8 +12,21 @@ public partial class AttackComponent : Node
     private float _attackSpeed; // attacks per second
     private float _cooldown;
 
+    public override void _Ready()
+    {
+        if (GetParent() is not Node2D)
+            GD.PushError($"AttackComponent: parent must be a Node2D (got {GetParent()?.GetClass()}).");
+    }
+
+    /// <param name="attackSpeed">Attacks per second. Must be greater than zero.</param>
     public void Setup(PackedScene projectileScene, float damage, float attackSpeed)
     {
+        if (attackSpeed <= 0f)
+        {
+            GD.PushError($"AttackComponent: attackSpeed must be > 0 (got {attackSpeed}). Defaulting to 1.");
+            attackSpeed = 1f;
+        }
+
         _projectileScene = projectileScene;
         _damage = damage;
         _attackSpeed = attackSpeed;
@@ -34,7 +48,7 @@ public partial class AttackComponent : Node
         if (target == null || _cooldown > 0f) return false;
 
         Fire(target);
-        _cooldown = _attackSpeed > 0f ? 1f / _attackSpeed : float.MaxValue;
+        _cooldown = 1f / _attackSpeed;
         return true;
     }
 
