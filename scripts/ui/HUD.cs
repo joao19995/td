@@ -53,8 +53,7 @@ public partial class HUD : CanvasLayer
             var towerData = AvailableTowers[i];
             var button = new Button();
             button.Text = $"{towerData.TowerName} ({towerData.Cost}g)";
-            var captured = towerData;
-            button.Pressed += () => OnTowerButtonPressed(captured);
+            button.Pressed += () => OnTowerButtonPressed(towerData);
             _towerButton.GetParent().AddChild(button);
         }
     }

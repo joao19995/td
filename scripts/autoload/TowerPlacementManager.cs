@@ -4,6 +4,7 @@ public partial class TowerPlacementManager : Node
 {
     public static TowerPlacementManager Instance { get; private set; }
 
+    // Assign res://scenes/towers/Tower.tscn (the single generic tower scene).
     [Export] public PackedScene GenericTowerScene;
 
     private TowerData _selectedTowerData;

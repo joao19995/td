@@ -25,8 +25,7 @@ public partial class Enemy : Area2D
         _distanceTraveled = 0f;
         GlobalPosition = _curve.SampleBaked(0f);
 
-        // _health is only available after _Ready; ApplyData() is called there.
-        // If somehow Initialize runs after _Ready (edge case), apply immediately.
+        // _health is only available after _Ready; ApplyData() is called from _Ready.
         if (_health != null)
             ApplyData();
     }

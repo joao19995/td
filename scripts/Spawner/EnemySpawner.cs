@@ -4,6 +4,7 @@ using Godot.Collections;
 public partial class EnemySpawner : Node2D
 {
     [Export] public Path2D EnemyPath;
+    // Assign res://scenes/enemies/Enemy.tscn (the single generic enemy scene).
     [Export] public PackedScene GenericEnemyScene;
     [Export] public Array<WaveData> Waves;
 
