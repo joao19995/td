@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ct6pqosovxvb7"
-path="res://.godot/imported/spr_tower_ice_wizard_projectile.png-c0d6a1ab39795918af023bdddb7d6b92.ctex"
+uid="uid://b8c683vbd5q6i"
+path="res://.godot/imported/spr_proj_poison.png-9d811843abb8daa005eed85b32b96d7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/projectiles/spr_tower_ice_wizard_projectile.png"
-dest_files=["res://.godot/imported/spr_tower_ice_wizard_projectile.png-c0d6a1ab39795918af023bdddb7d6b92.ctex"]
+source_file="res://assets/sprites/projectiles/spr_proj_poison.png"
+dest_files=["res://.godot/imported/spr_proj_poison.png-9d811843abb8daa005eed85b32b96d7f.ctex"]
 
 [params]
 

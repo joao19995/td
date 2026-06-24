@@ -1,11 +1,17 @@
 [gd_resource type="Resource" script_class="TowerData" format=3 uid="uid://euqe6r08pnw4"]
 
-[ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="1_2ujgf"]
-[ext_resource type="Texture2D" uid="uid://d152fac6s5weu" path="res://assets/sprites/towers/spr_tower_poison.png" id="2_0e3p1"]
+[ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile_poison.tscn" id="1_2ujgf"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_2xlvy"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2ujgf"]
+load_path = "res://.godot/imported/spr_tower_poison.png-fa8f962e568e16433b5476e8635b1d14.ctex"
 
 [resource]
 script = ExtResource("2_2xlvy")
+TowerName = "Poison"
+Damage = 1.0
+Range = 1000.0
+Cost = 20
 ProjectileScene = ExtResource("1_2ujgf")
-Sprite = ExtResource("2_0e3p1")
+Sprite = SubResource("CompressedTexture2D_2ujgf")
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

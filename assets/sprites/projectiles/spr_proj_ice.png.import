@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5txxx562pvfd"
-path="res://.godot/imported/spr_tower_cannon_projectile.png-d62216437bda9030b59cadd95792d7f0.ctex"
+uid="uid://btqxxopevcec2"
+path="res://.godot/imported/spr_proj_ice.png-3ce9d889b1d4e2679f33a2d7cb5922f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/projectiles/spr_tower_cannon_projectile.png"
-dest_files=["res://.godot/imported/spr_tower_cannon_projectile.png-d62216437bda9030b59cadd95792d7f0.ctex"]
+source_file="res://assets/sprites/projectiles/spr_proj_ice.png"
+dest_files=["res://.godot/imported/spr_proj_ice.png-3ce9d889b1d4e2679f33a2d7cb5922f4.ctex"]
 
 [params]
 

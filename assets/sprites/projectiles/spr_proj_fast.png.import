@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dieyh4poivr25"
-path="res://.godot/imported/spr_tower_lightning_tower_projectile.png-8bc4df8bb6d35c141af27e6ed64c077c.ctex"
+uid="uid://h3ju5cwbbhxk"
+path="res://.godot/imported/spr_proj_fast.png-ce7b5fddaef70bba94384c4f5b6cbde0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/projectiles/spr_tower_lightning_tower_projectile.png"
-dest_files=["res://.godot/imported/spr_tower_lightning_tower_projectile.png-8bc4df8bb6d35c141af27e6ed64c077c.ctex"]
+source_file="res://assets/sprites/projectiles/spr_proj_fast.png"
+dest_files=["res://.godot/imported/spr_proj_fast.png-ce7b5fddaef70bba94384c4f5b6cbde0.ctex"]
 
 [params]
 
