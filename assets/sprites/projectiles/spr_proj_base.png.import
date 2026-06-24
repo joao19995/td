@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bav855al00jmf"
-path="res://.godot/imported/spr_tower_crossbow_projectile.png-90da441194e5d07238b701c3e4b2dd44.ctex"
+uid="uid://d2lb1sxba7heu"
+path="res://.godot/imported/spr_proj_base.png-15f5763b900d55f504d9d1ee84cd9d0c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/projectiles/spr_tower_crossbow_projectile.png"
-dest_files=["res://.godot/imported/spr_tower_crossbow_projectile.png-90da441194e5d07238b701c3e4b2dd44.ctex"]
+source_file="res://assets/sprites/projectiles/spr_proj_base.png"
+dest_files=["res://.godot/imported/spr_proj_base.png-15f5763b900d55f504d9d1ee84cd9d0c.ctex"]
 
 [params]
 

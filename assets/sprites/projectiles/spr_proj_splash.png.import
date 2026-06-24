@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7do1mv24d8w6"
-path="res://.godot/imported/spr_tower_archer_projectile.png-6b167d313063e91b79e114bbc250190f.ctex"
+uid="uid://baswd0y735gfg"
+path="res://.godot/imported/spr_proj_splash.png-7e125db8031177a277fd27356b88e458.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/projectiles/spr_tower_archer_projectile.png"
-dest_files=["res://.godot/imported/spr_tower_archer_projectile.png-6b167d313063e91b79e114bbc250190f.ctex"]
+source_file="res://assets/sprites/projectiles/spr_proj_splash.png"
+dest_files=["res://.godot/imported/spr_proj_splash.png-7e125db8031177a277fd27356b88e458.ctex"]
 
 [params]
 

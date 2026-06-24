@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c3dwx6ywtdw3d"]
+
+[ext_resource type="Script" uid="uid://dqjmu8xrl6gds" path="res://scripts/projectiles/Projectile.cs" id="1_iupiv"]
+[ext_resource type="Texture2D" uid="uid://d2lb1sxba7heu" path="res://assets/sprites/projectiles/spr_proj_base.png" id="2_iupiv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eftrj"]
+
+[node name="Projectile" type="Area2D" unique_id=352224773]
+collision_layer = 0
+script = ExtResource("1_iupiv")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=457789603]
+texture = ExtResource("2_iupiv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1020764906]
+shape = SubResource("CircleShape2D_eftrj")

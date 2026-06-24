@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="TowerData" format=3 uid="uid://c707con3f00r"]
 
-[ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="1_o66bj"]
+[ext_resource type="PackedScene" uid="uid://dbseth78x0jbp" path="res://scenes/projectiles/projectile_ice.tscn" id="1_o66bj"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_4fycm"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_o66bj"]

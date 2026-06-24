@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="TowerData" format=3 uid="uid://djax877vl8tw"]
 
-[ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="1_53kno"]
+[ext_resource type="PackedScene" uid="uid://c3dwx6ywtdw3d" path="res://scenes/projectiles/projectile_base.tscn" id="1_iejku"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="3_y6wqu"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_iejku"]
@@ -9,6 +9,6 @@ load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec018
 [resource]
 script = ExtResource("3_y6wqu")
 TowerName = "Base"
-ProjectileScene = ExtResource("1_53kno")
+ProjectileScene = ExtResource("1_iejku")
 Sprite = SubResource("CompressedTexture2D_iejku")
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
