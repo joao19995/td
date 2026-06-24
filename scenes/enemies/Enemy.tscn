@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b772i2dfal5bx" path="res://scripts/enemies/Enemy.cs" id="1_k7o7a"]
 [ext_resource type="Texture2D" uid="uid://br00ua7j1euib" path="res://assets/sprites/enemies/spr_bat.png" id="2_8axbs"]
 [ext_resource type="Script" uid="uid://bjd1lorpparik" path="res://scripts/components/Health.cs" id="3_8axbs"]
+[ext_resource type="Script" uid="uid://pjxjoc2pywhfs" path="res://scripts/components/MovementComponent.cs" id="4_move"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eftrj"]
 atlas = ExtResource("2_8axbs")
@@ -21,3 +22,6 @@ shape = SubResource("CapsuleShape2D_eftrj")
 
 [node name="Health" type="Node" parent="." unique_id=41398103]
 script = ExtResource("3_8axbs")
+
+[node name="MovementComponent" type="Node" parent="." unique_id=100000001]
+script = ExtResource("4_move")

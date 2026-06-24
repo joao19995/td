@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://ctorcqvqfl53k" path="res://scripts/towers/Tower.cs" id="1_g767u"]
 [ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="2_uksqa"]
 [ext_resource type="Texture2D" uid="uid://cpufvqd7pa73c" path="res://assets/sprites/towers/spr_tower_lightning_tower.png" id="2_vfpy0"]
+[ext_resource type="Script" uid="uid://a1lkg24m415lw" path="res://scripts/components/TargetingComponent.cs" id="3_target"]
+[ext_resource type="Script" uid="uid://gxkof8xnsoydx" path="res://scripts/components/AttackComponent.cs" id="4_attack"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eftrj"]
 
@@ -18,3 +20,11 @@ collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=414381283]
 shape = SubResource("CircleShape2D_eftrj")
+
+[node name="TargetingComponent" type="Node" parent="." unique_id=200000001]
+script = ExtResource("3_target")
+DetectionAreaPath = NodePath("../DetectionArea")
+Strategy = 0
+
+[node name="AttackComponent" type="Node" parent="." unique_id=200000002]
+script = ExtResource("4_attack")

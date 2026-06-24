@@ -3,15 +3,19 @@ using Godot;
 public partial class Enemy : Area2D
 {
     private EnemyData _data;
-    private Curve2D _curve;
-    private float _distanceTraveled;
-    private float _pathLength;
     private Health _health;
+    private MovementComponent _movement;
+
+    // Held until _Ready() wires up _movement (Initialize may be called before _Ready).
+    private Curve2D _pendingCurve;
 
     public override void _Ready()
     {
         _health = GetNode<Health>("Health");
         _health.Died += OnDied;
+
+        _movement = GetNode<MovementComponent>("MovementComponent");
+        _movement.ReachedEnd += OnReachedEnd;
 
         if (_data != null)
             ApplyData();
@@ -20,12 +24,17 @@ public partial class Enemy : Area2D
     public void Initialize(EnemyData data, Curve2D curve)
     {
         _data = data;
-        _curve = curve;
-        _pathLength = _curve.GetBakedLength();
-        _distanceTraveled = 0f;
-        GlobalPosition = _curve.SampleBaked(0f);
 
-        // _health is only available after _Ready; ApplyData() is called from _Ready.
+        if (_movement != null)
+        {
+            _movement.Initialize(curve, data.MoveSpeed);
+        }
+        else
+        {
+            // _Ready hasn't run yet; store for later.
+            _pendingCurve = curve;
+        }
+
         if (_health != null)
             ApplyData();
     }
@@ -34,31 +43,22 @@ public partial class Enemy : Area2D
     {
         _health.Setup(_data.MaxHealth);
 
+        if (_pendingCurve != null)
+        {
+            _movement.Initialize(_pendingCurve, _data.MoveSpeed);
+            _pendingCurve = null;
+        }
+
         if (_data.Sprite != null)
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
     }
 
-    public void TakeDamage(float amount)
-    {
-        _health.TakeDamage(amount);
-    }
+    public void TakeDamage(float amount) => _health.TakeDamage(amount);
 
-    public override void _PhysicsProcess(double delta)
-    {
-        if (_curve == null || _data == null) return;
+    /// <summary>Returns the enemy's current health (used by TargetingComponent for Strongest strategy).</summary>
+    public float GetCurrentHealth() => _health.GetCurrentHealth();
 
-        _distanceTraveled += _data.MoveSpeed * (float)delta;
-
-        if (_distanceTraveled >= _pathLength)
-        {
-            ReachedEnd();
-            return;
-        }
-
-        GlobalPosition = _curve.SampleBaked(_distanceTraveled);
-    }
-
-    private void ReachedEnd()
+    private void OnReachedEnd()
     {
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, _data.DamageToPlayer);
         QueueFree();
