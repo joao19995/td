@@ -1,5 +1,5 @@
 using Godot;
 
-public partial class Map1 : Node2D
+public partial class Map1 : BaseLevel
 {
 }

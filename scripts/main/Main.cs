@@ -5,7 +5,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         SceneManager.Instance.LevelLoaded += OnLevelLoaded;
-        SceneManager.Instance.LoadLevel("res://scenes/levels/Map1.tscn", this);
+        LevelManager.Instance.LoadLevel(0, this);
     }
 
     public override void _ExitTree()
@@ -16,9 +16,13 @@ public partial class Main : Node2D
 
     private void OnLevelLoaded(Node levelNode)
     {
+        if (levelNode is not BaseLevel level)
+        {
+            GD.PushWarning("Main: Loaded level does not extend BaseLevel.");
+            return;
+        }
+
         var hud = GetNode<HUD>("HUD");
-        var tileMap = levelNode.GetNode<TileMapLayer>("TileMapLayer");
-        var spawner = levelNode.GetNode<EnemySpawner>("EnemySpawner");
-        hud.SetActiveMap(tileMap, spawner);
+        hud.SetActiveMap(level.BuildableTileMap, level.Spawner);
     }
 }

@@ -29,6 +29,9 @@ public partial class EnemySpawner : Node2D
         }
 
         _waveInProgress = false;
+
+        if (_currentWaveIndex + 1 >= Waves.Count)
+            EventBus.Instance?.EmitSignal(EventBus.SignalName.AllWavesCompleted);
     }
 
     private void SpawnEnemy(EnemyData enemyData)

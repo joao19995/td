@@ -10,6 +10,7 @@ public partial class HUD : CanvasLayer
     private Label _moneyLabel;
     private Label _waveLabel;
     private Button _nextWaveButton;
+    private Button _nextLevelButton;
     private Button _towerButton;
     private readonly List<Button> _allTowerButtons = new();
 
@@ -26,14 +27,30 @@ public partial class HUD : CanvasLayer
 
         _nextWaveButton.Pressed += OnNextWavePressed;
 
+        // "Next Level" button — created at runtime and hidden until all waves complete
+        _nextLevelButton = new Button();
+        _nextLevelButton.Text = "Next Level";
+        _nextLevelButton.Visible = false;
+        _nextLevelButton.Pressed += OnNextLevelPressed;
+        _nextWaveButton.GetParent().AddChild(_nextLevelButton);
+
         SetupTowerButtons();
 
         EventBus.Instance.LivesChanged += OnLivesChanged;
         EventBus.Instance.MoneyChanged += OnMoneyChanged;
         EventBus.Instance.GameOver += OnGameOver;
+        EventBus.Instance.AllWavesCompleted += OnAllWavesCompleted;
 
         UpdateLivesLabel(GameManager.Instance.CurrentLives);
         UpdateMoneyLabel(EconomyManager.Instance.CurrentMoney);
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Instance.LivesChanged -= OnLivesChanged;
+        EventBus.Instance.MoneyChanged -= OnMoneyChanged;
+        EventBus.Instance.GameOver -= OnGameOver;
+        EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
     }
 
     private void SetupTowerButtons()
@@ -66,6 +83,14 @@ public partial class HUD : CanvasLayer
     {
         _activeTileMap = tileMap;
         _activeSpawner = spawner;
+
+        // Reset buttons for the new level
+        _nextWaveButton.Visible = true;
+        _nextWaveButton.Disabled = false;
+        _nextLevelButton.Visible = false;
+        foreach (var btn in _allTowerButtons)
+            btn.Disabled = false;
+
         UpdateWaveLabel();
     }
 
@@ -91,6 +116,22 @@ public partial class HUD : CanvasLayer
         TowerPlacementManager.Instance.StartPlacement(towerData, _activeTileMap);
     }
 
+    private void OnAllWavesCompleted()
+    {
+        _nextWaveButton.Visible = false;
+
+        if (LevelManager.Instance != null && LevelManager.Instance.HasNextLevel)
+            _nextLevelButton.Visible = true;
+        else
+            GD.Print("HUD: All waves completed — no further levels.");
+    }
+
+    private void OnNextLevelPressed()
+    {
+        _nextLevelButton.Visible = false;
+        LevelManager.Instance?.LoadNextLevel();
+    }
+
     private void OnLivesChanged(int currentLives) => UpdateLivesLabel(currentLives);
     private void OnMoneyChanged(int currentMoney) => UpdateMoneyLabel(currentMoney);
 
@@ -106,6 +147,7 @@ public partial class HUD : CanvasLayer
     private void OnGameOver()
     {
         _nextWaveButton.Disabled = true;
+        _nextLevelButton.Visible = false;
         foreach (var btn in _allTowerButtons)
             btn.Disabled = true;
         GD.Print("GAME OVER");
