@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://cpqao6vudo0h5" path="res://scripts/autoload/LevelManager.cs" id="1_x6qh5"]
 [ext_resource type="Script" uid="uid://cskmyplrhc7o6" path="res://scripts/resources/LevelData.cs" id="2_sapxg"]
 [ext_resource type="Resource" uid="uid://c0d6optg4k8cy" path="res://resources/level_data/level1.tres" id="3_sapxg"]
+[ext_resource type="Resource" uid="uid://blgkxfgn6ymy" path="res://resources/level_data/level2.tres" id="4_sapxg"]
 
 [node name="LevelManager" type="Node" unique_id=1910068229]
 script = ExtResource("1_x6qh5")
-Levels = Array[ExtResource("2_sapxg")]([ExtResource("3_sapxg")])
+Levels = Array[ExtResource("2_sapxg")]([ExtResource("3_sapxg"), ExtResource("4_sapxg")])
