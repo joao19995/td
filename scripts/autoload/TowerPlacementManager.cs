@@ -4,8 +4,8 @@ public partial class TowerPlacementManager : Node
 {
     public static TowerPlacementManager Instance { get; private set; }
 
-    // Loaded automatically from res://scenes/towers/Tower.tscn at startup.
-    private PackedScene _genericTowerScene;
+    // Assign res://scenes/towers/Tower.tscn (the single generic tower scene).
+    [Export] public PackedScene GenericTowerScene;
 
     private TowerData _selectedTowerData;
     private Node2D _previewInstance;
@@ -16,13 +16,6 @@ public partial class TowerPlacementManager : Node
     public override void _EnterTree()
     {
         Instance = this;
-    }
-
-    public override void _Ready()
-    {
-        _genericTowerScene = GD.Load<PackedScene>("res://scenes/towers/Tower.tscn");
-        if (_genericTowerScene == null)
-            GD.PrintErr("TowerPlacementManager: could not load res://scenes/towers/Tower.tscn");
     }
 
     public override void _Process(double delta)
@@ -47,9 +40,9 @@ public partial class TowerPlacementManager : Node
 
     public void StartPlacement(TowerData towerData, TileMapLayer tileMap)
     {
-        if (_genericTowerScene == null)
+        if (GenericTowerScene == null)
         {
-            GD.PrintErr("TowerPlacementManager: tower scene not loaded.");
+            GD.PrintErr("TowerPlacementManager: GenericTowerScene not assigned.");
             return;
         }
 
@@ -58,7 +51,7 @@ public partial class TowerPlacementManager : Node
         _selectedTowerData = towerData;
         _activeTileMap = tileMap;
 
-        _previewInstance = _genericTowerScene.Instantiate<Node2D>();
+        _previewInstance = GenericTowerScene.Instantiate<Node2D>();
         _previewInstance.Modulate = new Color(1, 1, 1, 0.5f);
 
         if (towerData.Sprite != null)
@@ -87,7 +80,7 @@ public partial class TowerPlacementManager : Node
         if (!EconomyManager.Instance.SpendMoney(_selectedTowerData.Cost))
             return;
 
-        var tower = _genericTowerScene.Instantiate<Tower>();
+        var tower = GenericTowerScene.Instantiate<Tower>();
         tower.GlobalPosition = position;
         GetTree().CurrentScene.AddChild(tower);
         tower.Setup(_selectedTowerData);
