@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://drhepwblsi4xg"]
 
 [ext_resource type="Script" uid="uid://cuhjb5orbvppv" path="res://scripts/ui/HUD.cs" id="1_kw0id"]
-[ext_resource type="Resource" uid="uid://djax877vl8tw" path="res://resources/tower_data/LightningTowerData.tres" id="2_atyv1"]
+[ext_resource type="Resource" uid="uid://djax877vl8tw" path="res://resources/tower_data/Base.tres" id="2_atyv1"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1119415688]
 script = ExtResource("1_kw0id")

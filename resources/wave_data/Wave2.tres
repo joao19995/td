@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://dhtqongdlhp7o"]
+
+[ext_resource type="Resource" uid="uid://5r2uwhpwl3kp" path="res://resources/enemy_data/Fast.tres" id="1_r5lws"]
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="2_817yp"]
+[ext_resource type="Resource" uid="uid://dqjgbguvoadto" path="res://resources/enemy_data/Boss.tres" id="2_ws48e"]
+[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/Tank.tres" id="3_vxunx"]
+[ext_resource type="Resource" uid="uid://7c0xyjgyb2on" path="res://resources/enemy_data/Flying.tres" id="4_h26yb"]
+
+[resource]
+script = ExtResource("2_817yp")
+Enemies = Array[Object]([ExtResource("1_r5lws"), ExtResource("2_ws48e"), ExtResource("1_r5lws"), ExtResource("3_vxunx"), ExtResource("4_h26yb")])

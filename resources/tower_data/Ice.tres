@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TowerData" format=3 uid="uid://c707con3f00r"]
+
+[ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="1_o66bj"]
+[ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_4fycm"]
+[ext_resource type="Texture2D" uid="uid://h64rg5yd67e4" path="res://assets/sprites/towers/spr_tower_ice.png" id="2_ijirc"]
+
+[resource]
+script = ExtResource("2_4fycm")
+ProjectileScene = ExtResource("1_o66bj")
+Sprite = ExtResource("2_ijirc")
+metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

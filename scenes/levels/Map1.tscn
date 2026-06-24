@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://buvh6obhvq6gm" path="res://scripts/camera/Camera.cs" id="5_goqul"]
 [ext_resource type="PackedScene" uid="uid://ddvqpine7r5s4" path="res://scenes/enemies/Enemy.tscn" id="5_yxgn6"]
 [ext_resource type="Resource" uid="uid://b6tf2gi72om33" path="res://resources/wave_data/Wave1.tres" id="7_goqul"]
+[ext_resource type="Resource" uid="uid://dhtqongdlhp7o" path="res://resources/wave_data/Wave2.tres" id="9_qa2d7"]
+[ext_resource type="Resource" uid="uid://cfei48hjeoj3l" path="res://resources/wave_data/Wave3.tres" id="10_v2sca"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yxgn6"]
 texture = ExtResource("1_wy4vl")
@@ -87,6 +89,7 @@ limit_top = 0
 limit_right = 1920
 limit_bottom = 1200
 script = ExtResource("5_goqul")
+MaxZoom = 6.0
 
 [node name="EnemyPath" type="Path2D" parent="." unique_id=1981286875]
 curve = SubResource("Curve2D_jypjn")
@@ -94,4 +97,4 @@ curve = SubResource("Curve2D_jypjn")
 [node name="EnemySpawner" parent="." unique_id=1524082736 node_paths=PackedStringArray("EnemyPath") instance=ExtResource("4_cn17j")]
 EnemyPath = NodePath("../EnemyPath")
 GenericEnemyScene = ExtResource("5_yxgn6")
-Waves = Array[Object]([ExtResource("7_goqul"), ExtResource("7_goqul")])
+Waves = Array[Object]([ExtResource("7_goqul"), ExtResource("9_qa2d7"), ExtResource("10_v2sca")])
