@@ -39,8 +39,7 @@ public partial class EnemySpawner : Node2D
             return;
         }
 
-        var enemy = GenericEnemyScene.Instantiate<Enemy>();
-        enemy.Initialize(enemyData, EnemyPath.Curve);
+        var enemy = EnemyFactory.Create(GenericEnemyScene, enemyData, EnemyPath.Curve);
         GetTree().CurrentScene.CallDeferred(Node.MethodName.AddChild, enemy);
     }
 }

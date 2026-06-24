@@ -65,6 +65,12 @@ public partial class HUD : CanvasLayer
         UpdateWaveLabel();
     }
 
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("test_next_wave"))
+            OnNextWavePressed();
+    }
+
     private void OnNextWavePressed()
     {
         if (_activeSpawner == null || !_activeSpawner.CanStartNextWave) return;
