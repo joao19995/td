@@ -2,10 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="1_o66bj"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_4fycm"]
-[ext_resource type="Texture2D" uid="uid://h64rg5yd67e4" path="res://assets/sprites/towers/spr_tower_ice.png" id="2_ijirc"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_o66bj"]
+load_path = "res://.godot/imported/spr_tower_ice.png-bcebcb5cf700b5770b1bf06c7b080d5c.ctex"
 
 [resource]
 script = ExtResource("2_4fycm")
+TowerName = "Ice"
+FireRate = 2.0
+Range = 50.0
+Cost = 30
 ProjectileScene = ExtResource("1_o66bj")
-Sprite = ExtResource("2_ijirc")
+Sprite = SubResource("CompressedTexture2D_o66bj")
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

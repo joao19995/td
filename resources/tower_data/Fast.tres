@@ -1,11 +1,18 @@
 [gd_resource type="Resource" script_class="TowerData" format=3 uid="uid://4knhurn3ttj2"]
 
 [ext_resource type="PackedScene" uid="uid://bdamu67n8sn2q" path="res://scenes/projectiles/projectile.tscn" id="1_4gpsg"]
-[ext_resource type="Texture2D" uid="uid://ba4mrwn3o0nm4" path="res://assets/sprites/towers/spr_tower_fast.png" id="2_2p84q"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_be44t"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4gpsg"]
+load_path = "res://.godot/imported/spr_tower_fast.png-25dffe3793f4b8b7cc42855f18a38cf0.ctex"
 
 [resource]
 script = ExtResource("2_be44t")
+TowerName = "Fast"
+Damage = 1.0
+FireRate = 10.0
+Range = 10.0
+Cost = 20
 ProjectileScene = ExtResource("1_4gpsg")
-Sprite = ExtResource("2_2p84q")
+Sprite = SubResource("CompressedTexture2D_4gpsg")
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
