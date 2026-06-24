@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bdamu67n8sn2q"]
+
+[ext_resource type="Script" uid="uid://dqjmu8xrl6gds" path="res://scripts/projectiles/Projectile.cs" id="1_wndne"]
+[ext_resource type="Texture2D" uid="uid://dieyh4poivr25" path="res://assets/sprites/projectiles/spr_tower_lightning_tower_projectile.png" id="2_l3el7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eftrj"]
+
+[node name="Projectile" type="Area2D" unique_id=352224773]
+collision_layer = 0
+script = ExtResource("1_wndne")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=457789603]
+texture = ExtResource("2_l3el7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1020764906]
+shape = SubResource("CircleShape2D_eftrj")

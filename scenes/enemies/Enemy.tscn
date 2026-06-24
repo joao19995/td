@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://ddvqpine7r5s4"]
+
+[ext_resource type="Script" uid="uid://b772i2dfal5bx" path="res://scripts/enemies/Enemy.cs" id="1_k7o7a"]
+[ext_resource type="Texture2D" uid="uid://br00ua7j1euib" path="res://assets/sprites/enemies/spr_bat.png" id="2_8axbs"]
+[ext_resource type="Script" uid="uid://bjd1lorpparik" path="res://scripts/components/Health.cs" id="3_8axbs"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eftrj"]
+atlas = ExtResource("2_8axbs")
+region = Rect2(0, 0, 9.914427, 7)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eftrj"]
+
+[node name="Enemy" type="Area2D" unique_id=50212674]
+script = ExtResource("1_k7o7a")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1420586662]
+texture = SubResource("AtlasTexture_eftrj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=464136357]
+shape = SubResource("CapsuleShape2D_eftrj")
+
+[node name="Health" type="Node" parent="." unique_id=41398103]
+script = ExtResource("3_8axbs")

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://b6tf2gi72om33"]
+
+[ext_resource type="PackedScene" uid="uid://ddvqpine7r5s4" path="res://scenes/enemies/Enemy.tscn" id="1_etjb1"]
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_vot48"]
+
+[resource]
+script = ExtResource("1_vot48")
+EnemyScenes = Array[PackedScene]([ExtResource("1_etjb1")])

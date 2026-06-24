@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://drhepwblsi4xg"]
+
+[ext_resource type="Script" uid="uid://cuhjb5orbvppv" path="res://scripts/ui/HUD.cs" id="1_kw0id"]
+[ext_resource type="PackedScene" uid="uid://bouarc73jt08l" path="res://scenes/towers/Tower.tscn" id="2_atyv1"]
+
+[node name="HUD" type="CanvasLayer" unique_id=1119415688]
+script = ExtResource("1_kw0id")
+TowerScene = ExtResource("2_atyv1")
+
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=1505268875]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LivesLabel" type="Label" parent="TopBar" unique_id=1449915102]
+layout_mode = 2
+
+[node name="MoneyLabel" type="Label" parent="TopBar" unique_id=1676395297]
+layout_mode = 2
+
+[node name="WaveLabel" type="Label" parent="TopBar" unique_id=1897646940]
+layout_mode = 2
+
+[node name="NextWaveButton" type="Button" parent="TopBar" unique_id=737053669]
+layout_mode = 2
+text = "NextWave"
+
+[node name="TowerButton" type="Button" parent="TopBar" unique_id=1829716885]
+layout_mode = 2
+text = "Tower"
