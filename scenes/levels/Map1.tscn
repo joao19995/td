@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/spr_grass_01.png" id="3_cn17j"]
 [ext_resource type="PackedScene" uid="uid://23e8vgiph2i4" path="res://scenes/spawner/enemy_spawner.tscn" id="4_cn17j"]
 [ext_resource type="Script" uid="uid://buvh6obhvq6gm" path="res://scripts/camera/Camera.cs" id="5_goqul"]
+[ext_resource type="PackedScene" uid="uid://ddvqpine7r5s4" path="res://scenes/enemies/Enemy.tscn" id="5_yxgn6"]
 [ext_resource type="Resource" uid="uid://b6tf2gi72om33" path="res://resources/wave_data/Wave1.tres" id="7_goqul"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yxgn6"]
@@ -92,4 +93,5 @@ curve = SubResource("Curve2D_jypjn")
 
 [node name="EnemySpawner" parent="." unique_id=1524082736 node_paths=PackedStringArray("EnemyPath") instance=ExtResource("4_cn17j")]
 EnemyPath = NodePath("../EnemyPath")
+GenericEnemyScene = ExtResource("5_yxgn6")
 Waves = Array[Object]([ExtResource("7_goqul"), ExtResource("7_goqul")])

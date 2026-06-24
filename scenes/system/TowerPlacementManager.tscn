@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b8di4orayi46l"]
+
+[ext_resource type="Script" uid="uid://tjceo0k2viog" path="res://scripts/autoload/TowerPlacementManager.cs" id="1_aa0jh"]
+[ext_resource type="PackedScene" uid="uid://bouarc73jt08l" path="res://scenes/towers/Tower.tscn" id="2_wrvuk"]
+
+[node name="TowerPlacementManager" type="Node" unique_id=1910068229]
+script = ExtResource("1_aa0jh")
+GenericTowerScene = ExtResource("2_wrvuk")
