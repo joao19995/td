@@ -2,10 +2,14 @@
 
 [ext_resource type="Script" uid="uid://cuhjb5orbvppv" path="res://scripts/ui/HUD.cs" id="1_kw0id"]
 [ext_resource type="Resource" uid="uid://djax877vl8tw" path="res://resources/tower_data/Base.tres" id="2_atyv1"]
+[ext_resource type="Resource" uid="uid://4knhurn3ttj2" path="res://resources/tower_data/Fast.tres" id="3_fast1"]
+[ext_resource type="Resource" uid="uid://c707con3f00r" path="res://resources/tower_data/Ice.tres" id="4_ice01"]
+[ext_resource type="Resource" uid="uid://euqe6r08pnw4" path="res://resources/tower_data/Poison.tres" id="5_psn01"]
+[ext_resource type="Resource" uid="uid://bmqfmt6j1xc5h" path="res://resources/tower_data/Splash.tres" id="6_spl01"]
 
 [node name="HUD" type="CanvasLayer" unique_id=1119415688]
 script = ExtResource("1_kw0id")
-AvailableTowers = Array[Object]([ExtResource("2_atyv1")])
+AvailableTowers = Array[Object]([ExtResource("2_atyv1"), ExtResource("3_fast1"), ExtResource("4_ice01"), ExtResource("5_psn01"), ExtResource("6_spl01")])
 
 [node name="TopBar" type="HBoxContainer" parent="." unique_id=1505268875]
 offset_right = 40.0

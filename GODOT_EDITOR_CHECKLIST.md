@@ -1,104 +1,112 @@
-# Godot Editor Checklist — Phase 3 & 4
+# Godot Editor Checklist — Tower Defense Project
 
 Everything below must be verified or configured inside the **Godot 4 Editor**
-after opening the project. The C# code is ready; these are the wiring steps
-the editor must confirm or set up.
+after opening the project.
 
 ---
 
-## 1. Register the SceneManager Autoload
+## 1. Autoloads — Confirm All Singletons Are Registered
 
-The `SceneManager` singleton must appear in **Project → Project Settings →
-Autoloads** (in addition to the existing ones).
+Open **Project → Project Settings → Autoloads** and confirm every singleton is present in this order:
 
 | Name | Path |
 |---|---|
+| `EconomyManager` | `res://scripts/autoload/EconomyManager.cs` |
+| `EventBus` | `res://scripts/autoload/EventBus.cs` |
+| `GameManager` | `res://scripts/autoload/GameManager.cs` |
 | `SceneManager` | `res://scripts/autoload/SceneManager.cs` |
+| `TowerPlacementManager` | `res://scripts/autoload/TowerPlacementManager.cs` |
 
-**How to add it (if missing):**
-1. Open **Project → Project Settings → Autoloads**.
-2. Click the folder icon, navigate to `scripts/autoload/SceneManager.cs`.
-3. Set the node name to `SceneManager`.
-4. Click **Add**.
-5. Confirm the order is: `EconomyManager`, `EventBus`, `GameManager`,
-   `SceneManager`, `TowerPlacementManager`.
+**How to add a missing autoload:**
+1. Click the folder icon and navigate to the script.
+2. Set the node name exactly as shown above.
+3. Click **Add**.
 
 ---
 
 ## 2. Build the C# Solution
 
-After any change to `.cs` files, rebuild from the editor:
+After any `.cs` file change, rebuild from the editor:
 
 - **Project → Tools → C# → Build Project** (or press `Alt+B`)
 - Confirm **0 errors** in the Build output panel.
 
-New files introduced in this phase:
+---
 
-| File | Class |
-|---|---|
-| `scripts/factories/EnemyFactory.cs` | `EnemyFactory` (static) |
-| `scripts/factories/TowerFactory.cs` | `TowerFactory` (static) |
-| `scripts/factories/ProjectileFactory.cs` | `ProjectileFactory` (static) |
-| `scripts/autoload/SceneManager.cs` | `SceneManager` |
+## 3. HUD — Confirm All 5 Tower Buttons Are Wired
+
+Open `scenes/ui/HUD.tscn`. Select the **HUD** root node and look at the **Inspector**.
+
+The `AvailableTowers` array must contain **all 5** tower resources in order:
+
+| Index | Resource | Path |
+|---|---|---|
+| 0 | Base Tower | `res://resources/tower_data/Base.tres` |
+| 1 | Fast Tower | `res://resources/tower_data/Fast.tres` |
+| 2 | Ice Tower | `res://resources/tower_data/Ice.tres` |
+| 3 | Poison Tower | `res://resources/tower_data/Poison.tres` |
+| 4 | Splash Tower | `res://resources/tower_data/Splash.tres` |
+
+> The HUD script reads `AvailableTowers` on `_Ready()` and creates one button per
+> entry. The first entry reuses the static `TowerButton` node; the rest are
+> created dynamically and appended to the same `TopBar` container.
+
+If any resource is missing, drag it from the **FileSystem** panel into the
+`AvailableTowers` array slot.
 
 ---
 
-## 3. Verify the Factory Call Chain
+## 4. Tower Data Resources — Configure Stats
 
-No scene wiring is required for the factories (they are static classes).
-Open the scripts and confirm the call flow:
+Each `.tres` file in `res://resources/tower_data/` exposes the following fields
+in the Inspector. Open each file and verify (or set) the values:
 
-```
-EnemySpawner.SpawnEnemy()
-  └─ EnemyFactory.Create(GenericEnemyScene, enemyData, path)
-       └─ returns Enemy → AddChild (deferred)
+| Field | Type | Description |
+|---|---|---|
+| `TowerName` | String | Displayed on the HUD button |
+| `Damage` | Float | Damage dealt per hit |
+| `FireRate` | Float | Attacks per second |
+| `Range` | Float | Detection radius in pixels |
+| `Cost` | Int | Gold cost — shown on the HUD button |
+| `ProjectileScene` | PackedScene | Scene fired by this tower |
+| `Sprite` | Texture2D | Tower sprite shown in the game |
 
-TowerPlacementManager.ConfirmPlacement()
-  └─ TowerFactory.Create(GenericTowerScene, towerData, position)
-       └─ returns Tower → AddChild
+Suggested starting values:
 
-AttackComponent.Fire()
-  └─ ProjectileFactory.Create(projectileScene, damage, target, origin)
-       └─ returns Projectile → AddChild (deferred)
-```
+| Tower | TowerName | Damage | FireRate | Range | Cost |
+|---|---|---|---|---|---|
+| Base | Base | 10 | 1.0 | 120 | 50 |
+| Fast | Fast | 5 | 3.0 | 100 | 75 |
+| Ice | Ice | 8 | 1.2 | 110 | 80 |
+| Poison | Poison | 3 | 2.0 | 130 | 90 |
+| Splash | Splash | 15 | 0.8 | 90 | 120 |
 
 ---
 
-## 4. Verify Main.tscn Wiring
+## 5. Verify Main.tscn Wiring
 
-Open `scenes/main/Main.tscn`. Confirm:
-
-- `Main` root node has the script `res://scripts/main/Main.cs` attached.
-- `HUD` (CanvasLayer) is a direct child of `Main`.
-- There is **no** hard-coded Map scene in the tree — `Main.cs` now loads it
-  via `SceneManager.LoadLevel()` at runtime.
+Open `scenes/main/Main.tscn`. Confirm the tree looks like this:
 
 ```
 Main  (Node2D)  ← Main.cs
 └── HUD  (CanvasLayer)  ← HUD.cs
 ```
 
+- `Main` must have `scripts/main/Main.cs` attached.
+- `HUD` must have `scripts/ui/HUD.cs` attached.
+- There must be **no** hard-coded Map scene in the tree — the level is loaded at
+  runtime by `SceneManager`.
+
 ---
 
-## 5. Verify Map1.tscn is NOT in Main.tscn
+## 6. Verify Map1.tscn Is Not Pre-Instantiated in Main.tscn
 
-Because `SceneManager` loads the level at runtime, `Map1.tscn` must **not**
-be a pre-instantiated child of `Main.tscn`. If it is:
+`SceneManager` loads the level at runtime, so `Map1.tscn` must **not** be a
+pre-instantiated child of `Main.tscn`. If it is:
 
 1. Select the `Map1` node inside `Main.tscn`.
-2. Press **Delete** to remove it.
+2. Press **Delete**.
 3. Save the scene.
-
----
-
-## 6. Verify Map1.tscn Has No Input Handler
-
-`Map1.cs` no longer contains `_UnhandledInput`. The `test_next_wave` keyboard
-shortcut (default: **N**) is now handled by `HUD.cs`.
-
-1. Open `scenes/levels/Map1.tscn`.
-2. Confirm the root script is `res://scripts/levels/Map1.cs`.
-3. No action required — the script is now an empty shell.
 
 ---
 
@@ -110,8 +118,8 @@ shortcut (default: **N**) is now handled by `HUD.cs`.
 Enemy  (Area2D)  ← Enemy.cs
 ├── Sprite2D
 ├── CollisionShape2D
-├── Health         (Node)  ← Health.cs
-└── MovementComponent  (Node)  ← MovementComponent.cs
+├── Health               (Node)  ← Health.cs
+└── MovementComponent    (Node)  ← MovementComponent.cs
 ```
 
 ### Tower.tscn (`scenes/towers/Tower.tscn`)
@@ -121,44 +129,52 @@ Tower  (Node2D)  ← Tower.cs
 ├── Sprite2D
 ├── DetectionArea  (Area2D)
 │   └── CollisionShape2D
-├── TargetingComponent  (Node)  ← TargetingComponent.cs
-└── AttackComponent     (Node)  ← AttackComponent.cs
+├── TargetingComponent   (Node)  ← TargetingComponent.cs
+└── AttackComponent      (Node)  ← AttackComponent.cs
 ```
 
 ---
 
-## 8. Run the Game and Smoke-Test
+## 8. Smoke-Test Checklist
 
-1. Press **F5** (Run Project).
-2. Place a tower (click the tower button in the HUD) and start a wave.
-3. Verify:
-   - [ ] Level loads automatically via `SceneManager` (no manual scene in Main).
-   - [ ] Enemies spawn and follow the path (`EnemyFactory` working).
-   - [ ] Tower is placed at the correct grid position (`TowerFactory` working).
-   - [ ] Projectiles fire and hit enemies (`ProjectileFactory` working).
-   - [ ] Enemy dies when health reaches 0 (Health + reward gold still working).
-   - [ ] Enemy damages the player when reaching the end.
-   - [ ] Pressing **N** starts the next wave (keyboard shortcut now in HUD).
-   - [ ] Pressing the **Next Wave** button still works.
+Press **F5** and verify:
+
+- [ ] Level loads automatically (no manual scene drag needed).
+- [ ] **All 5 tower buttons** appear in the HUD top bar with correct names and costs.
+- [ ] Each tower button places a tower with the correct sprite and stats.
+- [ ] Enemies spawn and follow the path.
+- [ ] Projectiles fire, hit enemies, and deal damage.
+- [ ] Enemy rewards gold on death.
+- [ ] Lives decrease when an enemy reaches the end.
+- [ ] Pressing **N** or the **Next Wave** button starts the next wave.
+- [ ] All tower buttons are disabled when Game Over occurs.
 
 ---
 
-## 9. Future: Adding Object Pooling
+## 9. Factory Call Chain (Reference)
 
-When pooling is introduced, **only the three factory classes change** —
-`EnemyFactory`, `TowerFactory`, and `ProjectileFactory`. No other file needs
-to know about pooling. This is the main architectural benefit of the factory
-layer.
+```
+EnemySpawner.SpawnEnemy()
+  └─ EnemyFactory.Create(GenericEnemyScene, enemyData, path)
+
+TowerPlacementManager.ConfirmPlacement()
+  └─ TowerFactory.Create(GenericTowerScene, towerData, position)
+
+AttackComponent.Fire()
+  └─ ProjectileFactory.Create(projectileScene, damage, target, origin)
+```
 
 ---
 
 ## 10. Test Scenes (Recommended)
 
-Create one small test scene per factory/system under `scenes/tests/`:
+Create a scene per system under `scenes/tests/` to isolate and test each part
+independently:
 
 | Scene | What to test |
 |---|---|
 | `enemy_factory_test.tscn` | Enemy spawns with correct stats and follows path |
-| `tower_factory_test.tscn` | Tower placed with correct data injected |
+| `tower_factory_test.tscn` | Each of the 5 towers is placed with correct data |
 | `projectile_factory_test.tscn` | Projectile fires with correct damage and target |
-| `scene_manager_test.tscn` | Level loads/unloads cleanly on demand |
+| `scene_manager_test.tscn` | Level loads and unloads cleanly |
+| `hud_test.tscn` | All 5 tower buttons render correctly and respond to clicks |

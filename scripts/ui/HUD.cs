@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System.Collections.Generic;
 
 public partial class HUD : CanvasLayer
 {
@@ -10,6 +11,7 @@ public partial class HUD : CanvasLayer
     private Label _waveLabel;
     private Button _nextWaveButton;
     private Button _towerButton;
+    private readonly List<Button> _allTowerButtons = new();
 
     private TileMapLayer _activeTileMap;
     private EnemySpawner _activeSpawner;
@@ -46,6 +48,7 @@ public partial class HUD : CanvasLayer
         var firstTower = AvailableTowers[0];
         _towerButton.Text = $"{firstTower.TowerName} ({firstTower.Cost}g)";
         _towerButton.Pressed += () => OnTowerButtonPressed(firstTower);
+        _allTowerButtons.Add(_towerButton);
 
         // Dynamically add buttons for each additional tower type
         for (int i = 1; i < AvailableTowers.Count; i++)
@@ -55,6 +58,7 @@ public partial class HUD : CanvasLayer
             button.Text = $"{towerData.TowerName} ({towerData.Cost}g)";
             button.Pressed += () => OnTowerButtonPressed(towerData);
             _towerButton.GetParent().AddChild(button);
+            _allTowerButtons.Add(button);
         }
     }
 
@@ -102,7 +106,8 @@ public partial class HUD : CanvasLayer
     private void OnGameOver()
     {
         _nextWaveButton.Disabled = true;
-        _towerButton.Disabled = true;
+        foreach (var btn in _allTowerButtons)
+            btn.Disabled = true;
         GD.Print("GAME OVER");
     }
 }
