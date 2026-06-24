@@ -68,6 +68,9 @@ public partial class LevelManager : Node
     private void OnLevelLoaded(Node levelNode)
     {
         if (CurrentLevel == null) return;
+        
+        GameManager.Instance.ResetForLevel(CurrentLevel);
+        EconomyManager.Instance.ResetForLevel(CurrentLevel);
 
         if (levelNode is BaseLevel baseLevel)
         {
