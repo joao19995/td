@@ -13,6 +13,8 @@ public partial class SceneManager : Node
 
     private Node _currentLevel;
 
+    private bool _isLoading;
+
     public override void _EnterTree()
     {
         Instance = this;
@@ -23,9 +25,18 @@ public partial class SceneManager : Node
     /// <paramref name="container"/> (defaults to the scene tree root when null), and emits
     /// <see cref="LevelLoaded"/> with the instantiated level node.
     /// Any previously loaded level is freed first.
+    /// Ignores the call if a load is already in progress.
     /// </summary>
     public void LoadLevel(string scenePath, Node container = null)
     {
+        if (_isLoading)
+        {
+            GD.PushWarning("SceneManager: LoadLevel called while a load is already in progress.");
+            return;
+        }
+
+        _isLoading = true;
+
         _currentLevel?.QueueFree();
         _currentLevel = null;
 
@@ -33,6 +44,7 @@ public partial class SceneManager : Node
         if (packedScene == null)
         {
             GD.PrintErr($"SceneManager: Failed to load scene at '{scenePath}'.");
+            _isLoading = false;
             return;
         }
 
@@ -40,6 +52,7 @@ public partial class SceneManager : Node
         var parent = container ?? GetTree().Root;
         parent.AddChild(_currentLevel);
 
+        _isLoading = false;
         EmitSignal(SignalName.LevelLoaded, _currentLevel);
     }
 }
