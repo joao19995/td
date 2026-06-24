@@ -1,9 +1,9 @@
 using Godot;
+using Godot.Collections;
 
 public partial class HUD : CanvasLayer
 {
-    [Export] public PackedScene TowerScene;
-    [Export] public int TowerCost = 50;
+    [Export] public Array<TowerData> AvailableTowers;
 
     private Label _livesLabel;
     private Label _moneyLabel;
@@ -23,18 +23,41 @@ public partial class HUD : CanvasLayer
         _towerButton = GetNode<Button>("TopBar/TowerButton");
 
         _nextWaveButton.Pressed += OnNextWavePressed;
-        _towerButton.Pressed += OnTowerButtonPressed;
+
+        SetupTowerButtons();
 
         EventBus.Instance.LivesChanged += OnLivesChanged;
         EventBus.Instance.MoneyChanged += OnMoneyChanged;
         EventBus.Instance.GameOver += OnGameOver;
 
-        // Estado inicial
         UpdateLivesLabel(GameManager.Instance.CurrentLives);
         UpdateMoneyLabel(EconomyManager.Instance.CurrentMoney);
     }
 
-    // Chamado pelo Map1 depois de instanciar o mapa, para a HUD saber a quem se ligar
+    private void SetupTowerButtons()
+    {
+        if (AvailableTowers == null || AvailableTowers.Count == 0)
+        {
+            _towerButton.Visible = false;
+            return;
+        }
+
+        // Configure the existing TowerButton for the first tower type
+        var firstTower = AvailableTowers[0];
+        _towerButton.Text = $"{firstTower.TowerName} ({firstTower.Cost}g)";
+        _towerButton.Pressed += () => OnTowerButtonPressed(firstTower);
+
+        // Dynamically add buttons for each additional tower type
+        for (int i = 1; i < AvailableTowers.Count; i++)
+        {
+            var towerData = AvailableTowers[i];
+            var button = new Button();
+            button.Text = $"{towerData.TowerName} ({towerData.Cost}g)";
+            button.Pressed += () => OnTowerButtonPressed(towerData);
+            _towerButton.GetParent().AddChild(button);
+        }
+    }
+
     public void SetActiveMap(TileMapLayer tileMap, EnemySpawner spawner)
     {
         _activeTileMap = tileMap;
@@ -50,12 +73,12 @@ public partial class HUD : CanvasLayer
         UpdateWaveLabel();
     }
 
-    private void OnTowerButtonPressed()
+    private void OnTowerButtonPressed(TowerData towerData)
     {
         if (_activeTileMap == null) return;
-        if (!EconomyManager.Instance.CanAfford(TowerCost)) return;
+        if (!EconomyManager.Instance.CanAfford(towerData.Cost)) return;
 
-        TowerPlacementManager.Instance.StartPlacement(TowerScene, _activeTileMap);
+        TowerPlacementManager.Instance.StartPlacement(towerData, _activeTileMap);
     }
 
     private void OnLivesChanged(int currentLives) => UpdateLivesLabel(currentLives);
@@ -74,7 +97,6 @@ public partial class HUD : CanvasLayer
     {
         _nextWaveButton.Disabled = true;
         _towerButton.Disabled = true;
-        // Fase 12 vai mostrar aqui um painel de "Game Over" completo
         GD.Print("GAME OVER");
     }
 }

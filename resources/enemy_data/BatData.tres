@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://5r2uwhpwl3kp"]
+
+[ext_resource type="Texture2D" uid="uid://br00ua7j1euib" path="res://assets/sprites/enemies/spr_bat.png" id="1_owa4g"]
+[ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="2_5yrms"]
+
+[resource]
+script = ExtResource("2_5yrms")
+Sprite = ExtResource("1_owa4g")
+metadata/_custom_type_script = "uid://frd5h03o6xdd"
