@@ -49,7 +49,7 @@ public partial class TowerPlacementManager : Node
     {
         if (_genericTowerScene == null)
         {
-            GD.PrintErr("TowerPlacementManager: GenericTowerScene not loaded.");
+            GD.PrintErr("TowerPlacementManager: tower scene not loaded.");
             return;
         }
 
