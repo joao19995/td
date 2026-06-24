@@ -33,4 +33,10 @@ public partial class Health : Node
     }
 
     public float GetCurrentHealth() => _currentHealth;
+
+    public void Setup(float maxHealth)
+    {
+        MaxHealth = maxHealth;
+        _currentHealth = maxHealth;
+    }
 }

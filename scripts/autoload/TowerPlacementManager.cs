@@ -4,12 +4,13 @@ public partial class TowerPlacementManager : Node
 {
     public static TowerPlacementManager Instance { get; private set; }
 
-    private PackedScene _selectedTowerScene;
+    [Export] public PackedScene GenericTowerScene;
+
+    private TowerData _selectedTowerData;
     private Node2D _previewInstance;
     private TileMapLayer _activeTileMap;
-    private int _towerCost;
 
-    public bool IsPlacing => _selectedTowerScene != null;
+    public bool IsPlacing => _selectedTowerData != null;
 
     public override void _EnterTree()
     {
@@ -30,25 +31,31 @@ public partial class TowerPlacementManager : Node
         UpdatePreviewColor(isValid);
 
         if (Input.IsActionJustPressed("place_tower") && isValid)
-        {
             ConfirmPlacement(snappedPos);
-        }
 
         if (Input.IsActionJustPressed("cancel_placement"))
-        {
             CancelPlacement();
-        }
     }
 
-    public void StartPlacement(PackedScene towerScene, TileMapLayer tileMap)
+    public void StartPlacement(TowerData towerData, TileMapLayer tileMap)
     {
+        if (GenericTowerScene == null)
+        {
+            GD.PrintErr("TowerPlacementManager: GenericTowerScene not assigned.");
+            return;
+        }
+
         CancelPlacement();
 
-        _selectedTowerScene = towerScene;
+        _selectedTowerData = towerData;
         _activeTileMap = tileMap;
 
-        _previewInstance = towerScene.Instantiate<Node2D>();
+        _previewInstance = GenericTowerScene.Instantiate<Node2D>();
         _previewInstance.Modulate = new Color(1, 1, 1, 0.5f);
+
+        if (towerData.Sprite != null)
+            _previewInstance.GetNode<Sprite2D>("Sprite2D").Texture = towerData.Sprite;
+
         GetTree().CurrentScene.AddChild(_previewInstance);
     }
 
@@ -57,8 +64,7 @@ public partial class TowerPlacementManager : Node
         var data = _activeTileMap.GetCellTileData(cell);
         if (data == null) return false;
 
-        var tileType = data.GetCustomData("tile_type").AsString();
-        return tileType == "buildable";
+        return data.GetCustomData("tile_type").AsString() == "buildable";
     }
 
     private void UpdatePreviewColor(bool isValid)
@@ -68,19 +74,18 @@ public partial class TowerPlacementManager : Node
             : new Color(1, 0, 0, 0.5f);
     }
 
-private void ConfirmPlacement(Vector2 position)
-{
-    if (!EconomyManager.Instance.SpendMoney(_towerCost))
+    private void ConfirmPlacement(Vector2 position)
     {
-        return; // sem dinheiro suficiente, não coloca
+        if (!EconomyManager.Instance.SpendMoney(_selectedTowerData.Cost))
+            return;
+
+        var tower = GenericTowerScene.Instantiate<Tower>();
+        tower.GlobalPosition = position;
+        GetTree().CurrentScene.AddChild(tower);
+        tower.Setup(_selectedTowerData);
+
+        CancelPlacement();
     }
-
-    var tower = _selectedTowerScene.Instantiate<Node2D>();
-    tower.GlobalPosition = position;
-    GetTree().CurrentScene.AddChild(tower);
-
-    CancelPlacement();
-}
 
     public void CancelPlacement()
     {
@@ -90,7 +95,7 @@ private void ConfirmPlacement(Vector2 position)
             _previewInstance = null;
         }
 
-        _selectedTowerScene = null;
+        _selectedTowerData = null;
         _activeTileMap = null;
     }
 }

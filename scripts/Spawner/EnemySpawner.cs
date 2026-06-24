@@ -1,15 +1,17 @@
 using Godot;
-using Godot.Collections; 
+using Godot.Collections;
+
 public partial class EnemySpawner : Node2D
 {
     [Export] public Path2D EnemyPath;
+    [Export] public PackedScene GenericEnemyScene;
     [Export] public Array<WaveData> Waves;
 
     private int _currentWaveIndex = -1;
     private bool _waveInProgress = false;
 
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
-	public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
+    public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
 
     public async void StartNextWave()
     {
@@ -21,23 +23,23 @@ public partial class EnemySpawner : Node2D
 
         for (int i = 0; i < wave.EnemyCount; i++)
         {
-            SpawnEnemy(wave.EnemyScenes[i % wave.EnemyScenes.Count]);
+            SpawnEnemy(wave.Enemies[i % wave.Enemies.Count]);
             await ToSignal(GetTree().CreateTimer(wave.SpawnInterval), Timer.SignalName.Timeout);
         }
 
         _waveInProgress = false;
     }
 
-    private void SpawnEnemy(PackedScene enemyScene)
+    private void SpawnEnemy(EnemyData enemyData)
     {
-        if (EnemyPath == null || enemyScene == null)
+        if (EnemyPath == null || GenericEnemyScene == null || enemyData == null)
         {
-            GD.PrintErr("EnemySpawner: EnemyPath ou enemyScene não estão atribuídos.");
+            GD.PrintErr("EnemySpawner: EnemyPath, GenericEnemyScene, or EnemyData not assigned.");
             return;
         }
 
-        var enemy = enemyScene.Instantiate<Enemy>();
-        enemy.Initialize(EnemyPath.Curve);
+        var enemy = GenericEnemyScene.Instantiate<Enemy>();
+        enemy.Initialize(enemyData, EnemyPath.Curve);
         GetTree().CurrentScene.CallDeferred(Node.MethodName.AddChild, enemy);
     }
 }
