@@ -5,7 +5,6 @@ public partial class Tower : Node2D
     private TowerData _data;
     private TargetingComponent _targeting;
     private AttackComponent _attack;
-
     public override void _Ready()
     {
         _targeting = GetNode<TargetingComponent>("TargetingComponent");
@@ -37,7 +36,7 @@ public partial class Tower : Node2D
         if (_data.Sprite != null)
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
 
-        _attack.Setup(_data.ProjectileScene, _data.Damage, _data.FireRate);
+        _attack.Setup(_data.ProjectileScene, _data.Damage, _data.FireRate, _data.HasSplash, _data.SplashRadius);
     }
 
     public override void _Process(double delta)

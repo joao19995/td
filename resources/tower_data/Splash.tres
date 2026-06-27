@@ -9,9 +9,11 @@ load_path = "res://.godot/imported/spr_tower_splash.png-fddd5523b8b45f06e9adfa68
 [resource]
 script = ExtResource("2_k6g6c")
 TowerName = "Splash"
-Damage = 20.0
-Range = 10.0
-Cost = 10
+Damage = 35.0
+FireRate = 0.5
+Range = 36.0
+Cost = 250
 ProjectileScene = ExtResource("1_3qluu")
 Sprite = SubResource("CompressedTexture2D_3qluu")
+HasSplash = true
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

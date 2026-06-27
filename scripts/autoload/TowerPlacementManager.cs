@@ -10,7 +10,7 @@ public partial class TowerPlacementManager : Node
     private TowerData _selectedTowerData;
     private Node2D _previewInstance;
     private TileMapLayer _activeTileMap;
-
+    private readonly System.Collections.Generic.HashSet<Vector2I> _occupiedCells = new();
     public bool IsPlacing => _selectedTowerData != null;
 
     public override void _EnterTree()
@@ -32,7 +32,7 @@ public partial class TowerPlacementManager : Node
         UpdatePreviewColor(isValid);
 
         if (Input.IsActionJustPressed("place_tower") && isValid)
-            ConfirmPlacement(snappedPos);
+            ConfirmPlacement(cell, snappedPos);
 
         if (Input.IsActionJustPressed("cancel_placement"))
             CancelPlacement();
@@ -62,6 +62,8 @@ public partial class TowerPlacementManager : Node
 
     private bool IsCellBuildable(Vector2I cell)
     {
+        if (_occupiedCells.Contains(cell)) return false;
+
         var data = _activeTileMap.GetCellTileData(cell);
         if (data == null) return false;
 
@@ -75,12 +77,15 @@ public partial class TowerPlacementManager : Node
             : new Color(1, 0, 0, 0.5f);
     }
 
-    private void ConfirmPlacement(Vector2 position)
+    private void ConfirmPlacement(Vector2I cell, Vector2 position)
     {
         if (!EconomyManager.Instance.SpendMoney(_selectedTowerData.Cost))
             return;
 
+        _occupiedCells.Add(cell);
+
         var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
+        tower.TreeExited += () => _occupiedCells.Remove(cell);
         LevelManager.Instance.CurrentLevelNode.AddChild(tower);
 
         CancelPlacement();

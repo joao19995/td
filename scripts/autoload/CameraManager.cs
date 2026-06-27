@@ -14,7 +14,7 @@ public partial class CameraManager : Camera2D
     public static CameraManager Instance { get; private set; }
 
     /// <summary>Logical play-area size in pixels. Same for every map.</summary>
-    [Export] public Vector2 WorldSize = new Vector2(320, 190);
+    public Vector2 WorldSize = new Vector2(320, 190);
 
     public override void _EnterTree()
     {

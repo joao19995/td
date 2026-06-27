@@ -5,8 +5,9 @@
 
 [resource]
 script = ExtResource("1_rrnri")
-MaxHealth = 100.0
-MoveSpeed = 20.0
-RewardGold = 30
+MaxHealth = 1000.0
+MoveSpeed = 16.0
+RewardGold = 100
+DamageToPlayer = 5
 Sprite = ExtResource("1_sr60t")
 metadata/_custom_type_script = "uid://frd5h03o6xdd"

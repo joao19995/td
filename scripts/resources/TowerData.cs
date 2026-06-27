@@ -10,4 +10,6 @@ public partial class TowerData : Resource
     [Export] public int Cost { get; set; } = 50;
     [Export] public PackedScene ProjectileScene { get; set; }
     [Export] public Texture2D Sprite { get; set; }
+    [Export] public bool HasSplash { get; set; } = false;
+    [Export] public float SplashRadius { get; set; } = 36f;
 }

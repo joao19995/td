@@ -7,9 +7,3 @@
 script = ExtResource("1_xjr6e")
 ScenePath = "res://scenes/levels/Map1.tscn"
 PreviewTexture = ExtResource("1_eo1xm")
-CameraZoomStep = 0.5
-CameraPanSpeed = 400.0
-CameraLimitLeft = 0
-CameraLimitRight = 304
-CameraLimitTop = 0
-CameraLimitBottom = 160

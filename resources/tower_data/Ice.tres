@@ -9,9 +9,9 @@ load_path = "res://.godot/imported/spr_tower_ice.png-bcebcb5cf700b5770b1bf06c7b0
 [resource]
 script = ExtResource("2_4fycm")
 TowerName = "Ice"
-FireRate = 2.0
-Range = 50.0
-Cost = 30
+FireRate = 0.8
+Range = 48.0
+Cost = 175
 ProjectileScene = ExtResource("1_o66bj")
 Sprite = SubResource("CompressedTexture2D_o66bj")
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

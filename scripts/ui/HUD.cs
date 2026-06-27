@@ -6,12 +6,20 @@ public partial class HUD : CanvasLayer
 {
     [Export] public Array<TowerData> AvailableTowers;
 
+    // Single source of truth for sizing/positioning — change here, every button updates.
+    [Export] public float ButtonHeight = 14f;
+    [Export] public float TowerBarSideMargin = 6f;
+    [Export] public float TowerBarBottomMargin = 4f;
+    [Export] public float WaveButtonWidth = 56f;
+
     private Label _livesLabel;
     private Label _moneyLabel;
     private Label _waveLabel;
+    private HBoxContainer _waveBar;
+    private HBoxContainer _towerBar;
+
     private Button _nextWaveButton;
     private Button _nextLevelButton;
-    private Button _towerButton;
     private readonly List<Button> _allTowerButtons = new();
 
     private TileMapLayer _activeTileMap;
@@ -19,22 +27,15 @@ public partial class HUD : CanvasLayer
 
     public override void _Ready()
     {
-        _livesLabel = GetNode<Label>("TopBar/LivesLabel");
-        _moneyLabel = GetNode<Label>("TopBar/MoneyLabel");
-        _waveLabel = GetNode<Label>("TopBar/WaveLabel");
-        _nextWaveButton = GetNode<Button>("TopBar/NextWaveButton");
-        _towerButton = GetNode<Button>("TopBar/TowerButton");
+        _livesLabel = GetNode<Label>("InfoBar/LivesLabel");
+        _moneyLabel = GetNode<Label>("InfoBar/MoneyLabel");
+        _waveLabel = GetNode<Label>("InfoBar/WaveLabel");
+        _waveBar = GetNode<HBoxContainer>("WaveBar");
+        _towerBar = GetNode<HBoxContainer>("TowerBar");
 
-        _nextWaveButton.Pressed += OnNextWavePressed;
-
-        // "Next Level" button — created at runtime and hidden until all waves complete
-        _nextLevelButton = new Button();
-        _nextLevelButton.Text = "Next Level";
-        _nextLevelButton.Visible = false;
-        _nextLevelButton.Pressed += OnNextLevelPressed;
-        _nextWaveButton.GetParent().AddChild(_nextLevelButton);
-
-        SetupTowerButtons();
+        PositionTowerBar();
+        BuildWaveButtons();
+        BuildTowerButtons();
 
         EventBus.Instance.LivesChanged += OnLivesChanged;
         EventBus.Instance.MoneyChanged += OnMoneyChanged;
@@ -53,30 +54,54 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
     }
 
-    private void SetupTowerButtons()
+    /// <summary>
+    /// Anchors the TowerBar near the bottom of the viewport with a side
+    /// margin on both edges, computed from ButtonHeight/margins instead of
+    /// hardcoded offsets — works regardless of viewport size.
+    /// </summary>
+    private void PositionTowerBar()
     {
-        if (AvailableTowers == null || AvailableTowers.Count == 0)
-        {
-            _towerButton.Visible = false;
-            return;
-        }
+        _towerBar.OffsetLeft = TowerBarSideMargin;
+        _towerBar.OffsetRight = -TowerBarSideMargin;
+        _towerBar.OffsetBottom = -TowerBarBottomMargin;
+        _towerBar.OffsetTop = -TowerBarBottomMargin - ButtonHeight;
+    }
 
-        // Configure the existing TowerButton for the first tower type
-        var firstTower = AvailableTowers[0];
-        _towerButton.Text = $"{firstTower.TowerName} ({firstTower.Cost}g)";
-        _towerButton.Pressed += () => OnTowerButtonPressed(firstTower);
-        _allTowerButtons.Add(_towerButton);
+    private void BuildWaveButtons()
+    {
+        var size = new Vector2(WaveButtonWidth, ButtonHeight);
 
-        // Dynamically add buttons for each additional tower type
-        for (int i = 1; i < AvailableTowers.Count; i++)
+        _nextWaveButton = CreateButton(_waveBar, "Next Wave", size, OnNextWavePressed);
+        _nextLevelButton = CreateButton(_waveBar, "Next Level", size, OnNextLevelPressed);
+        _nextLevelButton.Visible = false;
+    }
+
+    private void BuildTowerButtons()
+    {
+        if (AvailableTowers == null || AvailableTowers.Count == 0) return;
+
+        float barWidth = GetViewport().GetVisibleRect().Size.X - (TowerBarSideMargin * 2f);
+        var size = new Vector2(barWidth / AvailableTowers.Count, ButtonHeight);
+
+        foreach (var towerData in AvailableTowers)
         {
-            var towerData = AvailableTowers[i];
-            var button = new Button();
-            button.Text = $"{towerData.TowerName} ({towerData.Cost}g)";
-            button.Pressed += () => OnTowerButtonPressed(towerData);
-            _towerButton.GetParent().AddChild(button);
+            var button = CreateButton(_towerBar, $"{towerData.TowerName} ({towerData.Cost}g)", size,
+                () => OnTowerButtonPressed(towerData));
             _allTowerButtons.Add(button);
         }
+    }
+
+    private Button CreateButton(HBoxContainer parent, string text, Vector2 size, System.Action onPressed)
+    {
+        var button = new Button();
+        button.Text = text;
+        button.ClipText = true;
+        button.CustomMinimumSize = size;
+        button.SizeFlagsHorizontal = Control.SizeFlags.Fill;
+        button.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
+        button.Pressed += onPressed;
+        parent.AddChild(button);
+        return button;
     }
 
     public void SetActiveMap(TileMapLayer tileMap, EnemySpawner spawner)
@@ -84,7 +109,6 @@ public partial class HUD : CanvasLayer
         _activeTileMap = tileMap;
         _activeSpawner = spawner;
 
-        // Reset buttons for the new level
         _nextWaveButton.Visible = true;
         _nextWaveButton.Disabled = false;
         _nextLevelButton.Visible = false;

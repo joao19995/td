@@ -9,7 +9,6 @@ radius = 2.0
 [node name="Projectile2" type="Area2D" unique_id=352224773]
 collision_layer = 0
 script = ExtResource("1_iupiv")
-Speed = 20.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=457789603]
 texture = ExtResource("2_iupiv")

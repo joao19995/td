@@ -4,7 +4,7 @@ public partial class EconomyManager : Node
 {
     public static EconomyManager Instance { get; private set; }
 
-    [Export] public int StartingMoney = 100;
+    [Export] public int StartingMoney = 300;
 
     private int _currentMoney;
     public int CurrentMoney => _currentMoney;

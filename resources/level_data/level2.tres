@@ -7,5 +7,3 @@
 script = ExtResource("2_q28nb")
 ScenePath = "res://scenes/levels/Map2.tscn"
 PreviewTexture = ExtResource("1_dycob")
-StartingMoney = 1111
-StartingLives = 11

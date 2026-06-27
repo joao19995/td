@@ -9,9 +9,10 @@ load_path = "res://.godot/imported/spr_tower_poison.png-fa8f962e568e16433b5476e8
 [resource]
 script = ExtResource("2_2xlvy")
 TowerName = "Poison"
-Damage = 1.0
-Range = 1000.0
-Cost = 20
+Damage = 8.0
+FireRate = 1.2
+Range = 56.0
+Cost = 200
 ProjectileScene = ExtResource("1_2ujgf")
 Sprite = SubResource("CompressedTexture2D_2ujgf")
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
