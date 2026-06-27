@@ -4,10 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://d2lb1sxba7heu" path="res://assets/sprites/projectiles/spr_proj_base.png" id="2_iupiv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eftrj"]
+radius = 2.0
 
-[node name="Projectile" type="Area2D" unique_id=352224773]
+[node name="Projectile2" type="Area2D" unique_id=352224773]
 collision_layer = 0
 script = ExtResource("1_iupiv")
+Speed = 20.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=457789603]
 texture = ExtResource("2_iupiv")
