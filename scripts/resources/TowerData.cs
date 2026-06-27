@@ -12,4 +12,7 @@ public partial class TowerData : Resource
     [Export] public Texture2D Sprite { get; set; }
     [Export] public bool HasSplash { get; set; } = false;
     [Export] public float SplashRadius { get; set; } = 36f;
+    [Export] public bool HasPoison { get; set; } = false;
+    [Export] public float PoisonDamagePerTick { get; set; } = 2f;
+    [Export] public float PoisonDuration { get; set; } = 4f;
 }

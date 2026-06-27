@@ -36,7 +36,7 @@ public partial class Tower : Node2D
         if (_data.Sprite != null)
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
 
-        _attack.Setup(_data.ProjectileScene, _data.Damage, _data.FireRate, _data.HasSplash, _data.SplashRadius);
+        _attack.Setup(_data.ProjectileScene, _data.Damage, _data.FireRate, _data.HasSplash, _data.SplashRadius, _data.HasPoison, _data.PoisonDamagePerTick, _data.PoisonDuration);
     }
 
     public override void _Process(double delta)

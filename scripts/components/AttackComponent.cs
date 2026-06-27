@@ -16,7 +16,12 @@ public partial class AttackComponent : Node
     // Novas variáveis para o sistema de Splash
     private bool _hasSplash;
     private float _splashRadius;
+        
+    // Novas variáveis para o sistema de poison
 
+    private bool _hasPoison;
+    private float _poisonDamagePerTick;
+    private float _poisonDuration;
     public override void _Ready()
     {
         if (GetParent() is not Node2D)
@@ -24,7 +29,7 @@ public partial class AttackComponent : Node
     }
 
     /// <param name="attackSpeed">Attacks per second. Must be greater than zero.</param>
-    public void Setup(PackedScene projectileScene, float damage, float attackSpeed, bool hasSplash, float splashRadius)
+    public void Setup(PackedScene projectileScene, float damage, float attackSpeed, bool hasSplash, float splashRadius, bool hasPoison, float poisonDamagePerTick, float poisonDuration)
     {
         if (attackSpeed <= 0f)
         {
@@ -37,6 +42,9 @@ public partial class AttackComponent : Node
         _attackSpeed = attackSpeed;
         _hasSplash = hasSplash;
         _splashRadius = splashRadius;
+        _hasPoison = hasPoison;
+        _poisonDamagePerTick = poisonDamagePerTick;
+        _poisonDuration = poisonDuration;
         _cooldown = 0f;
     }
 
@@ -74,6 +82,14 @@ private void Fire(Enemy target)
     if (_hasSplash)
     {
         projectile.OnHitEffect = (mainEnemy, hitPosition) => TriggerSplashDamage(mainEnemy, hitPosition);
+    }
+    else if (_hasPoison)
+    {
+        // Quando o projétil bater, ele diz ao inimigo para começar a envenenar
+        projectile.OnHitEffect = (mainEnemy, hitPosition) => 
+        {
+            mainEnemy.ApplyPoison(_poisonDamagePerTick, _poisonDuration);
+        };
     }
 
     // 3. Adiciona o projétil à cena através do teu LevelManager

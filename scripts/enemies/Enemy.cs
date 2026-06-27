@@ -5,7 +5,9 @@ public partial class Enemy : Area2D
     private EnemyData _data;
     private Health _health;
     private MovementComponent _movement;
-
+    private Timer _poisonTimer;
+    private float _poisonTimeLeft;
+    private float _poisonDamagePerTick;
     // Held until _Ready() wires up _movement (Initialize may be called before _Ready).
     private Curve2D _pendingCurve;
 
@@ -69,4 +71,55 @@ public partial class Enemy : Area2D
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, _data.RewardGold);
         QueueFree();
     }
+    public void ApplyPoison(float damagePerTick, float duration)
+    {
+        var sprite = GetNode<Sprite2D>("Sprite2D");
+
+        // 1. Fica verde IMEDIATAMENTE
+        if (sprite != null)
+        {
+            sprite.Modulate = Colors.Green;
+        }
+
+        // Atualizamos os dados do veneno atual
+        _poisonDamagePerTick = damagePerTick;
+        _poisonTimeLeft = duration;
+
+        // 2. Se o Timer JÁ EXISTIR, não criamos outro! Apenas damos "refresh" no tempo
+        if (_poisonTimer != null && IsInstanceValid(_poisonTimer))
+        {
+            return; // O tempo já foi reiniciado acima através do _poisonTimeLeft
+        }
+
+        // 3. Se NÃO existir, criamos o Timer pela primeira vez
+        _poisonTimer = new Timer();
+        _poisonTimer.Name = "PoisonTimer";
+        _poisonTimer.WaitTime = 1.0f;
+        _poisonTimer.Autostart = true;
+        AddChild(_poisonTimer);
+
+        _poisonTimer.Timeout += () =>
+        {
+            if (!IsInstanceValid(this)) return;
+
+            // Aplica o dano a cada segundo
+            TakeDamage(_poisonDamagePerTick);
+
+            _poisonTimeLeft -= 1.0f;
+
+            // Se o tempo acabou, limpa o efeito e desliga o timer
+            if (_poisonTimeLeft <= 0f)
+            {
+                if (IsInstanceValid(sprite))
+                {
+                    sprite.Modulate = Colors.White; // Volta à cor original com toda a certeza
+                }
+
+                // Destrói o timer e limpa a variável da memória
+                _poisonTimer.QueueFree();
+                _poisonTimer = null;
+            }
+        };
+    }
 }
+
