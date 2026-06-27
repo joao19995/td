@@ -5,7 +5,6 @@ public partial class AttackComponent : Node
 {
     private TowerData _data;
     private float _cooldown;
-
     public override void _Ready()
     {
         if (GetParent() is not Node2D)
@@ -68,6 +67,7 @@ public partial class AttackComponent : Node
 
         LevelManager.Instance.CurrentLevelNode.CallDeferred(Node.MethodName.AddChild, projectile);
     }
+
 
     private void TriggerSplashDamage(Enemy mainEnemy, Vector2 hitPosition)
     {
