@@ -1,21 +1,10 @@
 using Godot;
 using System;
 
-/// <summary>
-/// Manages attack cooldown, projectile creation, and firing logic.
-/// Call TryAttack(target) every frame; the component handles its own rate limiting.
-/// Parent must be a Node2D.
-/// </summary>
 public partial class AttackComponent : Node
 {
-    private PackedScene _projectileScene;
-    private float _damage;
-    private float _attackSpeed; // attacks per second
+    private TowerData _data;
     private float _cooldown;
-    
-    // Novas variáveis para o sistema de Splash
-    private bool _hasSplash;
-    private float _splashRadius;
 
     public override void _Ready()
     {
@@ -23,20 +12,9 @@ public partial class AttackComponent : Node
             GD.PushError($"AttackComponent: parent must be a Node2D (got {GetParent()?.GetClass()}).");
     }
 
-    /// <param name="attackSpeed">Attacks per second. Must be greater than zero.</param>
-    public void Setup(PackedScene projectileScene, float damage, float attackSpeed, bool hasSplash, float splashRadius)
+    public void Setup(TowerData data)
     {
-        if (attackSpeed <= 0f)
-        {
-            GD.PushError($"AttackComponent: attackSpeed must be > 0 (got {attackSpeed}). Defaulting to 1.");
-            attackSpeed = 1f;
-        }
-
-        _projectileScene = projectileScene;
-        _damage = damage;
-        _attackSpeed = attackSpeed;
-        _hasSplash = hasSplash;
-        _splashRadius = splashRadius;
+        _data = data;
         _cooldown = 0f;
     }
 
@@ -46,51 +24,62 @@ public partial class AttackComponent : Node
             _cooldown -= (float)delta;
     }
 
-    /// <summary>
-    /// Attempts to fire at the given target. Returns true if a shot was fired.
-    /// Does nothing if still on cooldown or target is null.
-    /// </summary>
     public bool TryAttack(Enemy target)
     {
-        if (target == null || _cooldown > 0f) return false;
+        if (target == null || _cooldown > 0f || _data == null) return false;
 
         Fire(target);
-        _cooldown = 1f / _attackSpeed;
+        _cooldown = 1f / _data.FireRate;
         return true;
     }
 
-private void Fire(Enemy target)
-{
-    if (_projectileScene == null)
+    private void Fire(Enemy target)
     {
-        GD.PrintErr("AttackComponent: ProjectileScene not set. Call Setup() first.");
-        return;
+        if (_data.ProjectileScene == null)
+        {
+            GD.PrintErr("AttackComponent: ProjectileScene not set in TowerData.");
+            return;
+        }
+
+        var towerPos = GetParent<Node2D>().GlobalPosition;
+        GD.Print($"[AttackComponent] Fire — tower={_data.TowerName}, target={target.Name}, pos={towerPos}");
+        var projectile = ProjectileFactory.Create(_data.ProjectileScene, _data.Damage, target, towerPos);
+
+        if (_data.HasSplash)
+        {
+            projectile.OnHitEffect = (mainEnemy, hitPosition) => TriggerSplashDamage(mainEnemy, hitPosition);
+        }
+        else if (_data.HasPoison)
+        {
+            projectile.OnHitEffect = (mainEnemy, hitPosition) =>
+            {
+                var effectComponent = mainEnemy.GetNode<StatusEffectComponent>("StatusEffectComponent");
+                if (effectComponent != null)
+                {
+                    var poisonData = new PoisonEffectData
+                    {
+                        Duration = _data.PoisonDuration,
+                        DamagePerTick = _data.PoisonDamagePerTick,
+                    };
+                    effectComponent.ApplyEffect(poisonData);
+                }
+            };
+        }
+
+        LevelManager.Instance.CurrentLevelNode.CallDeferred(Node.MethodName.AddChild, projectile);
     }
-
-    // 1. Cria o projétil usando a tua Factory exatamente como já tinhas feito
-    var projectile = ProjectileFactory.Create(_projectileScene, _damage, target, GetParent<Node2D>().GlobalPosition);
-
-    // 2. Se esta torre tiver Splash, injetamos a Action diretamente no projétil criado
-    if (_hasSplash)
-    {
-        projectile.OnHitEffect = (mainEnemy, hitPosition) => TriggerSplashDamage(mainEnemy, hitPosition);
-    }
-
-    // 3. Adiciona o projétil à cena através do teu LevelManager
-    LevelManager.Instance.CurrentLevelNode.CallDeferred(Node.MethodName.AddChild, projectile);
-}
 
     private void TriggerSplashDamage(Enemy mainEnemy, Vector2 hitPosition)
     {
-        var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;        
+        var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;
         var query = new PhysicsShapeQueryParameters2D();
-        var circle = new CircleShape2D { Radius = _splashRadius };
-        
+        var circle = new CircleShape2D { Radius = _data.SplashRadius };
+
         query.Shape = circle;
         query.Transform = new Transform2D(0, hitPosition);
         query.CollideWithAreas = true;
         query.CollideWithBodies = false;
-        query.CollisionMask = 1; // Ajusta para a Collision Layer dos teus inimigos
+        query.CollisionMask = 1;
 
         var results = spaceState.IntersectShape(query);
 
@@ -98,8 +87,8 @@ private void Fire(Enemy target)
         {
             if (result["collider"].AsGodotObject() is Enemy surroundingEnemy)
             {
-                if (surroundingEnemy == mainEnemy) continue; // Evita dar dano duplo ao alvo principal
-                surroundingEnemy.TakeDamage(_damage);
+                if (surroundingEnemy == mainEnemy) continue;
+                surroundingEnemy.TakeDamage(_data.Damage);
             }
         }
     }

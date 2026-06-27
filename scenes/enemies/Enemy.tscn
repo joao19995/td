@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b772i2dfal5bx" path="res://scripts/enemies/Enemy.cs" id="1_k7o7a"]
 [ext_resource type="Script" uid="uid://bjd1lorpparik" path="res://scripts/components/Health.cs" id="3_8axbs"]
 [ext_resource type="Script" uid="uid://dxpwv6bybbt5i" path="res://scripts/components/MovementComponent.cs" id="4_move"]
+[ext_resource type="Script" path="res://scripts/components/StatusEffectComponent.cs" id="5_statuseffect"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eftrj"]
 
@@ -19,3 +20,6 @@ script = ExtResource("3_8axbs")
 
 [node name="MovementComponent" type="Node" parent="." unique_id=100000001]
 script = ExtResource("4_move")
+
+[node name="StatusEffectComponent" type="Node" parent="."]
+script = ExtResource("5_statuseffect")

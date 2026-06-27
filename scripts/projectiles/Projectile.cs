@@ -1,15 +1,14 @@
 using Godot;
-using System; // IMPORTANTE: Adiciona isto para poder usar Action
+using System;
 
 public partial class Projectile : Area2D
 {
     [Export] public float Speed = 300f;
     [Export] public float Damage = 5f;
 
-    protected Enemy Target;
-    
-    // Nova propriedade para guardar o efeito injetado pela torre
+    public Enemy Target { get; set; }
     public Action<Enemy, Vector2> OnHitEffect { get; set; }
+    private bool _returningToPool;
 
     public override void _Ready()
     {
@@ -20,13 +19,20 @@ public partial class Projectile : Area2D
     {
         Target = target;
         Damage = damage;
+        _returningToPool = false;
+        Visible = true;
+        Monitoring = true;
+        Monitorable = true;
+        SetPhysicsProcess(true);
+        GD.Print($"[Projectile] Initialize — target={target?.Name}, dmg={damage}");
     }
 
     public override void _PhysicsProcess(double delta)
     {
         if (Target == null || !IsInstanceValid(Target))
         {
-            QueueFree();
+            GD.Print($"[Projectile] Target lost — returning");
+            ReturnToPool();
             return;
         }
 
@@ -37,6 +43,7 @@ public partial class Projectile : Area2D
 
     private void OnAreaEntered(Area2D area)
     {
+        GD.Print($"[Projectile] AreaEntered — area={area.Name}, isTarget={area == Target}, _returning={_returningToPool}");
         if (area == Target)
         {
             OnHitTarget(Target);
@@ -45,13 +52,31 @@ public partial class Projectile : Area2D
 
     protected virtual void OnHitTarget(Enemy mainEnemy)
     {
-        // 1. Dá o dano direto padrão no alvo principal
+        GD.Print($"[Projectile] OnHitTarget — dmg={Damage}");
         mainEnemy.TakeDamage(Damage);
-
-        // 2. Se a torre tiver injetado um efeito extra (como o Splash), executa-o aqui
         OnHitEffect?.Invoke(mainEnemy, GlobalPosition);
+        ReturnToPool();
+    }
 
-        // 3. Destrói o projétil
-        QueueFree();
+    private void ReturnToPool()
+    {
+        if (_returningToPool)
+        {
+            GD.Print($"[Projectile] ReturnToPool blocked — already returning");
+            return;
+        }
+        _returningToPool = true;
+        GD.Print($"[Projectile] ReturnToPool — deferred");
+        CallDeferred(nameof(DeferredReturnToPool));
+    }
+
+    private void DeferredReturnToPool()
+    {
+        _returningToPool = false;
+        GD.Print($"[Projectile] DeferredReturnToPool — poolAvailable={PoolManager.Instance != null}");
+        if (PoolManager.Instance != null)
+            PoolManager.Instance.Return(this);
+        else
+            QueueFree();
     }
 }

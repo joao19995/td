@@ -19,6 +19,7 @@ shape = SubResource("CircleShape2D_eftrj")
 
 [node name="TargetingComponent" type="Node" parent="." unique_id=200000001]
 script = ExtResource("3_target")
+Strategy = 2
 
 [node name="AttackComponent" type="Node" parent="." unique_id=200000002]
 script = ExtResource("4_attack")
