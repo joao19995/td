@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://dqjgbguvoadto"]
 
 [ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_rrnri"]
-[ext_resource type="Texture2D" uid="uid://51wp228pnixh" path="res://assets/sprites/enemies/spr_enemy_boss.png" id="1_sr60t"]
+[ext_resource type="Texture2D" uid="uid://c3ymadkhg2klu" path="res://assets/sprites/enemies/spr_enemy_boss.png" id="1_sr60t"]
 
 [resource]
 script = ExtResource("1_rrnri")
-MaxHealth = 50.0
+MaxHealth = 100.0
 MoveSpeed = 20.0
 RewardGold = 30
 Sprite = ExtResource("1_sr60t")

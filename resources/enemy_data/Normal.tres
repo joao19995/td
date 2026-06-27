@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://cugbr5b2i020m"]
 
-[ext_resource type="Texture2D" uid="uid://bap3es14nv2to" path="res://assets/sprites/enemies/spr_enemy_normal.png" id="1_8ji7i"]
+[ext_resource type="Texture2D" uid="uid://cqr2yt25dtax8" path="res://assets/sprites/enemies/spr_enemy_normal.png" id="1_8ji7i"]
 [ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_a5ocf"]
 
 [resource]
 script = ExtResource("1_a5ocf")
 MaxHealth = 20.0
-MoveSpeed = 20.0
+MoveSpeed = 10.0
 Sprite = ExtResource("1_8ji7i")
 metadata/_custom_type_script = "uid://frd5h03o6xdd"

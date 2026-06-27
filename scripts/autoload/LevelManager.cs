@@ -15,6 +15,7 @@ public partial class LevelManager : Node
 
     private int _currentLevelIndex = -1;
     private Node _levelContainer;
+    public Node CurrentLevelNode { get; private set; }
 
     public int CurrentLevelIndex => _currentLevelIndex;
     public LevelData CurrentLevel =>
@@ -66,7 +67,9 @@ public partial class LevelManager : Node
     }
 
     private void OnLevelLoaded(Node levelNode)
-    {
+    {   
+        CurrentLevelNode = levelNode;
+        
         if (CurrentLevel == null) return;
         
         GameManager.Instance.ResetForLevel(CurrentLevel);

@@ -1,11 +1,12 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://c7sk17164impj"]
 
-[ext_resource type="Texture2D" uid="uid://c0qlptd40jl4h" path="res://assets/sprites/enemies/spr_enemy_tank.png" id="1_7uk0w"]
+[ext_resource type="Texture2D" uid="uid://dly3ahba2hkxy" path="res://assets/sprites/enemies/spr_enemy_tank.png" id="1_7uk0w"]
 [ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_cd5nw"]
 
 [resource]
 script = ExtResource("1_cd5nw")
-MaxHealth = 50.0
+MaxHealth = 70.0
 MoveSpeed = 10.0
+RewardGold = 10
 Sprite = ExtResource("1_7uk0w")
 metadata/_custom_type_script = "uid://frd5h03o6xdd"

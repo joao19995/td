@@ -57,7 +57,7 @@ public partial class TowerPlacementManager : Node
         if (towerData.Sprite != null)
             _previewInstance.GetNode<Sprite2D>("Sprite2D").Texture = towerData.Sprite;
 
-        GetTree().CurrentScene.AddChild(_previewInstance);
+        LevelManager.Instance.CurrentLevelNode.AddChild(_previewInstance);
     }
 
     private bool IsCellBuildable(Vector2I cell)
@@ -81,7 +81,7 @@ public partial class TowerPlacementManager : Node
             return;
 
         var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
-        GetTree().CurrentScene.AddChild(tower);
+        LevelManager.Instance.CurrentLevelNode.AddChild(tower);
 
         CancelPlacement();
     }

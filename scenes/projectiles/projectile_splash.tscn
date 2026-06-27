@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://baswd0y735gfg" path="res://assets/sprites/projectiles/spr_proj_splash.png" id="2_l5oyd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eftrj"]
-radius = 4.0
+radius = 3.0
 
 [node name="Projectile" type="Area2D" unique_id=352224773]
 collision_layer = 0

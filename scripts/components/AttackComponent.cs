@@ -61,6 +61,6 @@ public partial class AttackComponent : Node
         }
 
         var projectile = ProjectileFactory.Create(_projectileScene, _damage, target, GetParent<Node2D>().GlobalPosition);
-        GetTree().CurrentScene.CallDeferred(Node.MethodName.AddChild, projectile);
+        LevelManager.Instance.CurrentLevelNode.CallDeferred(Node.MethodName.AddChild, projectile);
     }
 }
