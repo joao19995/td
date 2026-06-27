@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dlnwxqdknom62"]
+
+[ext_resource type="Script" uid="uid://byeack2duep0v" path="res://scripts/autoload/CameraManager.cs" id="1_47cq1"]
+
+[node name="CameraManager" type="Node" unique_id=981988505]
+script = ExtResource("1_47cq1")
+WorldSize = Vector2(100, 100)

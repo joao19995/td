@@ -75,17 +75,11 @@ public partial class LevelManager : Node
         GameManager.Instance.ResetForLevel(CurrentLevel);
         EconomyManager.Instance.ResetForLevel(CurrentLevel);
 
-        if (levelNode is BaseLevel baseLevel)
-        {
-            var camera = baseLevel.GetCamera();
-            if (camera != null)
-                camera.Configure(CurrentLevel);
-            else
-                GD.PushWarning("LevelManager: Camera not found in level — camera settings not applied.");
-        }
-        else
-        {
-            GD.PushWarning("LevelManager: Loaded level does not extend BaseLevel — camera settings not applied.");
-        }
-    }
+  
+    if (levelNode is not BaseLevel)
+        GD.PushWarning("LevelManager: Loaded level does not extend BaseLevel.");
+
+    // Defensive: re-applies in case the viewport changed between levels.
+    CameraManager.Instance.Configure();
+}
 }

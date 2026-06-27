@@ -23,6 +23,7 @@ GameManager="*uid://bdyhlaph2hqex"
 TowerPlacementManager="*uid://b8di4orayi46l"
 SceneManager="*res://scripts/autoload/SceneManager.cs"
 LevelManager="*uid://dua280ep3xp8a"
+CameraManager="*uid://byeack2duep0v"
 
 [display]
 
@@ -35,6 +36,10 @@ window/stretch/scale_mode="integer"
 [dotnet]
 
 project/assembly_name="td"
+
+[gui]
+
+theme/custom="uid://frsr3oi6eyiq"
 
 [input]
 

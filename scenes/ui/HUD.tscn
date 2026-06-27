@@ -17,11 +17,9 @@ offset_bottom = 40.0
 
 [node name="LivesLabel" type="Label" parent="TopBar" unique_id=1449915102]
 layout_mode = 2
-theme_override_font_sizes/font_size = 8
 
 [node name="MoneyLabel" type="Label" parent="TopBar" unique_id=1676395297]
 layout_mode = 2
-theme_override_font_sizes/font_size = 8
 
 [node name="WaveLabel" type="Label" parent="TopBar" unique_id=1897646940]
 layout_mode = 2

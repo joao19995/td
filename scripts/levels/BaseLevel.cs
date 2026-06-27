@@ -16,12 +16,8 @@ public abstract partial class BaseLevel : Node2D
 {
     [Export] public NodePath TileMapNodePath { get; set; } = "TileMapLayer";
     [Export] public NodePath SpawnerNodePath { get; set; } = "EnemySpawner";
-    [Export] public NodePath CameraNodePath { get; set; } = "Camera2D";
 
-    /// <summary>The TileMapLayer used for tower placement validation.</summary>
     public TileMapLayer BuildableTileMap { get; protected set; }
-
-    /// <summary>The spawner that drives wave logic for this map.</summary>
     public EnemySpawner Spawner { get; protected set; }
 
     public override void _Ready()
@@ -38,9 +34,5 @@ public abstract partial class BaseLevel : Node2D
         OnLevelReady();
     }
 
-    /// <summary>Returns the Camera2D for this level, or null if not found.</summary>
-    public Camera GetCamera() => GetNodeOrNull<Camera>(CameraNodePath);
-
-    /// <summary>Override for per-map setup that runs after discovery.</summary>
     protected virtual void OnLevelReady() { }
 }

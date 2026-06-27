@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://frsr3oi6eyiq"]
+
+[ext_resource type="FontFile" uid="uid://ckad6t4qxt76a" path="res://assets/fonts/GomePixel-DYJX1.otf" id="1_6lvnq"]
+
+[resource]
+default_font = ExtResource("1_6lvnq")
+default_font_size = 8
