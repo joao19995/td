@@ -26,11 +26,11 @@ LevelManager="*uid://dua280ep3xp8a"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/size/mode=2
+window/size/viewport_width=320
+window/size/viewport_height=190
+window/size/mode=1
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/scale_mode="integer"
 
 [dotnet]
 
