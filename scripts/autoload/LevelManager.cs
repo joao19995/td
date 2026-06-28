@@ -69,9 +69,11 @@ public partial class LevelManager : Node
     private void OnLevelLoaded(Node levelNode)
     {   
         CurrentLevelNode = levelNode;
-        
+
+        GetTree().Paused = false;
+
         if (CurrentLevel == null) return;
-        
+
         GameManager.Instance.ResetForLevel(CurrentLevel);
         EconomyManager.Instance.ResetForLevel(CurrentLevel);
 

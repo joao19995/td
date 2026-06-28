@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_0umns")
+Id = "enemy_flying"
 MaxHealth = 80.0
 MoveSpeed = 32.0
 RewardGold = 20

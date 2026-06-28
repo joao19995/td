@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_cd5nw")
+Id = "enemy_tank"
 MaxHealth = 300.0
 MoveSpeed = 12.0
 RewardGold = 30

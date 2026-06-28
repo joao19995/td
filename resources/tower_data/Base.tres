@@ -8,6 +8,7 @@ load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec018
 
 [resource]
 script = ExtResource("3_y6wqu")
+Id = "base"
 TowerName = "Base"
 Damage = 20.0
 Range = 48.0

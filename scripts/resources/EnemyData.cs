@@ -3,6 +3,7 @@ using Godot;
 [GlobalClass]
 public partial class EnemyData : Resource
 {
+    [Export] public string Id { get; set; } = "";
     [Export] public string EnemyName { get; set; } = "Enemy";
     [Export] public float MaxHealth { get; set; } = 10f;
     [Export] public float MoveSpeed { get; set; } = 60f;

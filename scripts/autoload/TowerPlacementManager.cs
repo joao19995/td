@@ -18,6 +18,23 @@ public partial class TowerPlacementManager : Node
         Instance = this;
     }
 
+    public override void _Ready()
+    {
+        SceneManager.Instance.LevelLoaded += OnLevelLoaded;
+    }
+
+    public override void _ExitTree()
+    {
+        if (SceneManager.Instance != null)
+            SceneManager.Instance.LevelLoaded -= OnLevelLoaded;
+    }
+
+    private void OnLevelLoaded(Node _)
+    {
+        _occupiedCells.Clear();
+        CancelPlacement();
+    }
+
     public override void _Process(double delta)
     {
         if (!IsPlacing || _previewInstance == null) return;

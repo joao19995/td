@@ -3,6 +3,7 @@ using Godot;
 [GlobalClass]
 public partial class TowerData : Resource
 {
+    [Export] public string Id { get; set; } = "";
     [Export] public string TowerName { get; set; } = "Tower";
     [Export] public float Damage { get; set; } = 5f;
     [Export] public float FireRate { get; set; } = 1f;

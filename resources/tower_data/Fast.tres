@@ -8,6 +8,7 @@ load_path = "res://.godot/imported/spr_tower_fast.png-25dffe3793f4b8b7cc42855f18
 
 [resource]
 script = ExtResource("2_be44t")
+Id = "fast"
 TowerName = "Fast"
 Damage = 10.0
 FireRate = 2.5
