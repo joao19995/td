@@ -20,5 +20,6 @@ Cost = 250
 ProjectileScene = ExtResource("1_3qluu")
 Sprite = SubResource("CompressedTexture2D_3qluu")
 HasSplash = true
+SplashRadius = 5.0
 UpgradePath = Array[ExtResource("2_iqf0o")]([ExtResource("3_spl1"), ExtResource("4_spl2")])
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

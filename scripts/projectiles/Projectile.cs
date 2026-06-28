@@ -24,14 +24,14 @@ public partial class Projectile : Area2D
         Monitoring = true;
         Monitorable = true;
         SetPhysicsProcess(true);
-        GameManager.Log($"[Projectile] Initialize — target={target?.Name}, dmg={damage}");
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (Target == null || !IsInstanceValid(Target))
+        if (Target == null || !IsInstanceValid(Target) || Target.IsDead)
         {
-            GameManager.Log($"[Projectile] Target lost — returning");
+            SetPhysicsProcess(false);
+            Visible = false;
             ReturnToPool();
             return;
         }
@@ -43,37 +43,33 @@ public partial class Projectile : Area2D
 
     private void OnAreaEntered(Area2D area)
     {
-        GameManager.Log($"[Projectile] AreaEntered — area={area.Name}, isTarget={area == Target}, _returning={_returningToPool}");
-        if (area == Target)
-        {
-            OnHitTarget(Target);
-        }
+        if (_returningToPool || area != Target) return;
+
+        SetDeferred("monitoring", false);
+        OnHitTarget(Target);
     }
 
     protected virtual void OnHitTarget(Enemy mainEnemy)
     {
-        GameManager.Log($"[Projectile] OnHitTarget — dmg={Damage}");
+        GD.Print($"[Projectile] OnHitTarget — dmg={Damage}, pos={mainEnemy.GlobalPosition}");
+        SetPhysicsProcess(false);
+        Visible = false;
         mainEnemy.TakeDamage(Damage);
-        OnHitEffect?.Invoke(mainEnemy, GlobalPosition);
+        OnHitEffect?.Invoke(mainEnemy, mainEnemy.GlobalPosition);
         ReturnToPool();
     }
 
     private void ReturnToPool()
     {
         if (_returningToPool)
-        {
-            GameManager.Log($"[Projectile] ReturnToPool blocked — already returning");
             return;
-        }
         _returningToPool = true;
-        GameManager.Log($"[Projectile] ReturnToPool — deferred");
         CallDeferred(nameof(DeferredReturnToPool));
     }
 
     private void DeferredReturnToPool()
     {
         _returningToPool = false;
-        GameManager.Log($"[Projectile] DeferredReturnToPool — poolAvailable={PoolManager.Instance != null}");
         if (PoolManager.Instance != null)
             PoolManager.Instance.Return(this);
         else

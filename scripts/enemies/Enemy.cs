@@ -6,6 +6,7 @@ public partial class Enemy : Area2D
     private Health _health;
     private MovementComponent _movement;
     private StatusEffectComponent _statusEffects;
+    private HealthBar _healthBar;
     private Curve2D _pendingCurve;
     private bool _signalsConnected;
     private bool _returningToPool;
@@ -16,6 +17,9 @@ public partial class Enemy : Area2D
         _health = GetNode<Health>("Health");
         _movement = GetNode<MovementComponent>("MovementComponent");
         _statusEffects = GetNode<StatusEffectComponent>("StatusEffectComponent");
+        _healthBar = new HealthBar();
+        _healthBar.Name = "HealthBar";
+        AddChild(_healthBar);
         ConnectSignals();
 
         if (_data != null)
@@ -26,7 +30,9 @@ public partial class Enemy : Area2D
     {
         if (_signalsConnected) return;
         if (_health == null || _movement == null) return;
+        _health.HealthChanged += OnHealthChanged;
         _health.Died += OnDied;
+        _health.DamageTaken += OnDamageTaken;
         _movement.ReachedEnd += OnReachedEnd;
         _signalsConnected = true;
     }
@@ -34,7 +40,9 @@ public partial class Enemy : Area2D
     private void DisconnectSignals()
     {
         if (!_signalsConnected) return;
+        _health.HealthChanged -= OnHealthChanged;
         _health.Died -= OnDied;
+        _health.DamageTaken -= OnDamageTaken;
         _movement.ReachedEnd -= OnReachedEnd;
         _signalsConnected = false;
     }
@@ -44,7 +52,6 @@ public partial class Enemy : Area2D
         _returningToPool = false;
         IsDead = false;
         _data = data;
-        GameManager.Log($"[Enemy] Initialize — {data.EnemyName}, sigConnected={_signalsConnected}, hasParent={GetParent() != null}");
         ConnectSignals();
 
         if (_movement != null)
@@ -59,6 +66,7 @@ public partial class Enemy : Area2D
     private void ApplyData()
     {
         _health.Setup(_data.MaxHealth);
+        _healthBar.SetHealth(_health.GetCurrentHealth(), _health.MaxHealth);
 
         if (_pendingCurve != null)
         {
@@ -76,11 +84,30 @@ public partial class Enemy : Area2D
 
     public void TakeDamage(float amount) => _health?.TakeDamage(amount);
 
+    private void OnHealthChanged(float current, float max)
+    {
+        _healthBar?.SetHealth(current, max);
+    }
+
     public float GetCurrentHealth() => _health?.GetCurrentHealth() ?? 0f;
+
+    private void OnDamageTaken(float amount)
+    {
+        var container = LevelManager.Instance.CurrentLevelNode is BaseLevel bl && bl.ProjectilesContainer != null
+            ? bl.ProjectilesContainer
+            : LevelManager.Instance.CurrentLevelNode;
+
+        if (container == null) return;
+
+        var popup = new DamagePopup();
+        popup.ShowDamage(amount, Colors.White);
+        popup.GlobalPosition = GlobalPosition;
+        container.AddChild(popup);
+    }
 
     private void OnReachedEnd()
     {
-        GameManager.Log($"[Enemy] OnReachedEnd — {_data?.EnemyName}, returning={_returningToPool}");
+        IsDead = true;
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, _data.DamageToPlayer);
         ReturnToPool();
     }
@@ -88,7 +115,6 @@ public partial class Enemy : Area2D
     private void OnDied()
     {
         IsDead = true;
-        GameManager.Log($"[Enemy] OnDied — {_data?.EnemyName}, returning={_returningToPool}");
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, _data.RewardGold);
         ReturnToPool();
     }
@@ -96,25 +122,19 @@ public partial class Enemy : Area2D
     private void ReturnToPool()
     {
         if (_returningToPool)
-        {
-            GameManager.Log($"[Enemy] ReturnToPool blocked — already returning");
             return;
-        }
         _returningToPool = true;
         _statusEffects?.ClearEffects();
         DisconnectSignals();
-        GameManager.Log($"[Enemy] ReturnToPool — deferred");
         CallDeferred(nameof(DeferredReturnToPool));
     }
 
     private void DeferredReturnToPool()
     {
         _returningToPool = false;
-        GameManager.Log($"[Enemy] DeferredReturnToPool — poolAvailable={PoolManager.Instance != null}");
         if (PoolManager.Instance != null)
             PoolManager.Instance.Return(this);
         else
             QueueFree();
     }
 }
-

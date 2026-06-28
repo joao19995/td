@@ -28,7 +28,6 @@ public partial class MovementComponent : Node
         _pathLength = curve.GetBakedLength();
         _distanceTraveled = 0f;
         _speedMultiplier = 1f;
-        GameManager.Log($"[Movement] Initialize — speed={speed}, pathLen={_pathLength}, parent={GetParent()?.Name}");
         if (GetParent() is Node2D parent)
             parent.GlobalPosition = _curve.SampleBaked(0f);
     }
@@ -37,7 +36,6 @@ public partial class MovementComponent : Node
     {
         if (_curve == null)
         {
-            GameManager.Log($"[Movement] WARNING — _curve is null on {GetParent()?.Name}");
             return;
         }
 
@@ -45,15 +43,12 @@ public partial class MovementComponent : Node
 
         if (_distanceTraveled >= _pathLength)
         {
-            GameManager.Log($"[Movement] ReachedEnd — dist={_distanceTraveled}, pathLen={_pathLength}");
             EmitSignal(SignalName.ReachedEnd);
             return;
         }
 
         if (GetParent() is Node2D parent)
             parent.GlobalPosition = _curve.SampleBaked(_distanceTraveled);
-        else
-            GameManager.Log($"[Movement] WARNING — parent not Node2D on {GetParent()?.GetClass()}");
     }
 
     public void SetSpeedMultiplier(float multiplier)

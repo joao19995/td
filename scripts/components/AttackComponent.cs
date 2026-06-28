@@ -51,7 +51,6 @@ public partial class AttackComponent : Node
         }
 
         var towerPos = GetParent<Node2D>().GlobalPosition;
-        GameManager.Log($"[AttackComponent] Fire — tower={_data.TowerName}, target={target.Name}, pos={towerPos}");
         var projectile = ProjectileFactory.Create(_data.ProjectileScene, _effectiveDamage, target, towerPos);
 
         if (_data.HasSplash)
@@ -106,6 +105,8 @@ public partial class AttackComponent : Node
 
     private void TriggerSplashDamage(Enemy mainEnemy, Vector2 hitPosition)
     {
+        GD.Print($"[Splash] TriggerSplashDamage — pos={hitPosition}, radius={_data.SplashRadius}");
+
         var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;
         var query = new PhysicsShapeQueryParameters2D();
         var circle = new CircleShape2D { Radius = _data.SplashRadius };
@@ -117,19 +118,23 @@ public partial class AttackComponent : Node
         query.CollisionMask = 1;
 
         var results = spaceState.IntersectShape(query);
+        GD.Print($"[Splash] IntersectShape — results={results.Count}");
 
         var effect = new SplashEffect();
         effect.Initialize(_data.SplashRadius);
         effect.GlobalPosition = hitPosition;
         GetProjectilesContainer().AddChild(effect);
 
+        int hitCount = 0;
         foreach (var result in results)
         {
             if (result["collider"].AsGodotObject() is Enemy surroundingEnemy)
             {
                 if (surroundingEnemy == mainEnemy) continue;
                 surroundingEnemy.TakeDamage(_data.Damage);
+                hitCount++;
             }
         }
+        GD.Print($"[Splash] Hit {hitCount} surrounding enemies, main={mainEnemy.Name}");
     }
 }

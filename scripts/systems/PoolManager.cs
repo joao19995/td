@@ -20,13 +20,11 @@ public partial class PoolManager : Node
             var node = queue.Dequeue();
             if (node.GetParent() == this)
                 RemoveChild(node);
-            GameManager.Log($"[PoolManager] Reused {typeof(T).Name} from pool (size: {queue.Count})");
             return (T)node;
         }
 
         var instance = scene.Instantiate<T>();
         instance.SetMeta("_pool_key", key);
-        GameManager.Log($"[PoolManager] Instantiated new {typeof(T).Name}");
         return instance;
     }
 
@@ -34,19 +32,16 @@ public partial class PoolManager : Node
     {
         if (!IsInstanceValid(node))
         {
-            GameManager.Log($"[PoolManager] Return skipped — node invalid");
             return;
         }
 
         if (!node.HasMeta("_pool_key"))
         {
-            GameManager.Log($"[PoolManager] Return — no _pool_key, QueueFree fallback");
             node.QueueFree();
             return;
         }
 
         var key = node.GetMeta("_pool_key").AsString();
-        var typeName = node.GetClass();
 
         ResetNode(node);
 
@@ -55,7 +50,6 @@ public partial class PoolManager : Node
 
         if (node.GetParent() != null)
         {
-            GameManager.Log($"[PoolManager] Return — RemoveChild failed for {typeName}, QueueFree");
             node.QueueFree();
             return;
         }
@@ -66,7 +60,6 @@ public partial class PoolManager : Node
             _pools[key] = new Queue<Node>();
 
         _pools[key].Enqueue(node);
-        GameManager.Log($"[PoolManager] Returned {typeName} to pool (size: {_pools[key].Count})");
     }
 
     private static void ResetNode(Node node)
@@ -86,6 +79,8 @@ public partial class PoolManager : Node
         {
             var statusEffects = enemy.GetNode<StatusEffectComponent>("StatusEffectComponent");
             statusEffects?.ClearEffects();
+            var healthBar = enemy.GetNode<HealthBar>("HealthBar");
+            healthBar?.Reset();
         }
     }
 }

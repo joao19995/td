@@ -10,7 +10,6 @@ public static class EnemyFactory
             : enemyScene.Instantiate<Enemy>();
 
         enemy.Initialize(data, path);
-        GameManager.Log($"[EnemyFactory] Created — {data.EnemyName}, fromPool={fromPool}");
         return enemy;
     }
 }
