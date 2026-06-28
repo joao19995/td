@@ -46,3 +46,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 1
+
+[node name="TowerActionPanel" type="VBoxContainer" parent="." unique_id=400000001]
+visible = false
+offset_left = 220.0
+offset_top = 28.0
+offset_right = 320.0
+offset_bottom = 100.0
+theme_override_constants/separation = 2
+
+[node name="TowerNameLabel" type="Label" parent="TowerActionPanel" unique_id=400000002]
+layout_mode = 2
+text = "Tower"
+
+[node name="UpgradeButton" type="Button" parent="TowerActionPanel" unique_id=400000003]
+layout_mode = 2
+text = "Upgrade"
+disabled = true
+
+[node name="SellButton" type="Button" parent="TowerActionPanel" unique_id=400000004]
+layout_mode = 2
+text = "Sell"

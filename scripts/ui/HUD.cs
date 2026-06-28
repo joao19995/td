@@ -25,6 +25,11 @@ public partial class HUD : CanvasLayer
     private TileMapLayer _activeTileMap;
     private EnemySpawner _activeSpawner;
 
+    private VBoxContainer _towerActionPanel;
+    private Label _towerNameLabel;
+    private Button _upgradeButton;
+    private Button _sellButton;
+
     public override void _Ready()
     {
         Visible = false;
@@ -43,6 +48,16 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.GameOver += OnGameOver;
         EventBus.Instance.AllWavesCompleted += OnAllWavesCompleted;
 
+        _towerActionPanel = GetNode<VBoxContainer>("TowerActionPanel");
+        _towerNameLabel = GetNode<Label>("TowerActionPanel/TowerNameLabel");
+        _upgradeButton = GetNode<Button>("TowerActionPanel/UpgradeButton");
+        _sellButton = GetNode<Button>("TowerActionPanel/SellButton");
+
+        TowerSelectionManager.Instance.TowerSelected += OnTowerSelected;
+        TowerSelectionManager.Instance.TowerDeselected += OnTowerDeselected;
+        _upgradeButton.Pressed += OnUpgradePressed;
+        _sellButton.Pressed += OnSellPressed;
+
         UpdateLivesLabel(GameManager.Instance.CurrentLives);
         UpdateMoneyLabel(EconomyManager.Instance.CurrentMoney);
     }
@@ -53,6 +68,13 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.MoneyChanged -= OnMoneyChanged;
         EventBus.Instance.GameOver -= OnGameOver;
         EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
+        EventBus.Instance.MoneyChanged -= OnMoneyChanged;
+
+        if (TowerSelectionManager.Instance != null)
+        {
+            TowerSelectionManager.Instance.TowerSelected -= OnTowerSelected;
+            TowerSelectionManager.Instance.TowerDeselected -= OnTowerDeselected;
+        }
     }
 
     /// <summary>
@@ -168,6 +190,53 @@ public partial class HUD : CanvasLayer
     {
         if (_activeSpawner == null) return;
         _waveLabel.Text = $"Wave: {_activeSpawner.CurrentWaveDisplay}";
+    }
+
+    private void OnTowerSelected(Tower tower)
+    {
+        _towerNameLabel.Text = $"{tower.Data.TowerName} (Lv.{tower.CurrentUpgradeLevel + 1})";
+        _sellButton.Text = $"Sell ({tower.SellValue}g)";
+
+        if (tower.CurrentUpgradeLevel >= tower.MaxUpgradeLevel)
+        {
+            _upgradeButton.Text = "MAX";
+            _upgradeButton.Disabled = true;
+        }
+        else
+        {
+            var next = tower.Data.UpgradePath[tower.CurrentUpgradeLevel];
+            _upgradeButton.Text = $"Upgrade ({next.Cost}g)";
+            _upgradeButton.Disabled = !EconomyManager.Instance.CanAfford(next.Cost);
+        }
+
+        _towerActionPanel.Show();
+    }
+
+    private void OnTowerDeselected()
+    {
+        _towerActionPanel.Hide();
+    }
+
+    private void OnUpgradePressed()
+    {
+        var tower = TowerSelectionManager.Instance.SelectedTower;
+        if (tower == null || tower.CurrentUpgradeLevel >= tower.MaxUpgradeLevel) return;
+
+        var next = tower.Data.UpgradePath[tower.CurrentUpgradeLevel];
+        if (!EconomyManager.Instance.SpendMoney(next.Cost)) return;
+
+        tower.Upgrade();
+        OnTowerSelected(tower);
+    }
+
+    private void OnSellPressed()
+    {
+        var tower = TowerSelectionManager.Instance.SelectedTower;
+        if (tower == null) return;
+
+        EconomyManager.Instance.AddMoney(tower.SellValue);
+        tower.QueueFree();
+        TowerSelectionManager.Instance.Deselect();
     }
 
     private void OnGameOver()

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 [GlobalClass]
 public partial class TowerData : Resource
@@ -16,4 +17,6 @@ public partial class TowerData : Resource
     [Export] public bool HasPoison { get; set; } = false;
     [Export] public float PoisonDamagePerTick { get; set; } = 2f;
     [Export] public float PoisonDuration { get; set; } = 4f;
+    [Export] public Array<UpgradeData> UpgradePath { get; set; } = new();
+    [Export] public float SellRefundRatio { get; set; } = 0.5f;
 }

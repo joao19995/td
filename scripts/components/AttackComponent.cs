@@ -4,6 +4,8 @@ using System;
 public partial class AttackComponent : Node
 {
     private TowerData _data;
+    private float _effectiveDamage;
+    private float _effectiveFireRate;
     private float _cooldown;
     public override void _Ready()
     {
@@ -14,7 +16,15 @@ public partial class AttackComponent : Node
     public void Setup(TowerData data)
     {
         _data = data;
+        _effectiveDamage = data.Damage;
+        _effectiveFireRate = data.FireRate;
         _cooldown = 0f;
+    }
+
+    public void SetEffectiveStats(float damage, float fireRate)
+    {
+        _effectiveDamage = damage;
+        _effectiveFireRate = fireRate;
     }
 
     public override void _Process(double delta)
@@ -28,7 +38,7 @@ public partial class AttackComponent : Node
         if (target == null || _cooldown > 0f || _data == null) return false;
 
         Fire(target);
-        _cooldown = 1f / _data.FireRate;
+        _cooldown = 1f / _effectiveFireRate;
         return true;
     }
 
@@ -42,7 +52,7 @@ public partial class AttackComponent : Node
 
         var towerPos = GetParent<Node2D>().GlobalPosition;
         GameManager.Log($"[AttackComponent] Fire — tower={_data.TowerName}, target={target.Name}, pos={towerPos}");
-        var projectile = ProjectileFactory.Create(_data.ProjectileScene, _data.Damage, target, towerPos);
+        var projectile = ProjectileFactory.Create(_data.ProjectileScene, _effectiveDamage, target, towerPos);
 
         if (_data.HasSplash)
         {

@@ -23,3 +23,9 @@ Strategy = 2
 
 [node name="AttackComponent" type="Node" parent="." unique_id=200000002]
 script = ExtResource("4_attack")
+
+[node name="SelectionArea" type="Area2D" parent="." unique_id=300000001]
+mouse_filter = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea" unique_id=300000002]
+shape = SubResource("CircleShape2D_eftrj")

@@ -63,6 +63,9 @@ public partial class TowerPlacementManager : Node
             return;
         }
 
+        if (TowerSelectionManager.Instance != null)
+            TowerSelectionManager.Instance.Deselect();
+
         CancelPlacement();
 
         _selectedTowerData = towerData;
