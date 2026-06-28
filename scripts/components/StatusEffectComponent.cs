@@ -5,6 +5,7 @@ public partial class StatusEffectComponent : Node
 {
     private Health _health;
     private Sprite2D _sprite;
+    private MovementComponent _movement;
     private readonly List<ActiveEffect> _activeEffects = new();
 
     private class ActiveEffect
@@ -18,6 +19,7 @@ public partial class StatusEffectComponent : Node
     {
         _health = GetParent().GetNode<Health>("Health");
         _sprite = GetParent().GetNode<Sprite2D>("Sprite2D");
+        _movement = GetParent().GetNode<MovementComponent>("MovementComponent");
     }
 
     public void ApplyEffect(StatusEffectData data)
@@ -25,6 +27,12 @@ public partial class StatusEffectComponent : Node
         if (data is PoisonEffectData poison)
         {
             ApplyPoison(poison);
+            return;
+        }
+
+        if (data is SlowEffectData slow)
+        {
+            ApplySlow(slow);
             return;
         }
     }
@@ -51,6 +59,27 @@ public partial class StatusEffectComponent : Node
         UpdateVisuals();
     }
 
+    private void ApplySlow(SlowEffectData slow)
+    {
+        foreach (var effect in _activeEffects)
+        {
+            if (effect.Data is SlowEffectData)
+            {
+                effect.RemainingTime = slow.Duration;
+                UpdateVisuals();
+                return;
+            }
+        }
+
+        _movement?.SetSpeedMultiplier(slow.SpeedMultiplier);
+        _activeEffects.Add(new ActiveEffect
+        {
+            Data = slow,
+            RemainingTime = slow.Duration,
+        });
+        UpdateVisuals();
+    }
+
     public override void _Process(double delta)
     {
         if (_activeEffects.Count == 0) return;
@@ -72,7 +101,12 @@ public partial class StatusEffectComponent : Node
             }
 
             if (effect.RemainingTime <= 0f && i < _activeEffects.Count)
+            {
+                if (effect.Data is SlowEffectData)
+                    _movement?.SetSpeedMultiplier(1f);
+
                 _activeEffects.RemoveAt(i);
+            }
         }
 
         UpdateVisuals();
@@ -80,6 +114,7 @@ public partial class StatusEffectComponent : Node
 
     public void ClearEffects()
     {
+        _movement?.SetSpeedMultiplier(1f);
         _activeEffects.Clear();
         UpdateVisuals();
     }
@@ -88,12 +123,24 @@ public partial class StatusEffectComponent : Node
     {
         if (_sprite == null) return;
 
-        bool hasActiveEffect = false;
         foreach (var e in _activeEffects)
         {
-            if (e.Data is PoisonEffectData) { hasActiveEffect = true; break; }
+            if (e.Data is SlowEffectData)
+            {
+                _sprite.Modulate = Colors.CornflowerBlue;
+                return;
+            }
         }
 
-        _sprite.Modulate = hasActiveEffect ? Colors.Green : Colors.White;
+        foreach (var e in _activeEffects)
+        {
+            if (e.Data is PoisonEffectData)
+            {
+                _sprite.Modulate = Colors.Green;
+                return;
+            }
+        }
+
+        _sprite.Modulate = Colors.White;
     }
 }

@@ -11,6 +11,7 @@ public partial class MovementComponent : Node
 
     private Curve2D _curve;
     private float _speed;
+    private float _speedMultiplier = 1f;
     private float _distanceTraveled;
     private float _pathLength;
 
@@ -26,6 +27,7 @@ public partial class MovementComponent : Node
         _speed = speed;
         _pathLength = curve.GetBakedLength();
         _distanceTraveled = 0f;
+        _speedMultiplier = 1f;
         GameManager.Log($"[Movement] Initialize — speed={speed}, pathLen={_pathLength}, parent={GetParent()?.Name}");
         if (GetParent() is Node2D parent)
             parent.GlobalPosition = _curve.SampleBaked(0f);
@@ -39,7 +41,7 @@ public partial class MovementComponent : Node
             return;
         }
 
-        _distanceTraveled += _speed * (float)delta;
+        _distanceTraveled += _speed * _speedMultiplier * (float)delta;
 
         if (_distanceTraveled >= _pathLength)
         {
@@ -52,5 +54,10 @@ public partial class MovementComponent : Node
             parent.GlobalPosition = _curve.SampleBaked(_distanceTraveled);
         else
             GameManager.Log($"[Movement] WARNING — parent not Node2D on {GetParent()?.GetClass()}");
+    }
+
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        _speedMultiplier = multiplier;
     }
 }

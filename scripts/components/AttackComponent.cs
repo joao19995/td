@@ -74,6 +74,22 @@ public partial class AttackComponent : Node
                 }
             };
         }
+        else if (_data.HasSlow)
+        {
+            projectile.OnHitEffect = (mainEnemy, hitPosition) =>
+            {
+                var effectComponent = mainEnemy.GetNode<StatusEffectComponent>("StatusEffectComponent");
+                if (effectComponent != null)
+                {
+                    var slowData = new SlowEffectData
+                    {
+                        Duration = _data.SlowDuration,
+                        SpeedMultiplier = _data.SlowMultiplier,
+                    };
+                    effectComponent.ApplyEffect(slowData);
+                }
+            };
+        }
 
         GetProjectilesContainer().CallDeferred(Node.MethodName.AddChild, projectile);
     }

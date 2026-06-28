@@ -17,6 +17,9 @@ public partial class TowerData : Resource
     [Export] public bool HasPoison { get; set; } = false;
     [Export] public float PoisonDamagePerTick { get; set; } = 2f;
     [Export] public float PoisonDuration { get; set; } = 4f;
+    [Export] public bool HasSlow { get; set; } = false;
+    [Export] public float SlowMultiplier { get; set; } = 0.5f;
+    [Export] public float SlowDuration { get; set; } = 2f;
     [Export] public Array<UpgradeData> UpgradePath { get; set; } = new();
     [Export] public float SellRefundRatio { get; set; } = 0.5f;
 }

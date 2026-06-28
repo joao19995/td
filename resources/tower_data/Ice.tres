@@ -18,5 +18,6 @@ Range = 48.0
 Cost = 175
 ProjectileScene = ExtResource("1_o66bj")
 Sprite = SubResource("CompressedTexture2D_o66bj")
+HasSlow = true
 UpgradePath = Array[ExtResource("2_od6i1")]([ExtResource("3_ice1"), ExtResource("4_ice2")])
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
