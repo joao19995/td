@@ -8,6 +8,7 @@ public partial class TowerSelectionManager : Node
     [Signal] public delegate void TowerDeselectedEventHandler();
 
     private Tower _selectedTower;
+    private RangeIndicator _rangeIndicator;
     public Tower SelectedTower => _selectedTower;
 
     public override void _EnterTree()
@@ -49,6 +50,10 @@ public partial class TowerSelectionManager : Node
         _selectedTower = tower;
         _selectedTower.Modulate = new Color(0.8f, 0.9f, 1, 1);
 
+        _rangeIndicator = new RangeIndicator();
+        _rangeIndicator.SetRange(tower.EffectiveRange);
+        _selectedTower.AddChild(_rangeIndicator);
+
         EmitSignal(SignalName.TowerSelected, tower);
     }
 
@@ -58,6 +63,12 @@ public partial class TowerSelectionManager : Node
 
         _selectedTower.Modulate = new Color(1, 1, 1, 1);
         _selectedTower = null;
+
+        if (_rangeIndicator != null)
+        {
+            _rangeIndicator.QueueFree();
+            _rangeIndicator = null;
+        }
 
         EmitSignal(SignalName.TowerDeselected);
     }

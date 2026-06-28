@@ -118,6 +118,11 @@ public partial class AttackComponent : Node
 
         var results = spaceState.IntersectShape(query);
 
+        var effect = new SplashEffect();
+        effect.Initialize(_data.SplashRadius);
+        effect.GlobalPosition = hitPosition;
+        GetProjectilesContainer().AddChild(effect);
+
         foreach (var result in results)
         {
             if (result["collider"].AsGodotObject() is Enemy surroundingEnemy)
