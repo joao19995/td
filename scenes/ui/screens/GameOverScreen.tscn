@@ -1,16 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b8cd02ncggui"]
 
-[ext_resource type="Script" path="res://scripts/ui/screens/GameOverScreen.cs" id="1_sc"]
+[ext_resource type="Script" uid="uid://b2oi2aw5ba4ol" path="res://scripts/ui/screens/GameOverScreen.cs" id="1_sc"]
 
-[node name="GameOverScreen" type="Control"]
+[node name="GameOverScreen" type="Control" unique_id=1028557688]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+process_mode = 3
+script = ExtResource("1_sc")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1723878930]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,27 +21,27 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1657389104]
 layout_mode = 0
-offset_left = 60
-offset_top = 40
-offset_right = 260
-offset_bottom = 160
+offset_left = 60.0
+offset_top = 40.0
+offset_right = 260.0
+offset_bottom = 160.0
 
-[node name="Title" type="Label" parent="VBox"]
+[node name="Title" type="Label" parent="VBox" unique_id=796576812]
 layout_mode = 2
 text = "GAME OVER"
 horizontal_alignment = 1
 
-[node name="WaveLabel" type="Label" parent="VBox"]
+[node name="WaveLabel" type="Label" parent="VBox" unique_id=670762372]
 layout_mode = 2
 text = "Wave: -"
 horizontal_alignment = 1
 
-[node name="RetryButton" type="Button" parent="VBox"]
+[node name="RetryButton" type="Button" parent="VBox" unique_id=970338250]
 layout_mode = 2
 text = "Retry"
 
-[node name="MenuButton" type="Button" parent="VBox"]
+[node name="MenuButton" type="Button" parent="VBox" unique_id=1832126485]
 layout_mode = 2
 text = "Menu"

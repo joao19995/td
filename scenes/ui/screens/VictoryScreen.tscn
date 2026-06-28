@@ -1,16 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://t7qqeaacgpkv"]
 
-[ext_resource type="Script" path="res://scripts/ui/screens/VictoryScreen.cs" id="1_sc"]
+[ext_resource type="Script" uid="uid://no6ua1csw0aw" path="res://scripts/ui/screens/VictoryScreen.cs" id="1_sc"]
 
-[node name="VictoryScreen" type="Control"]
+[node name="VictoryScreen" type="Control" unique_id=403430058]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+process_mode = 3
+script = ExtResource("1_sc")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1405803455]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,18 +21,18 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1260734587]
 layout_mode = 0
-offset_left = 60
-offset_top = 60
-offset_right = 260
-offset_bottom = 130
+offset_left = 60.0
+offset_top = 60.0
+offset_right = 260.0
+offset_bottom = 130.0
 
-[node name="Title" type="Label" parent="VBox"]
+[node name="Title" type="Label" parent="VBox" unique_id=456958582]
 layout_mode = 2
 text = "VICTORY!"
 horizontal_alignment = 1
 
-[node name="MenuButton" type="Button" parent="VBox"]
+[node name="MenuButton" type="Button" parent="VBox" unique_id=1451343308]
 layout_mode = 2
 text = "Menu"
