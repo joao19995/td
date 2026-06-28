@@ -9,6 +9,7 @@ public partial class Enemy : Area2D
     private Curve2D _pendingCurve;
     private bool _signalsConnected;
     private bool _returningToPool;
+    public bool IsDead { get; private set; }
 
     public override void _Ready()
     {
@@ -41,6 +42,7 @@ public partial class Enemy : Area2D
     public void Initialize(EnemyData data, Curve2D curve)
     {
         _returningToPool = false;
+        IsDead = false;
         _data = data;
         GD.Print($"[Enemy] Initialize — {data.EnemyName}, sigConnected={_signalsConnected}, hasParent={GetParent() != null}");
         ConnectSignals();
@@ -85,6 +87,7 @@ public partial class Enemy : Area2D
 
     private void OnDied()
     {
+        IsDead = true;
         GD.Print($"[Enemy] OnDied — {_data?.EnemyName}, returning={_returningToPool}");
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, _data.RewardGold);
         ReturnToPool();

@@ -57,7 +57,7 @@ public partial class TargetingComponent : Node
 
     private void CleanUpInvalidTargets()
     {
-        _enemiesInRange.RemoveAll(e => e == null || !IsInstanceValid(e));
+        _enemiesInRange.RemoveAll(e => e == null || !IsInstanceValid(e) || e.IsDead || !e.IsInsideTree());
     }
 
     private Enemy GetClosestEnemy()
