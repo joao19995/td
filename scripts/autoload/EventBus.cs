@@ -11,6 +11,7 @@ public partial class EventBus : Node
     [Signal] public delegate void MoneyChangedEventHandler(int currentMoney);
     [Signal] public delegate void LivesChangedEventHandler(int currentLives);
     [Signal] public delegate void AllWavesCompletedEventHandler();
+    [Signal] public delegate void AllLevelsCompletedEventHandler();
 
     public override void _EnterTree()
     {

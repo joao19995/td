@@ -20,13 +20,13 @@ public partial class PoolManager : Node
             var node = queue.Dequeue();
             if (node.GetParent() == this)
                 RemoveChild(node);
-            GD.Print($"[PoolManager] Reused {typeof(T).Name} from pool (size: {queue.Count})");
+            GameManager.Log($"[PoolManager] Reused {typeof(T).Name} from pool (size: {queue.Count})");
             return (T)node;
         }
 
         var instance = scene.Instantiate<T>();
         instance.SetMeta("_pool_key", key);
-        GD.Print($"[PoolManager] Instantiated new {typeof(T).Name}");
+        GameManager.Log($"[PoolManager] Instantiated new {typeof(T).Name}");
         return instance;
     }
 
@@ -34,13 +34,13 @@ public partial class PoolManager : Node
     {
         if (!IsInstanceValid(node))
         {
-            GD.Print($"[PoolManager] Return skipped — node invalid");
+            GameManager.Log($"[PoolManager] Return skipped — node invalid");
             return;
         }
 
         if (!node.HasMeta("_pool_key"))
         {
-            GD.Print($"[PoolManager] Return — no _pool_key, QueueFree fallback");
+            GameManager.Log($"[PoolManager] Return — no _pool_key, QueueFree fallback");
             node.QueueFree();
             return;
         }
@@ -55,7 +55,7 @@ public partial class PoolManager : Node
 
         if (node.GetParent() != null)
         {
-            GD.Print($"[PoolManager] Return — RemoveChild failed for {typeName}, QueueFree");
+            GameManager.Log($"[PoolManager] Return — RemoveChild failed for {typeName}, QueueFree");
             node.QueueFree();
             return;
         }
@@ -66,7 +66,7 @@ public partial class PoolManager : Node
             _pools[key] = new Queue<Node>();
 
         _pools[key].Enqueue(node);
-        GD.Print($"[PoolManager] Returned {typeName} to pool (size: {_pools[key].Count})");
+        GameManager.Log($"[PoolManager] Returned {typeName} to pool (size: {_pools[key].Count})");
     }
 
     private static void ResetNode(Node node)

@@ -26,7 +26,7 @@ public partial class MovementComponent : Node
         _speed = speed;
         _pathLength = curve.GetBakedLength();
         _distanceTraveled = 0f;
-        GD.Print($"[Movement] Initialize — speed={speed}, pathLen={_pathLength}, parent={GetParent()?.Name}");
+        GameManager.Log($"[Movement] Initialize — speed={speed}, pathLen={_pathLength}, parent={GetParent()?.Name}");
         if (GetParent() is Node2D parent)
             parent.GlobalPosition = _curve.SampleBaked(0f);
     }
@@ -35,7 +35,7 @@ public partial class MovementComponent : Node
     {
         if (_curve == null)
         {
-            GD.Print($"[Movement] WARNING — _curve is null on {GetParent()?.Name}");
+            GameManager.Log($"[Movement] WARNING — _curve is null on {GetParent()?.Name}");
             return;
         }
 
@@ -43,7 +43,7 @@ public partial class MovementComponent : Node
 
         if (_distanceTraveled >= _pathLength)
         {
-            GD.Print($"[Movement] ReachedEnd — dist={_distanceTraveled}, pathLen={_pathLength}");
+            GameManager.Log($"[Movement] ReachedEnd — dist={_distanceTraveled}, pathLen={_pathLength}");
             EmitSignal(SignalName.ReachedEnd);
             return;
         }
@@ -51,6 +51,6 @@ public partial class MovementComponent : Node
         if (GetParent() is Node2D parent)
             parent.GlobalPosition = _curve.SampleBaked(_distanceTraveled);
         else
-            GD.Print($"[Movement] WARNING — parent not Node2D on {GetParent()?.GetClass()}");
+            GameManager.Log($"[Movement] WARNING — parent not Node2D on {GetParent()?.GetClass()}");
     }
 }

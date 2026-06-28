@@ -27,6 +27,7 @@ public partial class HUD : CanvasLayer
 
     public override void _Ready()
     {
+        Visible = false;
         _livesLabel = GetNode<Label>("InfoBar/LivesLabel");
         _moneyLabel = GetNode<Label>("InfoBar/MoneyLabel");
         _waveLabel = GetNode<Label>("InfoBar/WaveLabel");
@@ -106,6 +107,7 @@ public partial class HUD : CanvasLayer
 
     public void SetActiveMap(TileMapLayer tileMap, EnemySpawner spawner)
     {
+        Visible = true;
         _activeTileMap = tileMap;
         _activeSpawner = spawner;
 
@@ -147,7 +149,7 @@ public partial class HUD : CanvasLayer
         if (LevelManager.Instance != null && LevelManager.Instance.HasNextLevel)
             _nextLevelButton.Visible = true;
         else
-            GD.Print("HUD: All waves completed — no further levels.");
+            EventBus.Instance.EmitSignal(EventBus.SignalName.AllLevelsCompleted);
     }
 
     private void OnNextLevelPressed()

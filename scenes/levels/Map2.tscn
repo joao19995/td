@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://o0bebkrhcpph"]
 
-[ext_resource type="Script" uid="uid://ci3mhlnjidl3t" path="res://scripts/levels/Map1.cs" id="1_wcn7t"]
+[ext_resource type="Script" path="res://scripts/levels/Map2.cs" id="1_wcn7t"]
 [ext_resource type="Texture2D" uid="uid://clixq0pne5fk2" path="res://assets/sprites/environment/spr_tile_set_stone.png" id="2_bhvs7"]
 [ext_resource type="Texture2D" uid="uid://d32opa7a70yts" path="res://assets/sprites/environment/spr_tile_set_ground.png" id="3_deudi"]
 [ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/spr_grass_01.png" id="4_n2ymw"]

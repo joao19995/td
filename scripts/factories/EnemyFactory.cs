@@ -10,7 +10,7 @@ public static class EnemyFactory
             : enemyScene.Instantiate<Enemy>();
 
         enemy.Initialize(data, path);
-        GD.Print($"[EnemyFactory] Created — {data.EnemyName}, fromPool={fromPool}");
+        GameManager.Log($"[EnemyFactory] Created — {data.EnemyName}, fromPool={fromPool}");
         return enemy;
     }
 }

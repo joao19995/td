@@ -6,6 +6,8 @@ public partial class GameManager : Node
 
     [Export] public int StartingLives = 20;
 
+    [Export] private bool _debugLogging = false;
+
     private int _currentLives;
     public int CurrentLives => _currentLives;
 
@@ -29,6 +31,13 @@ public partial class GameManager : Node
         {
             TriggerGameOver();
         }
+    }
+
+    /// <summary>Conditional debug log — only prints when DebugLogging is enabled.</summary>
+    public static void Log(string message)
+    {
+        if (Instance != null && Instance._debugLogging)
+            GD.Print(message);
     }
 
     private void TriggerGameOver()

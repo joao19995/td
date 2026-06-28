@@ -18,6 +18,12 @@ public partial class LevelManager : Node
     public Node CurrentLevelNode { get; private set; }
 
     public int CurrentLevelIndex => _currentLevelIndex;
+    public Node LevelContainer => _levelContainer;
+
+    public void SetContainer(Node container)
+    {
+        _levelContainer = container;
+    }
     public LevelData CurrentLevel =>
         Levels != null && _currentLevelIndex >= 0 && _currentLevelIndex < Levels.Count
             ? Levels[_currentLevelIndex]
@@ -50,8 +56,10 @@ public partial class LevelManager : Node
         }
 
         _currentLevelIndex = index;
-        _levelContainer = container;
-        SceneManager.Instance.LoadLevel(Levels[index].ScenePath, container);
+        if (container != null)
+            _levelContainer = container;
+        GD.Print($"[LevelManager] LoadLevel — idx={index}, scene={Levels[index].ScenePath}, container={( _levelContainer?.Name ?? "null")}");
+        SceneManager.Instance.LoadLevel(Levels[index].ScenePath, _levelContainer);
     }
 
     /// <summary>Loads the level that follows the current one.</summary>
@@ -81,7 +89,7 @@ public partial class LevelManager : Node
     if (levelNode is not BaseLevel)
         GD.PushWarning("LevelManager: Loaded level does not extend BaseLevel.");
 
-    // Defensive: re-applies in case the viewport changed between levels.
-    CameraManager.Instance.Configure();
+    // Pass per‑level world size to the camera, falling back to the default.
+    CameraManager.Instance.Configure(CurrentLevel?.WorldSize);
 }
 }

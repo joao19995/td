@@ -44,7 +44,7 @@ public partial class Enemy : Area2D
         _returningToPool = false;
         IsDead = false;
         _data = data;
-        GD.Print($"[Enemy] Initialize — {data.EnemyName}, sigConnected={_signalsConnected}, hasParent={GetParent() != null}");
+        GameManager.Log($"[Enemy] Initialize — {data.EnemyName}, sigConnected={_signalsConnected}, hasParent={GetParent() != null}");
         ConnectSignals();
 
         if (_movement != null)
@@ -80,7 +80,7 @@ public partial class Enemy : Area2D
 
     private void OnReachedEnd()
     {
-        GD.Print($"[Enemy] OnReachedEnd — {_data?.EnemyName}, returning={_returningToPool}");
+        GameManager.Log($"[Enemy] OnReachedEnd — {_data?.EnemyName}, returning={_returningToPool}");
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, _data.DamageToPlayer);
         ReturnToPool();
     }
@@ -88,7 +88,7 @@ public partial class Enemy : Area2D
     private void OnDied()
     {
         IsDead = true;
-        GD.Print($"[Enemy] OnDied — {_data?.EnemyName}, returning={_returningToPool}");
+        GameManager.Log($"[Enemy] OnDied — {_data?.EnemyName}, returning={_returningToPool}");
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, _data.RewardGold);
         ReturnToPool();
     }
@@ -97,20 +97,20 @@ public partial class Enemy : Area2D
     {
         if (_returningToPool)
         {
-            GD.Print($"[Enemy] ReturnToPool blocked — already returning");
+            GameManager.Log($"[Enemy] ReturnToPool blocked — already returning");
             return;
         }
         _returningToPool = true;
         _statusEffects?.ClearEffects();
         DisconnectSignals();
-        GD.Print($"[Enemy] ReturnToPool — deferred");
+        GameManager.Log($"[Enemy] ReturnToPool — deferred");
         CallDeferred(nameof(DeferredReturnToPool));
     }
 
     private void DeferredReturnToPool()
     {
         _returningToPool = false;
-        GD.Print($"[Enemy] DeferredReturnToPool — poolAvailable={PoolManager.Instance != null}");
+        GameManager.Log($"[Enemy] DeferredReturnToPool — poolAvailable={PoolManager.Instance != null}");
         if (PoolManager.Instance != null)
             PoolManager.Instance.Return(this);
         else

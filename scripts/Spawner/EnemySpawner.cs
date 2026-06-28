@@ -22,6 +22,13 @@ public partial class EnemySpawner : Node2D
         _waveInProgress = true;
         var wave = Waves[_currentWaveIndex];
 
+        if (wave.Enemies == null || wave.Enemies.Count == 0)
+        {
+            GD.PrintErr($"EnemySpawner: Wave {_currentWaveIndex} has no enemies defined.");
+            _waveInProgress = false;
+            return;
+        }
+
         for (int i = 0; i < wave.EnemyCount; i++)
         {
             SpawnEnemy(wave.Enemies[i % wave.Enemies.Count]);

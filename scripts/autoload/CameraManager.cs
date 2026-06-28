@@ -30,22 +30,25 @@ public partial class CameraManager : Camera2D
     /// <summary>
     /// Centers the camera on the world and sets the zoom so the world exactly
     /// fills the viewport with no visible gray border, regardless of viewport size.
+    /// When <paramref name="worldSize"/> is provided it overrides <see cref="WorldSize"/>
+    /// for this call, allowing per‑level world sizes via <see cref="LevelData.WorldSize"/>.
     /// Call again if the viewport is resized at runtime.
     /// </summary>
-    public void Configure()
+    public void Configure(Vector2? worldSize = null)
     {
+        var size = worldSize ?? WorldSize;
         var viewportSize = GetViewport().GetVisibleRect().Size;
 
-        float zoomX = viewportSize.X / WorldSize.X;
-        float zoomY = viewportSize.Y / WorldSize.Y;
+        float zoomX = viewportSize.X / size.X;
+        float zoomY = viewportSize.Y / size.Y;
         float coverZoom = Mathf.Max(zoomX, zoomY);
 
         Zoom = new Vector2(coverZoom, coverZoom);
-        Position = WorldSize / 2f;
+        Position = size / 2f;
 
         LimitLeft = 0;
         LimitTop = 0;
-        LimitRight = (int)WorldSize.X;
-        LimitBottom = (int)WorldSize.Y;
+        LimitRight = (int)size.X;
+        LimitBottom = (int)size.Y;
     }
 }

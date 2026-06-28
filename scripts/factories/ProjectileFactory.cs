@@ -11,7 +11,7 @@ public static class ProjectileFactory
 
         projectile.GlobalPosition = origin;
         projectile.Initialize(target, damage);
-        GD.Print($"[ProjectileFactory] Created — fromPool={fromPool}, pos={origin}");
+        GameManager.Log($"[ProjectileFactory] Created — fromPool={fromPool}, pos={origin}");
         return projectile;
     }
 }

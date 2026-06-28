@@ -41,7 +41,7 @@ public partial class AttackComponent : Node
         }
 
         var towerPos = GetParent<Node2D>().GlobalPosition;
-        GD.Print($"[AttackComponent] Fire — tower={_data.TowerName}, target={target.Name}, pos={towerPos}");
+        GameManager.Log($"[AttackComponent] Fire — tower={_data.TowerName}, target={target.Name}, pos={towerPos}");
         var projectile = ProjectileFactory.Create(_data.ProjectileScene, _data.Damage, target, towerPos);
 
         if (_data.HasSplash)
