@@ -65,9 +65,18 @@ public partial class AttackComponent : Node
             };
         }
 
-        LevelManager.Instance.CurrentLevelNode.CallDeferred(Node.MethodName.AddChild, projectile);
+        GetProjectilesContainer().CallDeferred(Node.MethodName.AddChild, projectile);
     }
 
+
+    private Node GetProjectilesContainer()
+    {
+        if (LevelManager.Instance.CurrentLevelNode is BaseLevel level && level.ProjectilesContainer != null)
+            return level.ProjectilesContainer;
+
+        GD.PushWarning("AttackComponent: ProjectilesContainer not found, falling back to level root.");
+        return LevelManager.Instance.CurrentLevelNode;
+    }
 
     private void TriggerSplashDamage(Enemy mainEnemy, Vector2 hitPosition)
     {

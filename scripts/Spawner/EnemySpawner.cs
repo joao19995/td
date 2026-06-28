@@ -34,6 +34,15 @@ public partial class EnemySpawner : Node2D
             EventBus.Instance?.EmitSignal(EventBus.SignalName.AllWavesCompleted);
     }
 
+    private Node GetEnemiesContainer()
+    {
+        if (LevelManager.Instance.CurrentLevelNode is BaseLevel level && level.EnemiesContainer != null)
+            return level.EnemiesContainer;
+
+        GD.PushWarning("EnemySpawner: EnemiesContainer not found, falling back to level root.");
+        return LevelManager.Instance.CurrentLevelNode;
+    }
+
     private void SpawnEnemy(EnemyData enemyData)
     {
         if (EnemyPath == null || GenericEnemyScene == null || enemyData == null)
@@ -43,6 +52,6 @@ public partial class EnemySpawner : Node2D
         }
 
         var enemy = EnemyFactory.Create(GenericEnemyScene, enemyData, EnemyPath.Curve);
-        LevelManager.Instance.CurrentLevelNode.CallDeferred(Node.MethodName.AddChild, enemy);
+        GetEnemiesContainer().CallDeferred(Node.MethodName.AddChild, enemy);
     }
 }

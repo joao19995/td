@@ -89,3 +89,7 @@ curve = SubResource("Curve2D_jypjn")
 EnemyPath = NodePath("../EnemyPath")
 GenericEnemyScene = ExtResource("6_kl8kw")
 Waves = Array[Object]([ExtResource("7_bfmaw"), ExtResource("8_t4tnq"), ExtResource("9_s6oa0"), ExtResource("7_bfmaw")])
+
+[node name="TowersContainer" type="Node2D" parent="."]
+[node name="EnemiesContainer" type="Node2D" parent="."]
+[node name="ProjectilesContainer" type="Node2D" parent="."]

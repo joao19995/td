@@ -74,7 +74,7 @@ public partial class TowerPlacementManager : Node
         if (towerData.Sprite != null)
             _previewInstance.GetNode<Sprite2D>("Sprite2D").Texture = towerData.Sprite;
 
-        LevelManager.Instance.CurrentLevelNode.AddChild(_previewInstance);
+        GetTowersContainer().AddChild(_previewInstance);
     }
 
     private bool IsCellBuildable(Vector2I cell)
@@ -103,7 +103,7 @@ public partial class TowerPlacementManager : Node
 
         var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
         tower.TreeExited += () => _occupiedCells.Remove(cell);
-        LevelManager.Instance.CurrentLevelNode.AddChild(tower);
+        GetTowersContainer().AddChild(tower);
 
         CancelPlacement();
     }
@@ -118,5 +118,14 @@ public partial class TowerPlacementManager : Node
 
         _selectedTowerData = null;
         _activeTileMap = null;
+    }
+
+    private Node GetTowersContainer()
+    {
+        if (LevelManager.Instance.CurrentLevelNode is BaseLevel level && level.TowersContainer != null)
+            return level.TowersContainer;
+
+        GD.PushWarning("TowerPlacementManager: TowersContainer not found, falling back to level root.");
+        return LevelManager.Instance.CurrentLevelNode;
     }
 }
