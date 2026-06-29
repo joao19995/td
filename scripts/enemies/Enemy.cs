@@ -100,9 +100,9 @@ public partial class Enemy : Area2D
         if (container == null) return;
 
         var popup = new DamagePopup();
-        popup.ShowDamage(amount, Colors.White);
         popup.GlobalPosition = GlobalPosition;
         container.AddChild(popup);
+        popup.ShowDamage(amount, Colors.White);
     }
 
     private void OnReachedEnd()

@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/spr_grass_01.png" id="3_cn17j"]
 [ext_resource type="PackedScene" uid="uid://23e8vgiph2i4" path="res://scenes/spawner/enemy_spawner.tscn" id="4_cn17j"]
 [ext_resource type="PackedScene" uid="uid://ddvqpine7r5s4" path="res://scenes/enemies/Enemy.tscn" id="5_yxgn6"]
+[ext_resource type="Resource" uid="uid://b6tf2gi72om33" path="res://resources/wave_data/Wave1.tres" id="8_v2sca"]
 [ext_resource type="Resource" uid="uid://cfei48hjeoj3l" path="res://resources/wave_data/Wave3.tres" id="9_v2sca"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yxgn6"]
@@ -85,7 +86,7 @@ curve = SubResource("Curve2D_jypjn")
 [node name="EnemySpawner" parent="." unique_id=1524082736 node_paths=PackedStringArray("EnemyPath") instance=ExtResource("4_cn17j")]
 EnemyPath = NodePath("../EnemyPath")
 GenericEnemyScene = ExtResource("5_yxgn6")
-Waves = Array[Object]([ExtResource("9_v2sca"), ExtResource("9_v2sca")])
+Waves = Array[Object]([ExtResource("8_v2sca"), ExtResource("9_v2sca")])
 
 [node name="TowersContainer" type="Node2D" parent="." unique_id=604600216]
 

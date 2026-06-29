@@ -27,7 +27,7 @@ public partial class HealthBar : Node2D
 
     public void Reset()
     {
-        _current = 1f;
+        _current = 0f;
         _max = 1f;
         QueueRedraw();
     }

@@ -68,7 +68,6 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.MoneyChanged -= OnMoneyChanged;
         EventBus.Instance.GameOver -= OnGameOver;
         EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
-        EventBus.Instance.MoneyChanged -= OnMoneyChanged;
 
         if (TowerSelectionManager.Instance != null)
         {
@@ -140,12 +139,6 @@ public partial class HUD : CanvasLayer
             btn.Disabled = false;
 
         UpdateWaveLabel();
-    }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed("test_next_wave"))
-            OnNextWavePressed();
     }
 
     private void OnNextWavePressed()
@@ -245,6 +238,5 @@ public partial class HUD : CanvasLayer
         _nextLevelButton.Visible = false;
         foreach (var btn in _allTowerButtons)
             btn.Disabled = true;
-        GD.Print("GAME OVER");
     }
 }

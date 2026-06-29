@@ -6,7 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_eftrj"]
 radius = 3.1622777
 
-[node name="Projectile2" type="Area2D" unique_id=352224773]
+[node name="Projectile" type="Area2D" unique_id=352224773]
 collision_layer = 0
 script = ExtResource("1_bvmci")
 

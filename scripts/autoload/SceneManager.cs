@@ -29,7 +29,6 @@ public partial class SceneManager : Node
     /// </summary>
     public void LoadLevel(string scenePath, Node container = null)
     {
-        GD.Print($"[SceneManager] LoadLevel — path={scenePath}, container={(container?.Name ?? "null")}, _isLoading={_isLoading}");
         if (_isLoading)
         {
             GD.PushWarning("SceneManager: LoadLevel called while a load is already in progress.");
@@ -39,10 +38,7 @@ public partial class SceneManager : Node
         _isLoading = true;
 
         if (_currentLevel != null)
-        {
-            GD.Print($"[SceneManager] Freeing previous _currentLevel={_currentLevel.Name}");
             _currentLevel.QueueFree();
-        }
         _currentLevel = null;
 
         var packedScene = GD.Load<PackedScene>(scenePath);
@@ -55,7 +51,6 @@ public partial class SceneManager : Node
 
         _currentLevel = packedScene.Instantiate();
         var parent = container ?? GetTree().Root;
-        GD.Print($"[SceneManager] Adding {_currentLevel.Name} to parent={parent.Name}");
         parent.AddChild(_currentLevel);
 
         _isLoading = false;

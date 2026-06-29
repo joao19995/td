@@ -54,8 +54,9 @@ public partial class Tower : Node2D
         {
             if (_data == null) return 0f;
             float bonus = 0f;
-            for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
-                bonus += _data.UpgradePath[i].DamageBonus;
+            if (_data.UpgradePath != null)
+                for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
+                    bonus += _data.UpgradePath[i].DamageBonus;
             return _data.Damage + bonus;
         }
     }
@@ -66,8 +67,9 @@ public partial class Tower : Node2D
         {
             if (_data == null) return 0f;
             float bonus = 0f;
-            for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
-                bonus += _data.UpgradePath[i].FireRateBonus;
+            if (_data.UpgradePath != null)
+                for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
+                    bonus += _data.UpgradePath[i].FireRateBonus;
             return _data.FireRate + bonus;
         }
     }
@@ -78,8 +80,9 @@ public partial class Tower : Node2D
         {
             if (_data == null) return 0f;
             float bonus = 0f;
-            for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
-                bonus += _data.UpgradePath[i].RangeBonus;
+            if (_data.UpgradePath != null)
+                for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
+                    bonus += _data.UpgradePath[i].RangeBonus;
             return _data.Range + bonus;
         }
     }
@@ -92,7 +95,8 @@ public partial class Tower : Node2D
     {
         var detectionArea = GetNode<Area2D>("DetectionArea");
         var shape = detectionArea.GetNode<CollisionShape2D>("CollisionShape2D");
-        var circle = (CircleShape2D)((CircleShape2D)shape.Shape).Duplicate();
+        var currentShape = shape.Shape as CircleShape2D;
+        var circle = currentShape != null ? (CircleShape2D)currentShape.Duplicate() : new CircleShape2D();
         circle.Radius = EffectiveRange;
         shape.Shape = circle;
 

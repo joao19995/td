@@ -6,4 +6,4 @@
 [resource]
 script = ExtResource("1_vot48")
 Enemies = Array[Object]([ExtResource("1_etjb1")])
-SpawnInterval = 0.1
+SpawnInterval = 1.0

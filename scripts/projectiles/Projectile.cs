@@ -51,7 +51,6 @@ public partial class Projectile : Area2D
 
     protected virtual void OnHitTarget(Enemy mainEnemy)
     {
-        GD.Print($"[Projectile] OnHitTarget — dmg={Damage}, pos={mainEnemy.GlobalPosition}");
         SetPhysicsProcess(false);
         Visible = false;
         mainEnemy.TakeDamage(Damage);

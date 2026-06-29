@@ -58,7 +58,6 @@ public partial class LevelManager : Node
         _currentLevelIndex = index;
         if (container != null)
             _levelContainer = container;
-        GD.Print($"[LevelManager] LoadLevel — idx={index}, scene={Levels[index].ScenePath}, container={( _levelContainer?.Name ?? "null")}");
         SceneManager.Instance.LoadLevel(Levels[index].ScenePath, _levelContainer);
     }
 
