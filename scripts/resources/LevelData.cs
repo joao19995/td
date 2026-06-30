@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 [GlobalClass]
 public partial class LevelData : Resource
@@ -12,4 +13,6 @@ public partial class LevelData : Resource
 
     // -1 means "use the global default set on the manager"
     [Export] public int StartingLives { get; set; } = -1;
+
+    [Export] public Array<WaveData> Waves { get; set; } = new();
 }

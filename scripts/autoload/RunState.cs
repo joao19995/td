@@ -8,7 +8,7 @@ public partial class RunState : Node
 
     public Godot.Collections.Array<string> SelectedTowerIds { get; private set; } = new();
 
-    public bool[] _selectedTowerFlags; // set by LoadoutScreen before StartRun
+    public bool[] _selectedTowerFlags;
 
     public int FightsCompleted { get; private set; } = 0;
     public bool IsBossFight { get; private set; } = false;
@@ -21,7 +21,10 @@ public partial class RunState : Node
     public float MetaDamageBonusPercent { get; private set; } = 0f;
     public int StartingGoldBonus { get; private set; } = 0;
 
+    public float TrinketDamageBonusPercent { get; set; } = 0f;
+
     private Godot.Collections.Dictionary<string, int> _towerLevels = new();
+    private Godot.Collections.Dictionary<string, string> _equippedItems = new();
 
     public override void _EnterTree()
     {
@@ -31,6 +34,7 @@ public partial class RunState : Node
     public void StartRun(int gold, int lives, Godot.Collections.Array<string> selectedTowerIds)
     {
         _towerLevels.Clear();
+        _equippedItems.Clear();
         SelectedTowerIds = selectedTowerIds;
         IsRunActive = true;
         FightsCompleted = 0;
@@ -39,6 +43,7 @@ public partial class RunState : Node
         ShopDamageBonusPercent = 0f;
         ShopFireRateBonusPercent = 0f;
         ShopRangeBonusPercent = 0f;
+        TrinketDamageBonusPercent = 0f;
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("global_damage");
         MetaDamageBonusPercent = damageLevel * 0.05f;
@@ -70,12 +75,14 @@ public partial class RunState : Node
         IsRunActive = false;
         SaveManager.Instance.AddMetaTokens(SaveManager.Instance.MetaTokensPerRun);
         _towerLevels.Clear();
+        _equippedItems.Clear();
         SelectedTowerIds.Clear();
         FightsCompleted = 0;
         IsBossFight = false;
         IsMiniboss = false;
         MetaDamageBonusPercent = 0f;
         StartingGoldBonus = 0;
+        TrinketDamageBonusPercent = 0f;
     }
 
     public int GetTowerLevel(string towerId)
@@ -86,5 +93,24 @@ public partial class RunState : Node
     public void SetTowerLevel(string towerId, int level)
     {
         _towerLevels[towerId] = level;
+    }
+
+    public string GetEquippedItem(string towerId)
+    {
+        return _equippedItems.ContainsKey(towerId) ? _equippedItems[towerId] : null;
+    }
+
+    public void SetEquippedItem(string towerId, string equipId)
+    {
+        _equippedItems[towerId] = equipId;
+    }
+
+    public void ApplyTrinket(TrinketData trinket)
+    {
+        TrinketDamageBonusPercent += trinket.DamagePercentBonus;
+        if (trinket.HealAmount > 0)
+            GameManager.Instance.Heal(trinket.HealAmount);
+        if (trinket.GoldAmount > 0)
+            EconomyManager.Instance.AddMoney(trinket.GoldAmount);
     }
 }

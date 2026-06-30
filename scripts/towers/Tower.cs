@@ -13,6 +13,9 @@ public partial class Tower : Node2D
     public int CurrentUpgradeLevel => _currentUpgradeLevel;
     public int MaxUpgradeLevel => _data?.UpgradePath?.Count ?? 0;
 
+    private string _equipId;
+    private EquipData _equipData;
+
     public override void _Ready()
     {
         _targeting = GetNode<TargetingComponent>("TargetingComponent");
@@ -50,6 +53,10 @@ public partial class Tower : Node2D
         _currentUpgradeLevel = RunState.Instance?.IsRunActive == true
             ? RunState.Instance.GetTowerLevel(data.Id)
             : 0;
+        _equipId = RunState.Instance?.GetEquippedItem(data.Id);
+        _equipData = !string.IsNullOrEmpty(_equipId)
+            ? GD.Load<EquipData>($"res://resources/equip_data/{_equipId}.tres")
+            : null;
 
         if (IsInsideTree())
             ApplyData();
@@ -77,7 +84,9 @@ public partial class Tower : Node2D
             float synergyPercent = SynergyManager.Instance?.GetDamageBonus(_data.Id) ?? 0f;
             float shopPercent = RunState.Instance?.ShopDamageBonusPercent ?? 0f;
             float metaPercent = RunState.Instance?.MetaDamageBonusPercent ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent) * (1f + metaPercent);
+            float trinketPercent = RunState.Instance?.TrinketDamageBonusPercent ?? 0f;
+            float equipPercent = GetEquipDamagePercent();
+            return baseWithUpgrade * (1f + synergyPercent + equipPercent) * (1f + shopPercent) * (1f + metaPercent) * (1f + trinketPercent);
         }
     }
 
@@ -93,7 +102,8 @@ public partial class Tower : Node2D
             float baseWithUpgrade = _data.FireRate + bonus;
             float synergyPercent = SynergyManager.Instance?.GetFireRateBonus(_data.Id) ?? 0f;
             float shopPercent = RunState.Instance?.ShopFireRateBonusPercent ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent);
+            float equipPercent = GetEquipFireRatePercent();
+            return baseWithUpgrade * (1f + synergyPercent + equipPercent) * (1f + shopPercent);
         }
     }
 
@@ -109,9 +119,14 @@ public partial class Tower : Node2D
             float baseWithUpgrade = _data.Range + bonus;
             float synergyPercent = SynergyManager.Instance?.GetRangeBonus(_data.Id) ?? 0f;
             float shopPercent = RunState.Instance?.ShopRangeBonusPercent ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent);
+            float equipPercent = GetEquipRangePercent();
+            return baseWithUpgrade * (1f + synergyPercent + equipPercent) * (1f + shopPercent);
         }
     }
+
+    private float GetEquipDamagePercent() => _equipData?.DamagePercentBonus ?? 0f;
+    private float GetEquipFireRatePercent() => _equipData?.FireRatePercentBonus ?? 0f;
+    private float GetEquipRangePercent() => _equipData?.RangePercentBonus ?? 0f;
 
     public int SellValue => _data != null
         ? Mathf.RoundToInt(_data.Cost * _data.SellRefundRatio)

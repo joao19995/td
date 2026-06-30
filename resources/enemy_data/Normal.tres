@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_a5ocf")
 Id = "enemy_normal"
+EnemyName = "Normal"
 MaxHealth = 100.0
 MoveSpeed = 24.0
 RewardGold = 10

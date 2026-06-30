@@ -26,6 +26,8 @@ public partial class HUD : CanvasLayer
 
     private VBoxContainer _towerActionPanel;
     private Label _towerNameLabel;
+    private Label _statsLabel;
+    private Label _equipLabel;
     private Button _upgradeButton;
     private Button _sellButton;
     private Label _synergyLabel;
@@ -51,6 +53,8 @@ public partial class HUD : CanvasLayer
 
         _towerActionPanel = GetNode<VBoxContainer>("TowerActionPanel");
         _towerNameLabel = GetNode<Label>("TowerActionPanel/TowerNameLabel");
+        _statsLabel = GetNode<Label>("TowerActionPanel/StatsLabel");
+        _equipLabel = GetNode<Label>("TowerActionPanel/EquipLabel");
         _upgradeButton = GetNode<Button>("TowerActionPanel/UpgradeButton");
         _sellButton = GetNode<Button>("TowerActionPanel/SellButton");
 
@@ -227,7 +231,13 @@ public partial class HUD : CanvasLayer
     private void OnTowerSelected(Tower tower)
     {
         _towerNameLabel.Text = $"{tower.Data.TowerName} (Lv.{tower.CurrentUpgradeLevel + 1})";
+        _statsLabel.Text = $"DMG:{tower.EffectiveDamage:F1} SPD:{tower.EffectiveFireRate:F1} RNG:{tower.EffectiveRange:F0}";
         _sellButton.Text = $"Sell ({tower.SellValue}g)";
+
+        string equipId = RunState.Instance?.GetEquippedItem(tower.Data.Id);
+        _equipLabel.Text = !string.IsNullOrEmpty(equipId)
+            ? $"Equip: {equipId.Replace("_", " ").ToUpper()}"
+            : "";
 
         if (tower.CurrentUpgradeLevel >= tower.MaxUpgradeLevel)
         {

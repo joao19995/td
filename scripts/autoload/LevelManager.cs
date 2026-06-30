@@ -68,6 +68,25 @@ public partial class LevelManager : Node
         SceneManager.Instance.LoadLevel(Levels[index].ScenePath, _levelContainer);
     }
 
+    private int _pendingLevelIndex = -1;
+    public LevelData PendingLevelData { get; private set; }
+
+    public LevelData PickRandomLevel()
+    {
+        if (Levels == null || Levels.Count == 0) return null;
+        _pendingLevelIndex = (int)(GD.Randi() % Levels.Count);
+        PendingLevelData = Levels[_pendingLevelIndex];
+        return PendingLevelData;
+    }
+
+    public void LoadPendingLevel()
+    {
+        if (_pendingLevelIndex < 0) return;
+        LoadLevel(_pendingLevelIndex, _levelContainer);
+        _pendingLevelIndex = -1;
+        PendingLevelData = null;
+    }
+
     /// <summary>Loads the level that follows the current one.</summary>
     public void LoadNextLevel()
     {

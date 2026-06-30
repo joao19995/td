@@ -72,6 +72,7 @@ public partial class LoadoutScreen : CanvasLayer
         }
 
         RunState.Instance.StartRun(EconomyManager.Instance.StartingMoney, 20, ids);
-        LevelManager.Instance.LoadRandomLevel();
+        LevelManager.Instance.PickRandomLevel();
+        UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
     }
 }

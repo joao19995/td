@@ -71,6 +71,10 @@ public partial class FightCompleteScreen : Control
                 ShowOutcome("Next: SHOP");
                 break;
 
+            case "Treasure":
+                ShowOutcome("TREASURE!");
+                break;
+
             case "Heal":
                 GameManager.Instance.Heal(SlotManager.Instance.HealAmount);
                 _livesLabel.Text = $"Lives: {GameManager.Instance.CurrentLives}";
@@ -121,13 +125,20 @@ public partial class FightCompleteScreen : Control
     {
         UIManager.Instance.PopScreen();
 
-        if (_pendingOutcome == "Shop")
+        switch (_pendingOutcome)
         {
-            UIManager.Instance.PushScreen(UIManager.Instance.ShopData);
-        }
-        else
-        {
-            LevelManager.Instance.LoadRandomLevel();
+            case "Shop":
+                UIManager.Instance.PushScreen(UIManager.Instance.ShopData);
+                break;
+
+            case "Treasure":
+                UIManager.Instance.PushScreen(UIManager.Instance.TrinketChoiceData);
+                break;
+
+            default:
+                LevelManager.Instance.PickRandomLevel();
+                UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
+                break;
         }
     }
 

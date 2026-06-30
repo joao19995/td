@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UIScreenData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/UIScreenData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "briefing"
+ScenePath = "res://scenes/ui/briefing/BriefingScreen.tscn"
+PauseGame = true

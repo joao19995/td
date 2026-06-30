@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TrinketData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "guardian_angel"
+Name = "Guardian Angel"
+Description = "Recupera 5 vidas"
+DamagePercentBonus = 0.0
+HealAmount = 5
+GoldAmount = 0

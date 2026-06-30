@@ -2,8 +2,12 @@
 
 [ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/spr_grass_01.png" id="1_eo1xm"]
 [ext_resource type="Script" uid="uid://cskmyplrhc7o6" path="res://scripts/resources/LevelData.cs" id="1_xjr6e"]
+[ext_resource type="Resource" uid="uid://b6tf2gi72om33" path="res://resources/wave_data/Wave1.tres" id="2_w1"]
+[ext_resource type="Resource" uid="uid://cfei48hjeoj3l" path="res://resources/wave_data/Wave3.tres" id="3_w3"]
 
 [resource]
 script = ExtResource("1_xjr6e")
+LevelName = "Map 1"
 ScenePath = "res://scenes/levels/Map1.tscn"
 PreviewTexture = ExtResource("1_eo1xm")
+Waves = Array[Object]([ExtResource("2_w1"), ExtResource("3_w3")])
