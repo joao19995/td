@@ -18,6 +18,9 @@ public partial class RunState : Node
     public float ShopFireRateBonusPercent { get; set; } = 0f;
     public float ShopRangeBonusPercent { get; set; } = 0f;
 
+    public float MetaDamageBonusPercent { get; private set; } = 0f;
+    public int StartingGoldBonus { get; private set; } = 0;
+
     private Godot.Collections.Dictionary<string, int> _towerLevels = new();
 
     public override void _EnterTree()
@@ -36,7 +39,13 @@ public partial class RunState : Node
         ShopDamageBonusPercent = 0f;
         ShopFireRateBonusPercent = 0f;
         ShopRangeBonusPercent = 0f;
-        EconomyManager.Instance.SetMoney(gold);
+
+        int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("global_damage");
+        MetaDamageBonusPercent = damageLevel * 0.05f;
+        int goldLevel = SaveManager.Instance.GetMetaUpgradeLevel("starting_gold");
+        StartingGoldBonus = goldLevel * 50;
+
+        EconomyManager.Instance.SetMoney(gold + StartingGoldBonus);
         GameManager.Instance.SetLives(lives);
     }
 
@@ -65,6 +74,8 @@ public partial class RunState : Node
         FightsCompleted = 0;
         IsBossFight = false;
         IsMiniboss = false;
+        MetaDamageBonusPercent = 0f;
+        StartingGoldBonus = 0;
     }
 
     public int GetTowerLevel(string towerId)

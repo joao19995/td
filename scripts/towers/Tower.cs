@@ -76,7 +76,8 @@ public partial class Tower : Node2D
             float baseWithUpgrade = _data.Damage + bonus;
             float synergyPercent = SynergyManager.Instance?.GetDamageBonus(_data.Id) ?? 0f;
             float shopPercent = RunState.Instance?.ShopDamageBonusPercent ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent);
+            float metaPercent = RunState.Instance?.MetaDamageBonusPercent ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent) * (1f + metaPercent);
         }
     }
 

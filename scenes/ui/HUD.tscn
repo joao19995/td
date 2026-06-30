@@ -37,8 +37,6 @@ offset_left = 2.0
 offset_top = 28.0
 offset_right = 200.0
 offset_bottom = 42.0
-text = ""
-horizontal_alignment = 0
 
 [node name="TowerBar" type="HBoxContainer" parent="." unique_id=1505268999]
 anchors_preset = 12

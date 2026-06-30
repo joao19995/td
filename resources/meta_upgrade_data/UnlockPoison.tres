@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "unlock_poison"
+Name = "Desbloquear Torre de Veneno"
+Description = "Libera a torre de Veneno (Poison) para uso nas runs"
+CostTokens = 30
+MaxLevel = 1
+IsTowerUnlock = true
+TowerId = "poison"
+StatType = ""
+BonusPerLevel = 0.0

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "global_damage"
+Name = "Dano Global +5%"
+Description = "Aumenta o dano de todas as torres em 5% por nivel"
+CostTokens = 15
+MaxLevel = 3
+IsTowerUnlock = false
+TowerId = ""
+StatType = "Damage"
+BonusPerLevel = 0.05

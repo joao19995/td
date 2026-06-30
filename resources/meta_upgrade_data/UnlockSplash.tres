@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "unlock_splash"
+Name = "Desbloquear Torre de Splash"
+Description = "Libera a torre de Splash (Area) para uso nas runs"
+CostTokens = 50
+MaxLevel = 1
+IsTowerUnlock = true
+TowerId = "splash"
+StatType = ""
+BonusPerLevel = 0.0

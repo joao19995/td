@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "unlock_ice"
+Name = "Desbloquear Torre de Gelo"
+Description = "Libera a torre de Gelo (Ice) para uso nas runs"
+CostTokens = 20
+MaxLevel = 1
+IsTowerUnlock = true
+TowerId = "ice"
+StatType = ""
+BonusPerLevel = 0.0

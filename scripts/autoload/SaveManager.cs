@@ -11,11 +11,12 @@ public partial class SaveManager : Node
 
     private int _metaTokens;
     private Array<string> _unlockedTowerIds = new();
+    private Dictionary<string, int> _metaUpgradeLevels = new();
 
     public int MetaTokens => _metaTokens;
     public Array<string> UnlockedTowerIds => _unlockedTowerIds;
 
-    private static readonly string[] DefaultTowerIds = { "base", "fast", "ice", "poison", "splash" };
+    private static readonly string[] DefaultTowerIds = { "base", "fast" };
 
     public override void _EnterTree()
     {
@@ -72,15 +73,28 @@ public partial class SaveManager : Node
                 _unlockedTowerIds.Add(id.AsString());
         }
 
+        if (dict.ContainsKey("meta_upgrade_levels") && dict["meta_upgrade_levels"].VariantType == Variant.Type.Dictionary)
+        {
+            var raw = dict["meta_upgrade_levels"].AsGodotDictionary();
+            _metaUpgradeLevels = new Dictionary<string, int>();
+            foreach (var key in raw.Keys)
+                _metaUpgradeLevels[key.AsString()] = (int)raw[key];
+        }
+
         EnsureDefaultUnlocks();
     }
 
     public void SaveGame()
     {
+        var upgradeLevelsDict = new Dictionary();
+        foreach (var kv in _metaUpgradeLevels)
+            upgradeLevelsDict[kv.Key] = kv.Value;
+
         var dict = new Dictionary
         {
             { "meta_tokens", _metaTokens },
-            { "unlocked_tower_ids", _unlockedTowerIds }
+            { "unlocked_tower_ids", _unlockedTowerIds },
+            { "meta_upgrade_levels", upgradeLevelsDict }
         };
 
         string json = Json.Stringify(dict);
@@ -119,6 +133,17 @@ public partial class SaveManager : Node
             _unlockedTowerIds.Add(towerId);
             SaveGame();
         }
+    }
+
+    public int GetMetaUpgradeLevel(string upgradeId)
+    {
+        return _metaUpgradeLevels.ContainsKey(upgradeId) ? _metaUpgradeLevels[upgradeId] : 0;
+    }
+
+    public void SetMetaUpgradeLevel(string upgradeId, int level)
+    {
+        _metaUpgradeLevels[upgradeId] = level;
+        SaveGame();
     }
 
     private void SetDefaults()

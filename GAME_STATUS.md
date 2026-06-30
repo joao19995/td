@@ -54,7 +54,16 @@ not implementation details.
 
 - **Persistence**: meta-progression data (tokens, unlocked towers) is saved to `user://save_data.json` using `FileAccess` + JSON — no `.tres` resources for save data (avoids documented security vector of `ResourceLoader.Load` on untrusted files).
 - **Meta tokens**: awarded at the end of every run (win or lose). Configurable via `SaveManager.MetaTokensPerRun` (default 10).
-- **Unlocked towers**: all 5 towers start unlocked. Future towers can be locked behind meta-progression.
+- **Unlocked towers**: only Base and Fast start unlocked. Ice, Poison, and Splash are purchased with tokens in the Meta Shop.
+- **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
+- **Upgrade catalog** (5 items):
+  - Unlock Ice Tower (20 tokens)
+  - Unlock Poison Tower (30 tokens)
+  - Unlock Splash Tower (50 tokens)
+  - Global Damage +5% per level (15 tokens base, 3 levels max)
+  - Starting Gold +50 per level (10 tokens base, 3 levels max)
+- **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens × 1`, level 2 costs `CostTokens × 2`, etc. Each level grants the configured bonus.
+- **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage × (1 + metaPercent)`). Starting gold bonus is added before the run begins.
 - **Corruption handling**: save file corruption or incompatible schema triggers a clean default reset with a warning — the game never crashes on broken save data.
 - **Migration**: if new default towers are added in a future update, existing save files automatically include them on first load after the update.
 
@@ -161,6 +170,7 @@ not implementation details.
 | Victory | All levels completed (classic mode) | Yes |
 | Fight Complete | All waves cleared during a run | Yes |
 | Shop | Slot machine outcome — buy run upgrades | Yes |
+| Meta Shop | Main Menu — permanent upgrades with meta-tokens | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
 

@@ -10,6 +10,7 @@ public partial class UIManager : Node
     [Export] public UIScreenData VictoryData;
     [Export] public UIScreenData FightCompleteData;
     [Export] public UIScreenData ShopData;
+    [Export] public UIScreenData MetaShopData;
 
     private readonly List<(UIScreenData data, Node instance)> _stack = new();
     private CanvasLayer _overlayLayer;

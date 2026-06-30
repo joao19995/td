@@ -98,12 +98,24 @@ Key decisions:
 - BossWave is a separate .tres file; EnemySpawner falls back to loading it
   from `res://resources/run_data/BossWave.tres` if `BossWaveData` export is
   not set on the map scene.
-### 6. Meta-Progression (Shop)
-Token earned at end of every run (win or lose), separate currency from run gold.
-Small meta-shop/tree outside the run (e.g. from Main Menu), spendable only with
-this token. Small catalog for MVP (2-3 items: permanent stat bonus, tower unlock).
+### 6. Meta-Progression (Shop) ✅
 
----
+**Status: Complete.**
+
+What was built:
+- **MetaUpgradeData resource** — defines a purchasable meta-progression item (ID, name, cost, max level, tower unlock or stat type with per-level bonus).
+- **Meta Shop screen** — accessible from Main Menu; lists all available upgrades with current level, cost, and Buy button. Items are loaded from `.tres` files.
+- **5 items in catalog**: Unlock Ice (20t), Unlock Poison (30t), Unlock Splash (50t), Global Damage +5%/level (15t base, 3 levels), Starting Gold +50/level (10t base, 3 levels).
+- **Multi-level upgrades** — costs scale by level (`CostTokens * level`). Buy button disabled when maxed or insufficient tokens.
+- **Tower unlocks** — purchasing a tower unlock calls `SaveManager.UnlockTower()`; Loadout screen disables locked towers.
+- **Stat application** — `RunState.StartRun()` reads `SaveManager.GetMetaUpgradeLevel()` and applies `MetaDamageBonusPercent` (×0.05 per level) to `Tower.EffectiveDamage` and `StartingGoldBonus` (×50 per level) to starting gold.
+- **Formula**: `EffectiveDamage = base * (1 + synergy) * (1 + shop) * (1 + meta)` — meta bonus is a separate multiplicative layer.
+- **Defaults**: only Base and Fast towers start unlocked (changed from all 5). Ice/Poison/Splash must be purchased.
+
+Key decisions:
+- Upgrade levels stored in SaveManager's JSON as a `meta_upgrade_levels` dictionary.
+- Multi-level cost = `CostTokens * (currentLevel + 1)` — consistent scaling, no per-level config needed.
+- Tower unlocks apply immediately on purchase (no restart needed).
 
 ## Post-MVP (deferred)
 
