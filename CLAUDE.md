@@ -114,7 +114,7 @@ See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP
 - 5 tower types with unique behaviors (Base, Fast, Ice, Poison, Splash)
 - 5 enemy types with configurable stats
 - 2 maps with wave-based spawning
-- Tower placement, selection, upgrade (2 tiers each), sell
+- Tower placement, selection, upgrade (2 tiers each)
 - Object pooling for projectiles and enemies
 - Status effects (Poison DoT, Slow) with visual tinting
 - Full game loop: MainMenu → level → next level / game over / victory

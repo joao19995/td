@@ -21,5 +21,4 @@ public partial class TowerData : Resource
     [Export] public float SlowMultiplier { get; set; } = 0.5f;
     [Export] public float SlowDuration { get; set; } = 2f;
     [Export] public Array<UpgradeData> UpgradePath { get; set; } = new();
-    [Export] public float SellRefundRatio { get; set; } = 0.5f;
 }

@@ -72,6 +72,4 @@ layout_mode = 2
 disabled = true
 text = "Upgrade"
 
-[node name="SellButton" type="Button" parent="TowerActionPanel" unique_id=400000004]
-layout_mode = 2
-text = "Sell"
+

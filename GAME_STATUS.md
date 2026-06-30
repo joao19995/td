@@ -115,7 +115,6 @@ not implementation details.
 - **Placement**: towers can only be placed on designated buildable tiles. Already-occupied tiles are blocked.
 - **Selection**: clicking a placed tower selects it. A semi-transparent circle shows its range. Right-click deselects.
 - **Upgrades**: each tower has a fixed upgrade path (2 tiers per tower). Upgrades increase damage, fire rate, and/or range. Each upgrade tier is a separate resource file with configurable cost and stat bonuses.
-- **Sell**: towers can be sold for a percentage of their base cost (configurable ratio, default 50%). Upgrade costs are not refunded.
 - **Targeting priority**: each tower can be set to target the first enemy in range, the closest, the strongest (most health), or the most recent.
 
 ### Tower special abilities
@@ -174,7 +173,7 @@ not implementation details.
 - Shows a button for each available tower type (determined by loadout during runs). Buttons are disabled when the player cannot afford the tower, when that type is already placed, or during Game Over.
 - Buttons update reactively when money changes, towers are placed, or towers are deselected.
 - **"Next Wave"** button to start each wave. **"Next Level"** button after all waves are cleared.
-- When a tower is selected: shows its **name**, **upgrade level**, **upgrade cost** (or "MAX" if fully upgraded), and **sell value** with an action button.
+- When a tower is selected: shows its **name**, **upgrade level**, **upgrade cost** (or "MAX" if fully upgraded), and **equipped item**.
 
 ---
 

@@ -24,7 +24,7 @@ What was built:
 - **Run flow**: Main Menu → Loadout → random map fight → Fight Complete screen → "Next Fight" (random map, gold/lives/tower upgrades preserved) or "End Run" (back to Main Menu).
 - **1-per-type enforcement** — TowerPlacementManager blocks duplicate tower types. HUD shows "(Placed)" for placed types, updated reactively on money/tower changes.
 - **Random map rotation** — each fight picks randomly from LevelManager's level list (Map1 or Map2).
-- **Persistent tower upgrades** — upgrade level per tower type persists across fights via RunState. Selling does not downgrade the stored level.
+- **Persistent tower upgrades** — upgrade level per tower type persists across fights via RunState.
 - **Enemy death tracking** — AllWavesCompleted only fires when all enemies are killed, not when the last enemy spawns.
 
 Key decisions:

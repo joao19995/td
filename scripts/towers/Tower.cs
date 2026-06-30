@@ -128,9 +128,6 @@ public partial class Tower : Node2D
     private float GetEquipFireRatePercent() => _equipData?.FireRatePercentBonus ?? 0f;
     private float GetEquipRangePercent() => _equipData?.RangePercentBonus ?? 0f;
 
-    public int SellValue => _data != null
-        ? Mathf.RoundToInt(_data.Cost * _data.SellRefundRatio)
-        : 0;
 
     private void ApplyData()
     {

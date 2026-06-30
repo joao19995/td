@@ -29,7 +29,7 @@ public partial class HUD : CanvasLayer
     private Label _statsLabel;
     private Label _equipLabel;
     private Button _upgradeButton;
-    private Button _sellButton;
+
     private Label _synergyLabel;
 
     public override void _Ready()
@@ -56,12 +56,10 @@ public partial class HUD : CanvasLayer
         _statsLabel = GetNode<Label>("TowerActionPanel/StatsLabel");
         _equipLabel = GetNode<Label>("TowerActionPanel/EquipLabel");
         _upgradeButton = GetNode<Button>("TowerActionPanel/UpgradeButton");
-        _sellButton = GetNode<Button>("TowerActionPanel/SellButton");
 
         TowerSelectionManager.Instance.TowerSelected += OnTowerSelected;
         TowerSelectionManager.Instance.TowerDeselected += OnTowerDeselected;
         _upgradeButton.Pressed += OnUpgradePressed;
-        _sellButton.Pressed += OnSellPressed;
 
         _synergyLabel = GetNode<Label>("SynergyLabel");
         SynergyManager.Instance.SynergiesChanged += OnSynergiesChanged;
@@ -140,6 +138,7 @@ public partial class HUD : CanvasLayer
         _nextWaveButton.Disabled = false;
         _nextLevelButton.Visible = false;
 
+        OnTowerDeselected();
         ApplyTowerFilter();
         UpdateWaveLabel();
     }
@@ -232,7 +231,6 @@ public partial class HUD : CanvasLayer
     {
         _towerNameLabel.Text = $"{tower.Data.TowerName} (Lv.{tower.CurrentUpgradeLevel + 1})";
         _statsLabel.Text = $"DMG:{tower.EffectiveDamage:F1} SPD:{tower.EffectiveFireRate:F1} RNG:{tower.EffectiveRange:F0}";
-        _sellButton.Text = $"Sell ({tower.SellValue}g)";
 
         string equipId = RunState.Instance?.GetEquippedItem(tower.Data.Id);
         _equipLabel.Text = !string.IsNullOrEmpty(equipId)
@@ -270,16 +268,6 @@ public partial class HUD : CanvasLayer
 
         tower.Upgrade();
         OnTowerSelected(tower);
-    }
-
-    private void OnSellPressed()
-    {
-        var tower = TowerSelectionManager.Instance.SelectedTower;
-        if (tower == null) return;
-
-        EconomyManager.Instance.AddMoney(tower.SellValue);
-        tower.QueueFree();
-        TowerSelectionManager.Instance.Deselect();
     }
 
     private void OnTowerPlaced(int _)

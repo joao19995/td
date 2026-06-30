@@ -44,7 +44,6 @@ This is not a greenfield prototype anymore. The following exists and works:
 - Tower upgrades: 2-tier `UpgradePath` (Array<UpgradeData>) per tower, computed
   at runtime via `EffectiveDamage/EffectiveFireRate/EffectiveRange` — **never**
   mutates the shared `TowerData` resource
-- Tower sell with configurable refund ratio
 - Status effects: Poison (DoT) and Slow, both refresh-duration-only stacking,
   applied via `StatusEffectComponent` + `PoisonEffectData`/`SlowEffectData`
 - Object pooling for Enemies and Projectiles via `EnemyFactory`/`ProjectileFactory`
