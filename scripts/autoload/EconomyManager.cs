@@ -4,7 +4,7 @@ public partial class EconomyManager : Node
 {
     public static EconomyManager Instance { get; private set; }
 
-    [Export] public int StartingMoney = 300;
+    [Export] public int StartingMoney = 1000;
 
     private int _currentMoney;
     public int CurrentMoney => _currentMoney;
@@ -47,9 +47,9 @@ public partial class EconomyManager : Node
         _currentMoney = amount;
         EventBus.Instance.EmitSignal(EventBus.SignalName.MoneyChanged, _currentMoney);
     }
-	public void ResetForLevel(LevelData data)
+	public void ResetForLevel(LevelData _)
 	{
-		_currentMoney = (data.StartingMoney >= 0) ? data.StartingMoney : StartingMoney;
+		_currentMoney = StartingMoney;
 		EventBus.Instance.EmitSignal(EventBus.SignalName.MoneyChanged, _currentMoney);
 	}
 }

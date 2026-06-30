@@ -2,8 +2,14 @@
 
 [ext_resource type="Script" uid="uid://dn7xbvnfre5un" path="res://scripts/main/Main.cs" id="1_nha0i"]
 [ext_resource type="PackedScene" uid="uid://drhepwblsi4xg" path="res://scenes/ui/HUD.tscn" id="2_nha0i"]
+[ext_resource type="Resource" uid="uid://djax877vl8tw" path="res://resources/tower_data/Base.tres" id="3_base"]
+[ext_resource type="Resource" uid="uid://4knhurn3ttj2" path="res://resources/tower_data/Fast.tres" id="4_fast"]
+[ext_resource type="Resource" uid="uid://c707con3f00r" path="res://resources/tower_data/Ice.tres" id="5_ice"]
+[ext_resource type="Resource" uid="uid://euqe6r08pnw4" path="res://resources/tower_data/Poison.tres" id="6_poison"]
+[ext_resource type="Resource" uid="uid://bmqfmt6j1xc5h" path="res://resources/tower_data/Splash.tres" id="7_splash"]
 
 [node name="Main" type="Node2D" unique_id=128455443]
 script = ExtResource("1_nha0i")
 
 [node name="HUD" parent="." unique_id=1119415688 instance=ExtResource("2_nha0i")]
+AvailableTowers = Array[Object]([ExtResource("3_base"), ExtResource("4_fast"), ExtResource("5_ice"), ExtResource("6_poison"), ExtResource("7_splash")])

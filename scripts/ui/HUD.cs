@@ -28,6 +28,7 @@ public partial class HUD : CanvasLayer
     private Label _towerNameLabel;
     private Button _upgradeButton;
     private Button _sellButton;
+    private Label _synergyLabel;
 
     public override void _Ready()
     {
@@ -57,6 +58,9 @@ public partial class HUD : CanvasLayer
         TowerSelectionManager.Instance.TowerDeselected += OnTowerDeselected;
         _upgradeButton.Pressed += OnUpgradePressed;
         _sellButton.Pressed += OnSellPressed;
+
+        _synergyLabel = GetNode<Label>("SynergyLabel");
+        SynergyManager.Instance.SynergiesChanged += OnSynergiesChanged;
 
         UpdateLivesLabel(GameManager.Instance.CurrentLives);
         UpdateMoneyLabel(EconomyManager.Instance.CurrentMoney);
@@ -213,6 +217,11 @@ public partial class HUD : CanvasLayer
     {
         if (_activeSpawner == null) return;
         _waveLabel.Text = $"Wave: {_activeSpawner.CurrentWaveDisplay}";
+    }
+
+    private void OnSynergiesChanged()
+    {
+        _synergyLabel.Text = SynergyManager.Instance.GetActiveDisplayText();
     }
 
     private void OnTowerSelected(Tower tower)

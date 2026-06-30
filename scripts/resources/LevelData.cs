@@ -11,6 +11,5 @@ public partial class LevelData : Resource
     [Export] public Vector2 WorldSize { get; set; } = new(320, 190);
 
     // -1 means "use the global default set on the manager"
-    [Export] public int StartingMoney { get; set; } = -1;
     [Export] public int StartingLives { get; set; } = -1;
 }

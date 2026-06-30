@@ -4,7 +4,6 @@ public partial class TowerPlacementManager : Node
 {
     public static TowerPlacementManager Instance { get; private set; }
 
-    // Assign res://scenes/towers/Tower.tscn (the single generic tower scene).
     [Export] public PackedScene GenericTowerScene;
 
     private TowerData _selectedTowerData;
@@ -12,6 +11,7 @@ public partial class TowerPlacementManager : Node
     private TileMapLayer _activeTileMap;
     private readonly System.Collections.Generic.HashSet<Vector2I> _occupiedCells = new();
     private readonly System.Collections.Generic.HashSet<string> _placedTowerIds = new();
+    public System.Collections.Generic.IEnumerable<string> PlacedTowerIds => _placedTowerIds;
     public bool IsPlacing => _selectedTowerData != null;
 
     public override void _EnterTree()
@@ -115,7 +115,7 @@ public partial class TowerPlacementManager : Node
 
         var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
         var towerId = _selectedTowerData.Id;
-        tower.TreeExited += () => { _occupiedCells.Remove(cell); _placedTowerIds.Remove(towerId); };
+        tower.TreeExited += () => { _occupiedCells.Remove(cell); _placedTowerIds.Remove(towerId); SynergyManager.Instance?.OnTowerRemoved(); };
         GetTowersContainer().AddChild(tower);
 
         CancelPlacement();

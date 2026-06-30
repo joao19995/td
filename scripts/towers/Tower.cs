@@ -29,7 +29,19 @@ public partial class Tower : Node2D
         {
             Clicked += tower => TowerSelectionManager.Instance?.SelectTower(tower);
             ApplyData();
+            SynergyManager.Instance.SynergiesChanged += OnSynergiesChanged;
         }
+    }
+
+    public override void _ExitTree()
+    {
+        if (SynergyManager.Instance != null)
+            SynergyManager.Instance.SynergiesChanged -= OnSynergiesChanged;
+    }
+
+    private void OnSynergiesChanged()
+    {
+        ApplyData();
     }
 
     public void Setup(TowerData data)
@@ -61,7 +73,9 @@ public partial class Tower : Node2D
             if (_data.UpgradePath != null)
                 for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
                     bonus += _data.UpgradePath[i].DamageBonus;
-            return _data.Damage + bonus;
+            float baseWithUpgrade = _data.Damage + bonus;
+            float synergyPercent = SynergyManager.Instance?.GetDamageBonus(_data.Id) ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent);
         }
     }
 
@@ -74,7 +88,9 @@ public partial class Tower : Node2D
             if (_data.UpgradePath != null)
                 for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
                     bonus += _data.UpgradePath[i].FireRateBonus;
-            return _data.FireRate + bonus;
+            float baseWithUpgrade = _data.FireRate + bonus;
+            float synergyPercent = SynergyManager.Instance?.GetFireRateBonus(_data.Id) ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent);
         }
     }
 
@@ -87,7 +103,9 @@ public partial class Tower : Node2D
             if (_data.UpgradePath != null)
                 for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
                     bonus += _data.UpgradePath[i].RangeBonus;
-            return _data.Range + bonus;
+            float baseWithUpgrade = _data.Range + bonus;
+            float synergyPercent = SynergyManager.Instance?.GetRangeBonus(_data.Id) ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent);
         }
     }
 
@@ -109,6 +127,9 @@ public partial class Tower : Node2D
 
         _attack.Setup(_data);
         _attack.SetEffectiveStats(EffectiveDamage, EffectiveFireRate);
+
+        bool hasSynergy = SynergyManager.Instance?.IsTowerAffected(_data.Id) ?? false;
+        Modulate = hasSynergy ? new Color(0.85f, 1, 0.85f) : Colors.White;
     }
 
     public override void _Process(double delta)

@@ -36,6 +36,14 @@ not implementation details.
 - **1-per-type** enforcement: only one tower of each type can be on the map at once. The HUD grays out the button and shows "(Placed)" for types already placed.
 - **Random map rotation**: each "Next Fight" loads a random map (Map1 or Map2).
 
+## Meta-Progression (Save System)
+
+- **Persistence**: meta-progression data (tokens, unlocked towers) is saved to `user://save_data.json` using `FileAccess` + JSON — no `.tres` resources for save data (avoids documented security vector of `ResourceLoader.Load` on untrusted files).
+- **Meta tokens**: awarded at the end of every run (win or lose). Configurable via `SaveManager.MetaTokensPerRun` (default 10).
+- **Unlocked towers**: all 5 towers start unlocked. Future towers can be locked behind meta-progression.
+- **Corruption handling**: save file corruption or incompatible schema triggers a clean default reset with a warning — the game never crashes on broken save data.
+- **Migration**: if new default towers are added in a future update, existing save files automatically include them on first load after the update.
+
 ## Levels
 
 - The game ships with **2 maps** (Map1, Map2), each with its own tile layout, enemy path, and wave list.
@@ -143,6 +151,19 @@ not implementation details.
 
 ---
 
+## Synergies
+
+- **Type-combination bonuses**: synergies activate based on which tower types are on the board. No adjacency or positioning logic — only type presence matters.
+- **Active synergies** are automatically evaluated whenever a tower is placed or removed.
+- **Stat bonuses** are multiplicative: `EffectiveX = (base + upgradeFlat) * (1 + synergyPercent)`. Damage, fire rate, and range all follow the same formula.
+- **Visual feedback**: towers affected by any synergy show a green tint. The HUD lists active synergy names at the top of the screen.
+- **Data-driven**: synergies are defined in `SynergyData` resource files under `resources/synergy_data/`. Adding a new `.tres` file in that folder is enough to register it — no code changes needed.
+- **Examples shipped**:
+  - *Frost Venom*: Ice + Poison towers on the board → +15% damage to both
+  - *Overclock*: 3+ different tower types → +10% fire rate to all towers
+
+---
+
 ## Configurability (No-Code Changes)
 
 The following can be modified by editing resource files (`.tres`) in the project's `resources/` folder — no programming required:
@@ -154,4 +175,5 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Enemy stats | `EnemyData` | Health, speed, gold reward, damage to player |
 | Level setup | `LevelData` | Scene path, preview image, starting money/lives, world size |
 | Screen/overlay config | `UIScreenData` | Scene path, whether it pauses the game |
+| Synergy combos | `SynergyData` | Required tower IDs, min tower count, bonus percentages (damage/fire rate/range) |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |

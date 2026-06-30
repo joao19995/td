@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SynergyData" format=3 uid="uid://bkr0edonh36cg"]
+
+[ext_resource type="Script" uid="uid://dgbes4krnhlla" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "overclock"
+DisplayName = "Overclock"
+Description = "3+ tower types: +10% fire rate to all"
+MinTowerCount = 3
+DamageBonusPercent = 0.2
+FireRateBonusPercent = 0.1
+RangeBonusPercent = 0.2

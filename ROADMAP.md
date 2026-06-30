@@ -32,16 +32,37 @@ Key decisions:
 - Tower upgrade level is per-type, not per-instance — persists across fights even if the tower is sold
 - Loadout is 4 of 5 towers to force strategic choices without leaving towers unusable
 
-### 2. SaveManager
-Persistent storage for meta-progression token and permanent unlocks.
-Reads/writes the same data structures defined in RunState.
+### 2. SaveManager ✅
+**Status: Complete.**
 
-### 3. Synergies
-Bonuses based on which tower types are present on the board. With only 5 towers
-and max 1 of each, synergies are type-combination based (no adjacency logic).
-Examples: "Ice + Poison → enemies hit by both take +X damage", "3+ different
-tower types → +X% damage for all". Visual indicator on towers when a synergy
-is active.
+What was built:
+- **SaveManager autoload** — persistent meta-progression storage (tokens + unlocked tower IDs).
+- **JSON file** (`user://save_data.json`) via `FileAccess`, not Resource serialization (avoids documented security vector of loading untrusted `.tres` files).
+- **Configurable token reward** (default 10 per run), adjustable via Inspector without code changes.
+- **Corruption-safe** — load failures reset to defaults with a warning instead of crashing.
+- **Migration** — existing saves auto-include new tower IDs when a game update adds towers.
+- **Integration**: tokens awarded on run end, locked towers shown as "(LOCKED)" in loadout, token count displayed on Main Menu.
+
+Key decisions:
+- JSON over `.tres` for user-writable save data (security).
+- Save-on-mutation is acceptable for expected frequency (end of run, meta-shop purchases).
+
+### 3. Synergies ✅
+**Status: Complete.**
+
+What was built:
+- **SynergyData resource** (`[GlobalClass]`) — defines required tower IDs, minimum tower count, which towers the bonus applies to, and percent bonuses for damage/fire rate/range.
+- **SynergyManager autoload** — scans `res://resources/synergy_data/` at startup, re-evaluates active synergies whenever a tower is placed or removed, emits `SynergiesChanged` signal.
+- **Reactive stat application** — each tower subscribes to `SynergiesChanged` in `_Ready` and calls `ApplyData()` on change, ensuring already-placed towers receive synergy bonuses immediately.
+- **Visual feedback** — towers affected by any synergy get a green tint (`Modulate`); synergy names appear in the HUD.
+- **2 example synergies**: Frost Venom (Ice + Poison → +15% damage), Overclock (3+ types → +10% fire rate).
+- **Formula**: `EffectiveX = (baseX + upgradeFlatBonus) * (1 + synergyPercentBonus)` — consistent for damage, fire rate, and range.
+
+Key decisions:
+- SynergyManager as autoload (not per-level child) — preserves zero-code-change map addition.
+- Tower subscribes to signal rather than polling — reactive, no stale stats.
+- Synergy `.tres` files can drop default-valued properties (editor auto-clean). C# defaults cover missing values, so functionality is unaffected.
+- `CacheMode.Replace` used in ResourceLoader to avoid stale cache after .tres edits.
 
 ### 4. Fight Integration
 Existing wave system runs inside a run. Each fight loads the map and lets the

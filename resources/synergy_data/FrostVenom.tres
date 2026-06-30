@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SynergyData" format=3 uid="uid://uaw76cxlk6lw"]
+
+[ext_resource type="Script" uid="uid://dgbes4krnhlla" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "frost_venom"
+DisplayName = "Frost Venom"
+Description = "Ice + Poison: +15% damage to both"
+RequiredTowerIds = Array[String](["ice", "poison"])
+AppliesToTowerIds = Array[String](["ice", "poison"])
+DamageBonusPercent = 0.15
