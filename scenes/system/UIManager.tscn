@@ -10,6 +10,7 @@
 [ext_resource type="Resource" path="res://resources/ui_screens/MetaShop.tres" id="7_metashop"]
 [ext_resource type="Resource" path="res://resources/ui_screens/TrinketChoice.tres" id="8_trinket"]
 [ext_resource type="Resource" path="res://resources/ui_screens/Briefing.tres" id="9_briefing"]
+[ext_resource type="Resource" path="res://resources/ui_screens/Bestiary.tres" id="10_bestiary"]
 
 [node name="UIManager" type="Node"]
 script = ExtResource("1_ui")
@@ -21,3 +22,4 @@ ShopData = ExtResource("6_shop")
 MetaShopData = ExtResource("7_metashop")
 TrinketChoiceData = ExtResource("8_trinket")
 BriefingData = ExtResource("9_briefing")
+BestiaryData = ExtResource("10_bestiary")

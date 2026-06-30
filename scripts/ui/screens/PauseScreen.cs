@@ -5,6 +5,7 @@ public partial class PauseScreen : Control
     public override void _Ready()
     {
         GetNode<Button>("VBox/ResumeButton").Pressed += () => UIManager.Instance.PopScreen();
+        GetNode<Button>("VBox/BestiaryButton").Pressed += () => UIManager.Instance.PushScreen(UIManager.Instance.BestiaryData);
         GetNode<Button>("VBox/MenuButton").Pressed += OnMenuPressed;
     }
 

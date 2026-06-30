@@ -12,6 +12,7 @@ public partial class SaveManager : Node
     private int _metaTokens;
     private Array<string> _unlockedTowerIds = new();
     private Dictionary<string, int> _metaUpgradeLevels = new();
+    private Dictionary<string, bool> _discovered = new();
 
     public int MetaTokens => _metaTokens;
     public Array<string> UnlockedTowerIds => _unlockedTowerIds;
@@ -81,6 +82,14 @@ public partial class SaveManager : Node
                 _metaUpgradeLevels[key.AsString()] = (int)raw[key];
         }
 
+        if (dict.ContainsKey("discovered") && dict["discovered"].VariantType == Variant.Type.Dictionary)
+        {
+            var raw = dict["discovered"].AsGodotDictionary();
+            _discovered = new Dictionary<string, bool>();
+            foreach (var key in raw.Keys)
+                _discovered[key.AsString()] = true;
+        }
+
         EnsureDefaultUnlocks();
     }
 
@@ -90,11 +99,16 @@ public partial class SaveManager : Node
         foreach (var kv in _metaUpgradeLevels)
             upgradeLevelsDict[kv.Key] = kv.Value;
 
+        var discoveredDict = new Dictionary();
+        foreach (var kv in _discovered)
+            discoveredDict[kv.Key] = kv.Value;
+
         var dict = new Dictionary
         {
             { "meta_tokens", _metaTokens },
             { "unlocked_tower_ids", _unlockedTowerIds },
-            { "meta_upgrade_levels", upgradeLevelsDict }
+            { "meta_upgrade_levels", upgradeLevelsDict },
+            { "discovered", discoveredDict }
         };
 
         string json = Json.Stringify(dict);
@@ -143,6 +157,18 @@ public partial class SaveManager : Node
     public void SetMetaUpgradeLevel(string upgradeId, int level)
     {
         _metaUpgradeLevels[upgradeId] = level;
+        SaveGame();
+    }
+
+    public bool IsDiscovered(string key)
+    {
+        return _discovered.ContainsKey(key) && _discovered[key];
+    }
+
+    public void MarkDiscovered(string key)
+    {
+        if (_discovered.ContainsKey(key)) return;
+        _discovered[key] = true;
         SaveGame();
     }
 

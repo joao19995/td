@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://b6tf2gi72om33"]
+
+[ext_resource type="Resource" uid="uid://cugbr5b2i020m" path="res://resources/enemy_data/Normal.tres" id="1_etjb1"]
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_vot48"]
+
+[resource]
+script = ExtResource("1_vot48")
+Enemies = Array[Object]([ExtResource("1_etjb1")])
+SpawnInterval = 1.0

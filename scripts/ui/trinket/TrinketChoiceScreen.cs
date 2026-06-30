@@ -51,12 +51,21 @@ public partial class TrinketChoiceScreen : Control
     private static List<TrinketData> LoadAllTrinkets()
     {
         var list = new List<TrinketData>();
-        var ids = new[] { "war_banner", "guardian_angel", "lucky_coin" };
-        foreach (var id in ids)
+        var dir = DirAccess.Open("res://resources/trinket_data/");
+        if (dir == null) return list;
+
+        foreach (var file in dir.GetFiles())
         {
-            var t = GD.Load<TrinketData>($"res://resources/trinket_data/{id}.tres");
-            if (t != null) list.Add(t);
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
+                continue;
+            var t = ResourceLoader.Load<TrinketData>("res://resources/trinket_data/" + file, "", ResourceLoader.CacheMode.Replace);
+            if (t != null)
+            {
+                SaveManager.Instance?.MarkDiscovered($"trinket_{t.Id}");
+                list.Add(t);
+            }
         }
+
         return list;
     }
 

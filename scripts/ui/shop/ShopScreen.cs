@@ -26,20 +26,21 @@ public partial class ShopScreen : Control
         _moneyLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
     }
 
-    private List<ShopItemData> LoadItems()
+    private static List<ShopItemData> LoadItems()
     {
         var items = new List<ShopItemData>();
-        var patterns = new string[]
+        var dir = DirAccess.Open("res://resources/run_data/");
+        if (dir == null) return items;
+
+        foreach (var file in dir.GetFiles())
         {
-            "res://resources/run_data/ShopItems.tres",
-            "res://resources/run_data/ShopItem2.tres",
-        };
-        foreach (var path in patterns)
-        {
-            var item = GD.Load<ShopItemData>(path);
-            if (item != null)
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
+                continue;
+            var res = ResourceLoader.Load<Resource>("res://resources/run_data/" + file, "", ResourceLoader.CacheMode.Replace);
+            if (res is ShopItemData item)
                 items.Add(item);
         }
+
         return items;
     }
 
@@ -81,12 +82,18 @@ public partial class ShopScreen : Control
 
     private void BuildEquipList()
     {
-        var path = "res://resources/equip_data/";
-        var ids = new[] { "heavy_barrel", "overdrive_coils", "precision_lens" };
-        foreach (var id in ids)
+        var dir = DirAccess.Open("res://resources/equip_data/");
+        if (dir == null) return;
+
+        foreach (var file in dir.GetFiles())
         {
-            var equip = GD.Load<EquipData>($"{path}{id}.tres");
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
+                continue;
+
+            var equip = ResourceLoader.Load<EquipData>("res://resources/equip_data/" + file, "", ResourceLoader.CacheMode.Replace);
             if (equip == null) continue;
+
+            SaveManager.Instance?.MarkDiscovered($"equip_{equip.Id}");
 
             bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
             string equippedId = RunState.Instance?.GetEquippedItem(equip.TargetTowerId);

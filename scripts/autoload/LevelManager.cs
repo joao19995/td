@@ -12,6 +12,7 @@ public partial class LevelManager : Node
     public static LevelManager Instance { get; private set; }
 
     [Export] public Array<LevelData> Levels { get; set; } = new();
+    [Export] public WaveData BossWaveData;
 
     private int _currentLevelIndex = -1;
     private Node _levelContainer;
@@ -70,12 +71,19 @@ public partial class LevelManager : Node
 
     private int _pendingLevelIndex = -1;
     public LevelData PendingLevelData { get; private set; }
+    public Array<WaveData> PendingRunWaves { get; private set; }
 
     public LevelData PickRandomLevel()
     {
         if (Levels == null || Levels.Count == 0) return null;
         _pendingLevelIndex = (int)(GD.Randi() % Levels.Count);
         PendingLevelData = Levels[_pendingLevelIndex];
+
+        if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
+            PendingRunWaves = RunState.Instance.PickRunWaves();
+        else
+            PendingRunWaves = null;
+
         return PendingLevelData;
     }
 
@@ -85,6 +93,7 @@ public partial class LevelManager : Node
         LoadLevel(_pendingLevelIndex, _levelContainer);
         _pendingLevelIndex = -1;
         PendingLevelData = null;
+        PendingRunWaves = null;
     }
 
     /// <summary>Loads the level that follows the current one.</summary>
@@ -114,10 +123,10 @@ public partial class LevelManager : Node
         }
         else if (levelNode is BaseLevel baseLevel)
         {
-            baseLevel.ConfigureForRun();
+            baseLevel.ConfigureForRun(PendingRunWaves);
         }
 
-    if (levelNode is not BaseLevel)
+    if (CurrentLevel != null && levelNode is not BaseLevel)
         GD.PushWarning("LevelManager: Loaded level does not extend BaseLevel.");
 
     // Pass per‑level world size to the camera, falling back to the default.

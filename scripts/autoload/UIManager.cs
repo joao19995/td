@@ -13,6 +13,7 @@ public partial class UIManager : Node
     [Export] public UIScreenData MetaShopData;
     [Export] public UIScreenData TrinketChoiceData;
     [Export] public UIScreenData BriefingData;
+    [Export] public UIScreenData BestiaryData;
 
     private readonly List<(UIScreenData data, Node instance)> _stack = new();
     private CanvasLayer _overlayLayer;

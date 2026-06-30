@@ -70,8 +70,7 @@ public partial class SlotManager : Node
 
     public void ApplySkew(string outcome)
     {
-        if (_weightMultipliers.ContainsKey(outcome))
-            _weightMultipliers[outcome] *= SkewReductionFactor;
+        _weightMultipliers[outcome] = _weightMultipliers.GetValueOrDefault(outcome, 1f) * SkewReductionFactor;
     }
 
 }

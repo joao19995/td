@@ -97,6 +97,9 @@ public partial class SynergyManager : Node
                 _activeSynergies.Add(synergy);
         }
 
+        foreach (var synergy in _activeSynergies)
+            SaveManager.Instance?.MarkDiscovered($"synergy_{synergy.Id}");
+
         EmitSignal(SignalName.SynergiesChanged);
     }
 

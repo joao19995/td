@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://besticatscreen01"]
+
+[ext_resource type="Script" path="res://scripts/ui/bestiary/BestiaryScreen.cs" id="1_sc"]
+
+[node name="BestiaryScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+process_mode = 3
+script = ExtResource("1_sc")

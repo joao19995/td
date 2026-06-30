@@ -157,4 +157,38 @@ What was built:
 
 - Expanded meta-progression catalog
 - Real loadout curation (vs. all towers available)
+
+---
+
+## Post-MVP (cont.)
+
+### Bestiary + Discovery Tracking ✅
+
+**Status: Complete.**
+
+What was built:
+- **BestiaryScreen** — full-screen overlay accessible from Main Menu (button) and Pause screen (button). Shows 5 categories: Towers, Enemies, Equipment, Trinkets, Synergies.
+- **Discovery system** — items hidden (grayed out with `???`) until first encounter:
+  - Enemies: discovered when they spawn in a fight
+  - Equipment: discovered when seen in the Shop
+  - Trinkets: discovered when shown in Treasure choice
+  - Synergies: discovered when activated (required towers placed)
+  - Towers: use unlock system (meta-progression)
+- **Zero-code-change** — all data scanned from directories (`tower_data/`, `enemy_data/`, etc.). Adding a new `.tres` file auto-registers it.
+- **`SaveManager` persistence** — discovered state saved to JSON (`discovered` dict), persists across runs.
+
+### Wave Decoupling (Run Mode) ✅
+
+**Status: Complete.**
+
+What was built:
+- **Difficulty tiers** — waves organized by `resources/wave_data/tier1/tier2/tier3/`, selected by `RunState.FightsCompleted`:
+  - Fight 1 → tier1 (easy: Normal, Flying)
+  - Fight 2 → tier2 (medium: Normal+Fast, Boss+Tank)
+  - Fight 3+ → tier3 (hard: Tank+Fast+Normal, Flying+Tank)
+- **Map independence** — during runs, `LevelData.Waves` is ignored. Waves are injected into `EnemySpawner.ConfigureForRun()` at level load.
+- **Random selection within tier** — `RunState.PickRunWaves()` scans the tier folder and picks one wave randomly.
+- **Boss fights** unchanged — always use `BossWaveData` from `LevelManager` Inspector.
+- **Zero-code-change** — adding a `.tres` to any tier folder makes it available.
+- **6 waves shipped**: 2 per tier.
 - Second map / more waves

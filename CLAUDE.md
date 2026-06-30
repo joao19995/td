@@ -6,9 +6,10 @@ Godot 4.7 (.NET 8) tower defense, expanding into a roguelite hybrid
 (Darkest Dungeon / Slay the Spire inspired run structure). 320×190 pixel
 resolution, GL Compatibility renderer, integer scaling. C# only — no GDScript.
 
-**State: Camada 0 complete (full TD game loop + upgrades + status effects).
-Next layer: roguelite run structure (RunState → SaveManager → Fight Integration →
-Slot Machine → Shop → Meta-progression), per ROADMAP.md.**
+**State: Camada 0 + roguelite run layer complete (run engine, loadout, shop,
+slot machine, meta-progression, equipment, trinkets, briefing, synergies,
+bestiary, wave decoupling).
+Next: expanded content (more maps, enemies, meta items).**
 
 ---
 
@@ -86,8 +87,15 @@ scripts/
 ├── resources/       # Data classes (TowerData, EnemyData, WaveData, UpgradeData, etc.)
 ├── levels/          # BaseLevel, Map1, Map2
 ├── ui/              # HUD, screens
+│   ├── screens/     # MainMenu, Loadout, FightComplete
+│   ├── shop/        # ShopScreen
+│   ├── meta_shop/   # MetaShopScreen
+│   ├── briefing/    # BriefingScreen
+│   ├── trinket/     # TrinketChoiceScreen
+│   └── bestiary/    # BestiaryScreen
 ├── main/            # Main entry point
-├── systems/         # PoolManager (only system, others in autoload/)
+├── systems/         # PoolManager, SynergyManager, SlotManager
+├── autoload/        # Singletons (infrastructure only)
 scenes/
 ├── levels/          # Map1.tscn, Map2.tscn
 ├── towers/          # Tower.tscn
@@ -98,10 +106,15 @@ scenes/
 resources/
 ├── tower_data/      # Base.tres, Fast.tres, Ice.tres, Poison.tres, Splash.tres
 ├── enemy_data/      # Normal, Fast, Tank, Flying, Boss
-├── wave_data/       # Wave1-4
+├── wave_data/       # Wave1-4 + tier1/ tier2/ tier3/ (tiered for run mode)
 ├── upgrade_data/    # 10 upgrade files (2 per tower)
 ├── level_data/      # level1.tres, level2.tres
 ├── ui_screens/      # Pause, GameOver, Victory
+├── synergy_data/    # Synergy .tres files
+├── equip_data/      # Equipment .tres files
+├── trinket_data/    # Trinket .tres files
+├── meta_upgrade_data/ # Meta-upgrade .tres files
+├── run_data/        # Shop items, BossWave
 ```
 
 ---
@@ -120,6 +133,16 @@ See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP
 - Full game loop: MainMenu → level → next level / game over / victory
 - Health bars, damage popups, splash ring effect, range indicator
 - Pause, Game Over, Victory overlays via UIManager
+- Roguelite run engine (RunState, SaveManager, SlotManager, SynergyManager)
+- Loadout screen (1–4 towers per run, locked towers shown accordingly)
+- Slot machine post-fight outcomes (Fight, Shop, Heal, Miniboss, Treasure, Boss)
+- Reroll mechanic with cost scaling and outcome skew reduction
+- Shop with run-wide bonuses and tower-specific equipment
+- Meta-progression shop (5 items, token-based permanent unlocks/upgrades)
+- Trinkets (Treasure outcome: choose 1 of 3)
+- Pre-fight briefing screen showing wave composition
+- Bestiary (accessible from Main Menu and Pause screen) with discovery tracking — locked towers/enemies/equip/trinkets/synergies hidden until encountered
+- Wave decoupling — waves organized by difficulty tier (tier1/tier2/tier3), selected by `FightsCompleted`, independent of map layout
 
 ### Known Limitations
 - No sound system (directories exist, no assets)

@@ -107,6 +107,17 @@ not implementation details.
   - If it was the final level, the **Victory** screen is shown.
 - During a run, all waves completed shows the **Fight Complete** screen instead.
 
+### Wave Decoupling (Run Mode)
+
+- Waves are **decoupled from map layout** during runs. Each fight picks a wave from a **difficulty tier** based on `FightsCompleted`:
+  - Fight 1 → `tier1` (easy: Normal, Flying)
+  - Fight 2 → `tier2` (medium: Normal+Fast, Boss+Tank)
+  - Fight 3+ → `tier3` (hard: Tank+Fast+Normal, Flying+Tank)
+- Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change.
+- `LevelData.Waves` is used only in classic mode (non-run) — unchanged.
+- **Boss fights** ignore the tier system and always use `BossWaveData` (set in `LevelManager` Inspector).
+- **Miniboss** `statMultiplier` (1.5× HP, gold, damage) is cumulative with tier difficulty.
+
 ---
 
 ## Towers
@@ -190,6 +201,8 @@ not implementation details.
 | Shop | Slot machine outcome — buy run upgrades | Yes |
 | Meta Shop | Main Menu — permanent upgrades with meta-tokens | Yes |
 | Trinket Choice | Slot machine Treasure outcome — pick 1 of 3 trinkets | Yes |
+| Briefing | Before every fight in a run (map name + wave list) | No |
+| Bestiary | Main Menu button or Pause screen — browse towers/enemies/equip/trinkets/synergies | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
 
@@ -225,3 +238,17 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Tower equipment | `EquipData` resource | Item ID, name, cost, target tower type, stat bonus percents |
 | Trinkets | `TrinketData` resource | Item ID, name, damage bonus, heal amount, gold amount |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |
+| Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted` |
+| Bestiary discovery | `SaveManager` JSON | Towers/enemies/equip/trinkets/synergies auto-discovered when first encountered |
+
+## Bestiary / Discovery
+
+- **Bestiary screen**: accessible from Main Menu (button) or Pause screen (`PauseGame=true` overlay). Shows 5 categories: Towers, Enemies, Equipment, Trinkets, Synergies.
+- **All data is scanned from directories** — zero-code-change to add entries.
+- **Discovery tracking**: items are hidden (grayed out with `???`) until first encountered:
+  - Enemies: discovered when they spawn in a fight
+  - Equipment: discovered when seen in the Shop
+  - Trinkets: discovered when shown in Treasure choice
+  - Synergies: discovered when activated (required towers placed)
+  - Towers: use existing unlock system (meta-progression + default unlocks)
+- **Data persists** across runs in `SaveManager` JSON (`discovered` dict).

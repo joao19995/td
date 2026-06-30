@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_wd"]
+[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/Tank.tres" id="2_tank"]
+[ext_resource type="Resource" uid="uid://5r2uwhpwl3kp" path="res://resources/enemy_data/Fast.tres" id="3_fast"]
+[ext_resource type="Resource" uid="uid://cugbr5b2i020m" path="res://resources/enemy_data/Normal.tres" id="4_normal"]
+
+[resource]
+script = ExtResource("1_wd")
+Enemies = Array[Object]([ExtResource("2_tank"), ExtResource("3_fast"), ExtResource("4_normal")])
+EnemyCount = 15
+SpawnInterval = 1.2

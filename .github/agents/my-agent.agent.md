@@ -21,26 +21,29 @@ bug, duplication, or scaling wall it solves.
 
 ---
 
-# Current Project Reality (Camada 0 — done)
+# Current Project Reality (Camada 0 + Roguelite Layer — done)
 
-This is not a greenfield prototype anymore. The following exists and works:
+This is not a greenfield prototype. The following exists and works:
 
 ## Autoloads (registered in Project Settings, in this order)
 - `EconomyManager` — gold, spend/earn, per-level reset
 - `EventBus` — global signals (EnemyDied, EnemyReachedEnd, TowerPlaced, GameOver, MoneyChanged, LivesChanged, AllWavesCompleted, AllLevelsCompleted)
 - `GameManager` — lives, game-over trigger
+- `RunState` — per-run state: upgrades, equipped items, shop/meta/trinket bonuses, boss/miniboss flags
+- `SaveManager` — JSON persistence: meta tokens, meta upgrade levels, tower unlocks
 - `TowerPlacementManager` — placement preview, validity, confirm/cancel
 - `SceneManager` — level load/unload, LevelLoaded signal
-- `LevelManager` — level order/progression, owns `CurrentLevelNode`
+- `LevelManager` — level order/progression, owns `CurrentLevelNode`, `PickRandomLevel()`/`LoadPendingLevel()` for roguelite flow
 - `CameraManager` — single fixed Camera2D, fits world to viewport, per-level `WorldSize`
 - `PoolManager` — generic object pool keyed by scene path
 - `TowerSelectionManager` — select/deselect placed towers, range indicator
-- `UIManager` — overlay stack (Pause/GameOver/Victory), pause coordination
+- `SlotManager` — weighted slot machine (Fight/Shop/Heal/Miniboss/Treasure), reroll + skew mechanics
+- `UIManager` — overlay stack (Pause/GameOver/Victory/Shop/MetaShop/TrinketChoice/Briefing), pause coordination
 
 ## Gameplay Systems
 - 5 tower types (Base, Fast, Ice, Poison, Splash), each a `TowerData` Resource
 - 5 enemy types (Normal, Fast, Tank, Flying, Boss), each an `EnemyData` Resource
-- Wave system via `WaveData`, per-level wave lists
+- Wave system via `WaveData`, per-level wave lists, BossWave for boss fights
 - Tower upgrades: 2-tier `UpgradePath` (Array<UpgradeData>) per tower, computed
   at runtime via `EffectiveDamage/EffectiveFireRate/EffectiveRange` — **never**
   mutates the shared `TowerData` resource
@@ -50,7 +53,16 @@ This is not a greenfield prototype anymore. The following exists and works:
   + `PoolManager`
 - 2 maps (`Map1`, `Map2`), both subclass `BaseLevel`, zero gameplay code in the
   subclasses — adding a map is a scene + `LevelData` resource, no code
-- Full UI loop: MainMenu → level → Pause/GameOver/Victory via `UIManager` stack
+- Synergies: `SynergyManager` scans `resources/synergy_data/` — adding a new synergy is a `.tres` file, no code
+- Run engine: `RunState` + `SlotManager` + `SaveManager` — slot spin after each fight, reroll with cost scaling and outcome skew reduction
+- Loadout screen: choose 1–4 towers per run, locked towers shown disabled
+- Shop outcome: run-wide bonuses (ShopItemData) + tower equipment (EquipData); both loaded by scanning `resources/run_data/` and `resources/equip_data/`
+- Meta-progression shop: 5 MetaUpgradeData items, token-based, scanned from `resources/meta_upgrade_data/`
+- Trinkets: Treasure outcome picks 1 of 3 random trinkets, scanned from `resources/trinket_data/`
+- Pre-fight briefing screen showing wave composition
+- Wave decoupling: waves organized by difficulty tier (`tier1/tier2/tier3`), selected by `RunState.FightsCompleted`, independent of map
+- Bestiary screen: 5 categories (Towers/Enemies/Equipment/Trinkets/Synergies) with discovery tracking — locked/hidden until first encounter
+- Full UI loop: MainMenu → Loadout → Briefing → fight → FightComplete → slot spin → outcome → repeat → boss → Victory
 
 ---
 
@@ -124,14 +136,22 @@ scripts/
 ├── towers/            # Tower.cs (generic, data-driven)
 ├── projectiles/       # Projectile.cs (generic, homing)
 ├── factories/          # TowerFactory, EnemyFactory, ProjectileFactory
-├── resources/          # TowerData, EnemyData, WaveData, UpgradeData, LevelData, UIScreenData
+├── resources/          # TowerData, EnemyData, WaveData, UpgradeData, LevelData, UIScreenData, SynergyData, EquipData, TrinketData, MetaUpgradeData, ShopItemData
 ├── levels/             # BaseLevel, Map1, Map2
-├── ui/                  # HUD, screens/ (MainMenu, Pause, GameOver, Victory)
+├── ui/                  # HUD
+│   ├── screens/        # MainMenu, Loadout, FightComplete
+│   ├── shop/           # ShopScreen
+│   ├── meta_shop/      # MetaShopScreen
+│   ├── briefing/       # BriefingScreen
+│   ├── trinket/        # TrinketChoiceScreen
+│   └── bestiary/       # BestiaryScreen
 ├── main/                # Main.cs entry point
 ├── Spawner/             # EnemySpawner
-├── systems/             # PoolManager
+├── systems/             # PoolManager, SynergyManager, SlotManager
 resources/
-├── tower_data/, enemy_data/, wave_data/, upgrade_data/, level_data/, ui_screens/, theme/
+├── tower_data/, enemy_data/, wave_data/ (tier1/tier2/tier3), upgrade_data/, level_data/,
+    ui_screens/, theme/, synergy_data/, equip_data/, trinket_data/,
+    meta_upgrade_data/, run_data/
 scenes/
 ├── main/, levels/, towers/, enemies/, projectiles/, ui/, system/ (autoload scenes), spawner/
 
@@ -154,8 +174,10 @@ When reviewing or proposing code:
 
 # Critical Question
 
-Before implementing: *if this game adds a run structure (slot-machine fight
-selection, persistent per-tower-type upgrades within a run, a shop, and
-meta-progression via SaveManager) on top of the current systems, does this
-change still make sense — or does it only work for the current "fixed wave
-list" mode?*
+Before implementing: *does this belong in a Resource file (data-driven)?
+Can I compose this from existing components instead of writing new ones?
+Does this need to be pooled? Is this global enough for EventBus or local
+enough for a direct signal? Is there an actual problem this solves, or is
+it cleaner only in the abstract? Will this still make sense once the
+roguelite run layer sits on top of it? Does this add coupling I'll regret
+in 6 months?*

@@ -28,7 +28,7 @@ public partial class BriefingScreen : Control
 
         if (RunState.Instance.IsBossFight)
         {
-            var bossWave = GD.Load<WaveData>("res://resources/run_data/BossWave.tres");
+            var bossWave = LevelManager.Instance.BossWaveData;
             if (bossWave?.Enemies != null && bossWave.Enemies.Count > 0)
             {
                 var names = new StringBuilder();
@@ -43,7 +43,7 @@ public partial class BriefingScreen : Control
         }
         else
         {
-            var waves = levelData.Waves;
+            var waves = LevelManager.Instance.PendingRunWaves ?? levelData.Waves;
             int waveNum = 1;
             foreach (var wave in waves)
             {

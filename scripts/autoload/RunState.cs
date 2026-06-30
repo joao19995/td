@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 public partial class RunState : Node
 {
@@ -6,9 +7,7 @@ public partial class RunState : Node
 
     public bool IsRunActive { get; private set; }
 
-    public Godot.Collections.Array<string> SelectedTowerIds { get; private set; } = new();
-
-    public bool[] _selectedTowerFlags;
+    public Array<string> SelectedTowerIds { get; private set; } = new();
 
     public int FightsCompleted { get; private set; } = 0;
     public bool IsBossFight { get; private set; } = false;
@@ -23,8 +22,8 @@ public partial class RunState : Node
 
     public float TrinketDamageBonusPercent { get; set; } = 0f;
 
-    private Godot.Collections.Dictionary<string, int> _towerLevels = new();
-    private Godot.Collections.Dictionary<string, string> _equippedItems = new();
+    private Dictionary<string, int> _towerLevels = new();
+    private Dictionary<string, string> _equippedItems = new();
 
     public override void _EnterTree()
     {
@@ -112,5 +111,39 @@ public partial class RunState : Node
             GameManager.Instance.Heal(trinket.HealAmount);
         if (trinket.GoldAmount > 0)
             EconomyManager.Instance.AddMoney(trinket.GoldAmount);
+    }
+
+    public string GetWaveTier()
+    {
+        if (FightsCompleted >= 2) return "tier3";
+        if (FightsCompleted == 1) return "tier2";
+        return "tier1";
+    }
+
+    public Array<WaveData> PickRunWaves()
+    {
+        string tier = GetWaveTier();
+        string dirPath = $"res://resources/wave_data/{tier}/";
+        var dir = DirAccess.Open(dirPath);
+        if (dir == null)
+        {
+            GD.PrintErr($"RunState: failed to open wave tier dir {dirPath}");
+            return null;
+        }
+
+        var waves = new System.Collections.Generic.List<WaveData>();
+        foreach (var file in dir.GetFiles())
+        {
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
+                continue;
+            var res = ResourceLoader.Load<Resource>(dirPath + file, "", ResourceLoader.CacheMode.Replace);
+            if (res is WaveData w)
+                waves.Add(w);
+        }
+
+        if (waves.Count == 0) return null;
+
+        int idx = (int)(GD.Randi() % waves.Count);
+        return new Array<WaveData> { waves[idx] };
     }
 }

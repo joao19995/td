@@ -20,7 +20,7 @@ public partial class EnemySpawner : Node2D
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
     public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
 
-    public void ConfigureForRun(bool isBoss, bool isMiniboss, float minibossMult)
+    public void ConfigureForRun(bool isBoss, bool isMiniboss, float minibossMult, Array<WaveData> runWaves = null)
     {
         _isBossFight = isBoss;
         _isMiniboss = isMiniboss;
@@ -30,6 +30,10 @@ public partial class EnemySpawner : Node2D
             var bossWave = BossWaveData ?? GD.Load<WaveData>("res://resources/run_data/BossWave.tres");
             if (bossWave != null)
                 Waves = new Array<WaveData> { bossWave };
+        }
+        else if (runWaves != null && runWaves.Count > 0)
+        {
+            Waves = runWaves;
         }
     }
 
@@ -112,6 +116,8 @@ public partial class EnemySpawner : Node2D
             GD.PrintErr("EnemySpawner: EnemyPath, GenericEnemyScene, or EnemyData not assigned.");
             return;
         }
+
+        SaveManager.Instance?.MarkDiscovered($"enemy_{enemyData.Id}");
 
         float mult = _isMiniboss ? _minibossMultiplier : 1f;
         var enemy = EnemyFactory.Create(GenericEnemyScene, enemyData, EnemyPath.Curve, mult);

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 /// <summary>
 /// Abstract base class for all level scenes.
@@ -57,12 +58,13 @@ public abstract partial class BaseLevel : Node2D
         OnLevelReady();
     }
 
-    public void ConfigureForRun()
+    public void ConfigureForRun(Array<WaveData> runWaves = null)
     {
         Spawner?.ConfigureForRun(
             RunState.Instance.IsBossFight,
             RunState.Instance.IsMiniboss,
-            SlotManager.Instance.MinibossStatMultiplier
+            SlotManager.Instance.MinibossStatMultiplier,
+            runWaves
         );
     }
 
