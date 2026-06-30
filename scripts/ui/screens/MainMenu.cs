@@ -4,8 +4,8 @@ public partial class MainMenu : CanvasLayer
 {
     public override void _Ready()
     {
-        var btn = GetNode<Button>("VBox/StartRunButton");
-        btn.Pressed += OnStartRunPressed;
+        GetNode<Button>("VBox/StartRunButton").Pressed += OnStartRunPressed;
+        GetNode<Label>("VBox/TokenLabel").Text = $"Tokens: {SaveManager.Instance.MetaTokens}";
     }
 
     private void OnStartRunPressed()

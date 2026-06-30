@@ -14,7 +14,7 @@ not implementation details.
 - From Fight Complete the player can **"Next Fight"** (reloads a random map with gold/lives/tower upgrades preserved) or **"End Run"** (returns to Main Menu).
 - Runs are infinite by design — the player fights until they lose all lives (Game Over) or chooses to end the run.
 - Pressing **ESC** pauses the game at any time. Pressing again resumes.
-- Running out of lives shows a **Game Over** screen with Retry and Menu buttons.
+- Running out of lives shows a **Game Over** screen with Menu buttons.
 - Completing all levels in classic mode shows a **Victory** screen.
 
 ---

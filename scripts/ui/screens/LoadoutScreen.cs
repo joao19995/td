@@ -20,9 +20,11 @@ public partial class LoadoutScreen : CanvasLayer
         int i = 0;
         foreach (var data in AllTowers)
         {
+            bool unlocked = SaveManager.Instance.IsTowerUnlocked(data.Id);
             var btn = new Button();
-            btn.Text = $"{data.TowerName} ({data.Cost}g)";
-            btn.ToggleMode = true;
+            btn.Text = unlocked ? $"{data.TowerName} ({data.Cost}g)" : $"{data.TowerName} (LOCKED)";
+            btn.Disabled = !unlocked;
+            btn.ToggleMode = unlocked;
             int idx = i;
             btn.Toggled += (toggledOn) => OnTowerToggled(idx, toggledOn);
             GetNode<VBoxContainer>("VBox/TowerList").AddChild(btn);

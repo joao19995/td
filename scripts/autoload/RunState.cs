@@ -28,7 +28,9 @@ public partial class RunState : Node
 
     public void EndRun()
     {
+        if (!IsRunActive) return;
         IsRunActive = false;
+        SaveManager.Instance.AddMetaTokens(SaveManager.Instance.MetaTokensPerRun);
         _towerLevels.Clear();
         SelectedTowerIds.Clear();
     }
