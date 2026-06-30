@@ -4,6 +4,7 @@ public partial class FightCompleteScreen : Control
 {
     private Label _outcomeLabel;
     private Button _spinButton;
+    private Button _rerollButton;
     private Label _goldLabel;
     private Label _livesLabel;
 
@@ -17,11 +18,14 @@ public partial class FightCompleteScreen : Control
         _livesLabel = GetNode<Label>("VBox/LivesLabel");
         _outcomeLabel = GetNode<Label>("VBox/OutcomeLabel");
         _spinButton = GetNode<Button>("VBox/SpinButton");
+        _rerollButton = GetNode<Button>("VBox/RerollButton");
 
         _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
         _livesLabel.Text = $"Lives: {GameManager.Instance.CurrentLives}";
 
         _spinButton.Pressed += OnSpinPressed;
+        _rerollButton.Pressed += OnRerollPressed;
+        _rerollButton.Visible = false;
         GetNode<Button>("VBox/EndRunButton").Pressed += OnEndRunPressed;
     }
 
@@ -36,6 +40,7 @@ public partial class FightCompleteScreen : Control
         }
 
         _state = State.Resolve;
+        SlotManager.Instance.ResetRerolls();
         RunState.Instance.IncrementFights();
         RunState.Instance.SetMiniboss(false);
 
@@ -49,20 +54,21 @@ public partial class FightCompleteScreen : Control
             return;
         }
 
+        DoSpin();
+    }
+
+    private void DoSpin()
+    {
         _pendingOutcome = SlotManager.Instance.Spin();
 
         switch (_pendingOutcome)
         {
             case "Fight":
                 ShowOutcome("Next: FIGHT");
-                _spinButton.Text = "Continue";
-                _spinButton.Disabled = false;
                 break;
 
             case "Shop":
                 ShowOutcome("Next: SHOP");
-                _spinButton.Text = "Continue";
-                _spinButton.Disabled = false;
                 break;
 
             case "Heal":
@@ -71,15 +77,44 @@ public partial class FightCompleteScreen : Control
                 ShowOutcome($"Healed! +{SlotManager.Instance.HealAmount} HP");
                 _spinButton.Text = "Next Fight";
                 _spinButton.Disabled = false;
-                break;
+                return;
 
             case "Miniboss":
                 ShowOutcome("MINIBOSS!");
-                _spinButton.Text = "Continue";
-                _spinButton.Disabled = false;
                 RunState.Instance.SetMiniboss(true);
                 break;
         }
+
+        _spinButton.Text = "Continue";
+        _spinButton.Disabled = false;
+
+        UpdateRerollButton();
+    }
+
+    private void OnRerollPressed()
+    {
+        int cost = SlotManager.Instance.GetRerollCost();
+        if (!EconomyManager.Instance.CanAfford(cost)) return;
+
+        EconomyManager.Instance.SpendMoney(cost);
+        _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
+
+        SlotManager.Instance.ApplySkew(_pendingOutcome);
+        DoSpin();
+    }
+
+    private void UpdateRerollButton()
+    {
+        if (_pendingOutcome == "Boss" || _pendingOutcome == "Heal")
+        {
+            _rerollButton.Visible = false;
+            return;
+        }
+
+        int cost = SlotManager.Instance.GetRerollCost();
+        _rerollButton.Text = $"Reroll ({cost}g)";
+        _rerollButton.Disabled = !EconomyManager.Instance.CanAfford(cost);
+        _rerollButton.Visible = true;
     }
 
     private void ResolveOutcome()
