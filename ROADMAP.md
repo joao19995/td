@@ -64,27 +64,41 @@ Key decisions:
 - Synergy `.tres` files can drop default-valued properties (editor auto-clean). C# defaults cover missing values, so functionality is unaffected.
 - `CacheMode.Replace` used in ResourceLoader to avoid stale cache after .tres edits.
 
-### 4. Fight Integration
-Existing wave system runs inside a run. Each fight loads the map and lets the
-player place towers (respecting 1-per-type limit). Upgrades from RunState apply
-to placed towers. Lives are per-run, not per-fight. If the player loses all lives
-the run ends (Game Over). If all waves are cleared the run advances to the slot
-machine.
+### 4+5. Run Engine (Slot Machine + Fight Integration) ✅
 
-### 5. Slot Machine (run engine)
-Decides the next step after each fight: shop, heal, random event, or miniboss
-(harder fight with bonus reward). Weighted per outcome type. Reroll and
-probability-skewing deferred — base weighted roll only for MVP.
+**Status: Complete.**
 
-### 6. Run Loop
-Start run → loadout (all 5 towers available at base level) → repeat
-[fight → slot machine → resolve step] → win/lose → meta-progression reward.
+Merges original items 4 (Fight Integration, ~85% done from earlier work) and
+5 (Slot Machine) into one.
 
-### 7. Shop (run upgrades)
-Purchases that last the entire run (e.g. "+10% damage all towers", "+1 range").
-Single category for MVP. Tower equips and trinkets deferred.
+What was built:
+- **SlotManager autoload** — weighted roll (Fight 45%, Shop 25%, Heal 20%, Miniboss 10%)
+  that runs after each fight. Configurable weights and fight count via Inspector.
+- **Run length**: N regular fights (default 3, configurable) + 1 boss fight.
+  Boss triggers automatically when `FightsCompleted >= FightsPerRun`.
+- **FightCompleteScreen** now shows outcome text on first click ("Continue"),
+  resolves on second click — player controls the pacing.
+- **Shop outcome** — pushes a ShopScreen with run-wide stat bonuses (damage,
+  fire rate). Items defined as `ShopItemData` resources.
+- **Heal outcome** — restores configurable HP (default 5) without a fight.
+- **Miniboss outcome** — loads a random map with 1.5x enemy stat multiplier.
+- **Boss fight** — uses a dedicated boss wave (BossWave.tres) with mix of
+  enemies including the Boss enemy type. Victory ends the run.
+- **Shop bonuses** stack multiplicatively with upgrades and synergies in tower
+  EffectiveDamage/EffectiveFireRate/EffectiveRange formulas.
+- **Miniboss scaling** — Enemy accepts a statMultiplier parameter in
+  Initialize(), applied to HP, reward gold, and damage.
 
-### 8. Meta-Progression
+Key decisions:
+- Slot spin happens AFTER fight ends — FightCompleteScreen shows outcome,
+  second click resolves it. Player always sees what's coming.
+- IsBossFight/IsMiniboss flags on RunState, read by EnemySpawner via
+  BaseLevel.ConfigureForRun() called from LevelManager.OnLevelLoaded.
+- Shop screen is a placeholder (single category, 2 items) — expandable.
+- BossWave is a separate .tres file; EnemySpawner falls back to loading it
+  from `res://resources/run_data/BossWave.tres` if `BossWaveData` export is
+  not set on the map scene.
+### 6. Meta-Progression (Shop)
 Token earned at end of every run (win or lose), separate currency from run gold.
 Small meta-shop/tree outside the run (e.g. from Main Menu), spendable only with
 this token. Small catalog for MVP (2-3 items: permanent stat bonus, tower unlock).

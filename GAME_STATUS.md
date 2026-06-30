@@ -11,8 +11,9 @@ not implementation details.
 - Game opens on a **Main Menu** with a "Start Run" button.
 - **Start Run** opens the **Loadout screen**, where the player selects 1–4 tower types to bring into the run.
 - The run begins on a random map (Map1 or Map2). After placing towers and defeating all waves (all enemies must be killed, not just spawned), a **Fight Complete** screen appears.
-- From Fight Complete the player can **"Next Fight"** (reloads a random map with gold/lives/tower upgrades preserved) or **"End Run"** (returns to Main Menu).
-- Runs are infinite by design — the player fights until they lose all lives (Game Over) or chooses to end the run.
+- From Fight Complete the player clicks **"Continue"** to spin the slot machine, which determines the next step (next fight, shop, heal, or miniboss). Gold/lives/tower upgrades are preserved across the run.
+- After the configured number of fights (default 3), the slot machine automatically triggers a **Boss Fight** instead of rolling. Defeating the boss ends the run with Victory.
+- The player can always choose **"End Run"** from Fight Complete to end early and receive meta tokens.
 - Pressing **ESC** pauses the game at any time. Pressing again resumes.
 - Running out of lives shows a **Game Over** screen with Menu buttons.
 - Completing all levels in classic mode shows a **Victory** screen.
@@ -35,6 +36,19 @@ not implementation details.
 - **Tower upgrades persist** by tower type across fights. If a Base tower is upgraded to level 2 and sold, the next Base tower placed starts at level 2.
 - **1-per-type** enforcement: only one tower of each type can be on the map at once. The HUD grays out the button and shows "(Placed)" for types already placed.
 - **Random map rotation**: each "Next Fight" loads a random map (Map1 or Map2).
+
+## Run Engine (Slot Machine)
+
+- After each fight during a run, a **slot machine** roll determines what happens next:
+  - **Fight** (45%): proceeds to a standard random map fight
+  - **Shop** (25%): enters the run shop to buy permanent stat bonuses for the run
+  - **Heal** (20%): restores 5 lives (configurable) without a fight
+  - **Miniboss** (10%): harder fight with 1.5x enemy stats on a random map
+- After the configured number of fights (default 3), a **boss fight** triggers automatically using a dedicated boss wave (Boss enemy + minions).
+- Defeating the boss ends the run with a **Victory** screen and awards meta tokens.
+- The shop sells run-wide bonuses (damage, fire rate) that stack multiplicatively with tower upgrades and synergies.
+- All weights, heal amount, miniboss multiplier, and fights-per-run are exported on SlotManager — no code changes needed to tweak.
+- Outcomes that involve a fight (Fight, Miniboss, Boss) reset all tower placement — player places towers fresh each fight.
 
 ## Meta-Progression (Save System)
 
@@ -139,13 +153,14 @@ not implementation details.
 ## Screens & Menus
 
 | Screen | When shown | Can pause |
-|---|---|---|---|
+|---|---|---|---|---|
 | Main Menu | On startup | N/A |
 | Loadout | After clicking "Start Run" on Main Menu | No |
 | Pause | Pressing ESC during gameplay | Yes |
 | Game Over | Lives reach zero | Yes |
 | Victory | All levels completed (classic mode) | Yes |
 | Fight Complete | All waves cleared during a run | Yes |
+| Shop | Slot machine outcome — buy run upgrades | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
 
@@ -176,4 +191,6 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Level setup | `LevelData` | Scene path, preview image, starting money/lives, world size |
 | Screen/overlay config | `UIScreenData` | Scene path, whether it pauses the game |
 | Synergy combos | `SynergyData` | Required tower IDs, min tower count, bonus percentages (damage/fire rate/range) |
+| Run engine (slot machine) | `SlotManager` Inspector | Fight count per run, outcome weights, heal amount, miniboss multiplier |
+| Shop items (run upgrades) | `ShopItemData` resource | Item ID, name, cost, stat bonus percent |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |

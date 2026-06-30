@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+ItemId = "damage_boost"
+ItemName = "Damage Boost"
+Description = "+5% damage for all towers"
+Cost = 80
+DamageBonusPercent = 0.05

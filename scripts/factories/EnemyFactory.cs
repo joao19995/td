@@ -2,14 +2,14 @@ using Godot;
 
 public static class EnemyFactory
 {
-    public static Enemy Create(PackedScene enemyScene, EnemyData data, Curve2D path)
+    public static Enemy Create(PackedScene enemyScene, EnemyData data, Curve2D path, float statMultiplier = 1f)
     {
         var fromPool = PoolManager.Instance != null;
         var enemy = fromPool
             ? PoolManager.Instance.Get<Enemy>(enemyScene)
             : enemyScene.Instantiate<Enemy>();
 
-        enemy.Initialize(data, path);
+        enemy.Initialize(data, path, statMultiplier);
         return enemy;
     }
 }

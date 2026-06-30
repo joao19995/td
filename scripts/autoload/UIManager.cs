@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 using System.Collections.Generic;
 
 public partial class UIManager : Node
@@ -9,6 +9,7 @@ public partial class UIManager : Node
     [Export] public UIScreenData GameOverData;
     [Export] public UIScreenData VictoryData;
     [Export] public UIScreenData FightCompleteData;
+    [Export] public UIScreenData ShopData;
 
     private readonly List<(UIScreenData data, Node instance)> _stack = new();
     private CanvasLayer _overlayLayer;
@@ -95,7 +96,16 @@ public partial class UIManager : Node
 
     private void OnAllWavesCompleted()
     {
-        if (RunState.Instance.IsRunActive)
-            PushScreen(FightCompleteData);
+        if (!RunState.Instance.IsRunActive) return;
+
+        if (RunState.Instance.IsBossFight)
+        {
+            RunState.Instance.EndRun();
+            EventBus.Instance.EmitSignal(EventBus.SignalName.RunCompleted);
+            PushScreen(VictoryData);
+            return;
+        }
+
+        PushScreen(FightCompleteData);
     }
 }

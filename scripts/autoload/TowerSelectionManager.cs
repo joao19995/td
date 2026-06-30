@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 
 public partial class TowerSelectionManager : Node
 {
@@ -51,10 +51,16 @@ public partial class TowerSelectionManager : Node
     {
         if (tower == _selectedTower) return;
 
-        TowerPlacementManager.Instance.CancelPlacement();
+        if (_rangeIndicator != null)
+        {
+            _rangeIndicator.QueueFree();
+            _rangeIndicator = null;
+        }
 
         if (_selectedTower != null && IsInstanceValid(_selectedTower))
             _selectedTower.Modulate = new Color(1, 1, 1, 1);
+
+        TowerPlacementManager.Instance.CancelPlacement();
 
         _selectedTower = tower;
         _selectedTower.Modulate = new Color(0.8f, 0.9f, 1, 1);

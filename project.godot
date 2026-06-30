@@ -30,6 +30,7 @@ UIManager="*res://scenes/system/UIManager.tscn"
 RunState="*res://scripts/autoload/RunState.cs"
 SaveManager="*res://scripts/autoload/SaveManager.cs"
 SynergyManager="*res://scripts/systems/SynergyManager.cs"
+SlotManager="*res://scripts/systems/SlotManager.cs"
 
 [display]
 

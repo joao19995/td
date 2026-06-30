@@ -75,7 +75,8 @@ public partial class Tower : Node2D
                     bonus += _data.UpgradePath[i].DamageBonus;
             float baseWithUpgrade = _data.Damage + bonus;
             float synergyPercent = SynergyManager.Instance?.GetDamageBonus(_data.Id) ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent);
+            float shopPercent = RunState.Instance?.ShopDamageBonusPercent ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent);
         }
     }
 
@@ -90,7 +91,8 @@ public partial class Tower : Node2D
                     bonus += _data.UpgradePath[i].FireRateBonus;
             float baseWithUpgrade = _data.FireRate + bonus;
             float synergyPercent = SynergyManager.Instance?.GetFireRateBonus(_data.Id) ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent);
+            float shopPercent = RunState.Instance?.ShopFireRateBonusPercent ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent);
         }
     }
 
@@ -105,7 +107,8 @@ public partial class Tower : Node2D
                     bonus += _data.UpgradePath[i].RangeBonus;
             float baseWithUpgrade = _data.Range + bonus;
             float synergyPercent = SynergyManager.Instance?.GetRangeBonus(_data.Id) ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent);
+            float shopPercent = RunState.Instance?.ShopRangeBonusPercent ?? 0f;
+            return baseWithUpgrade * (1f + synergyPercent) * (1f + shopPercent);
         }
     }
 

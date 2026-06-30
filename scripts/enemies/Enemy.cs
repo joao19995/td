@@ -10,6 +10,7 @@ public partial class Enemy : Area2D
     private Curve2D _pendingCurve;
     private bool _signalsConnected;
     private bool _returningToPool;
+    private float _statMultiplier = 1f;
     public bool IsDead { get; private set; }
 
     public override void _Ready()
@@ -47,11 +48,12 @@ public partial class Enemy : Area2D
         _signalsConnected = false;
     }
 
-    public void Initialize(EnemyData data, Curve2D curve)
+    public void Initialize(EnemyData data, Curve2D curve, float statMultiplier = 1f)
     {
         _returningToPool = false;
         IsDead = false;
         _data = data;
+        _statMultiplier = statMultiplier;
         ConnectSignals();
 
         if (_movement != null)
@@ -65,7 +67,7 @@ public partial class Enemy : Area2D
 
     private void ApplyData()
     {
-        _health.Setup(_data.MaxHealth);
+        _health.Setup(_data.MaxHealth * _statMultiplier);
         _healthBar.SetHealth(_health.GetCurrentHealth(), _health.MaxHealth);
 
         if (_pendingCurve != null)
@@ -108,14 +110,14 @@ public partial class Enemy : Area2D
     private void OnReachedEnd()
     {
         IsDead = true;
-        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, _data.DamageToPlayer);
+        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, Mathf.RoundToInt(_data.DamageToPlayer * _statMultiplier));
         ReturnToPool();
     }
 
     private void OnDied()
     {
         IsDead = true;
-        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, _data.RewardGold);
+        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, Mathf.RoundToInt(_data.RewardGold * _statMultiplier));
         ReturnToPool();
     }
 

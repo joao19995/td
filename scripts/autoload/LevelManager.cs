@@ -93,8 +93,11 @@ public partial class LevelManager : Node
             GameManager.Instance.ResetForLevel(CurrentLevel);
             EconomyManager.Instance.ResetForLevel(CurrentLevel);
         }
+        else if (levelNode is BaseLevel baseLevel)
+        {
+            baseLevel.ConfigureForRun();
+        }
 
-  
     if (levelNode is not BaseLevel)
         GD.PushWarning("LevelManager: Loaded level does not extend BaseLevel.");
 

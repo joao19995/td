@@ -57,5 +57,14 @@ public abstract partial class BaseLevel : Node2D
         OnLevelReady();
     }
 
+    public void ConfigureForRun()
+    {
+        Spawner?.ConfigureForRun(
+            RunState.Instance.IsBossFight,
+            RunState.Instance.IsMiniboss,
+            SlotManager.Instance.MinibossStatMultiplier
+        );
+    }
+
     protected virtual void OnLevelReady() { }
 }
