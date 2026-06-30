@@ -2,12 +2,13 @@
 
 ## Project Overview
 
-Godot 4.7 (.NET 8) tower defense with roguelite run structure. 320×190 pixel resolution,
-GL Compatibility renderer, integer scaling. C# only — no GDScript.
+Godot 4.7 (.NET 8) tower defense, expanding into a roguelite hybrid
+(Darkest Dungeon / Slay the Spire inspired run structure). 320×190 pixel
+resolution, GL Compatibility renderer, integer scaling. C# only — no GDScript.
 
-Current state: prototype → MVP transition. Base systems work (towers, enemies, waves,
-pooling, upgrades, status effects). Next: RunState, SaveManager, synergies, shop,
-meta-progression.
+**State: Camada 0 complete (full TD game loop + upgrades + status effects).
+Next layer: roguelite run structure (RunState → SaveManager → Fight Integration →
+Slot Machine → Shop → Meta-progression), per ROADMAP.md.**
 
 ---
 
@@ -23,6 +24,12 @@ LevelData — every stat belongs in a Resource file. The `.tres` files under
 No `FastEnemy : Enemy`, `BossEnemy : Enemy` garbage. Enemy has HealthComponent,
 MovementComponent, StatusEffectComponent as children. Tower has TargetingComponent,
 AttackComponent. Behavior emerges from composition, not inheritance chains.
+`BaseLevel` is the one accepted abstract base (zero gameplay logic in `Map1`/
+`Map2`), required for zero-code-change map addition.
+
+### Concrete-Necessity Test (Apply Before Any Refactor)
+Before proposing a change, identify the actual bug, duplication, or scaling
+wall it fixes. "Cleaner in the abstract" is not a justification.
 
 ### Autoloads Are Infrastructure, Not Gameplay
 Autoloads (singletons) exist for: EventBus, LevelManager, SceneManager, UIManager,
@@ -41,6 +48,11 @@ Projectiles, enemies, effects — all go through PoolManager. Factories
 (ProjectileFactory, EnemyFactory) handle pool transparently with Instantiate
 fallback. No direct `Instantiate`/`QueueFree` for high-frequency objects.
 
+### Direct Singleton Access Is the Pattern
+Autoloads expose a static `Instance` property (set in `_EnterTree`). This is the
+established pattern — don't propose DI wrappers without a concrete
+reuse/testability problem that actually exists.
+
 ---
 
 ## Code Standards — Short Version
@@ -51,8 +63,12 @@ fallback. No direct `Instantiate`/`QueueFree` for high-frequency objects.
 - **Resources use `[GlobalClass]`**, never `class_name`
 - **Class name = file name**, public partial class always
 - **No hardcoded gameplay values** — read from Resources
-- **No deep node paths** — use exports, signals, dependency injection
+- **No deep node paths** — use `[Export] NodePath` with conventional defaults
 - **No duplicate code** — abstract, generalize, componentize
+- **Sub-resources in `.tscn` are shared by reference** — call `.Duplicate()`
+  before per-instance mutation (or you'll modify the source)
+- **Spawn under the active level container** (`BaseLevel.TowersContainer/
+  EnemiesContainer/ProjectilesContainer`), never `GetTree().CurrentScene`
 
 ---
 
@@ -111,6 +127,9 @@ See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP
 - All C# in global namespace (no `namespace` declarations)
 - UI positions partially hardcoded in HUD.tscn
 - Splash collision mask hardcoded to layer 1
+- `CameraManager.WorldSize` default is set on the autoload, not derived from
+  `LevelData` until `Configure()` is called with an override (fine today,
+  revisit if per-map sizes diverge)
 
 ---
 
@@ -132,6 +151,9 @@ violations. `_returningToPool` flag prevents duplicate calls.
 **Slow and Poison stack only by refreshing duration.** No intensity stacking.
 Slow uses fixed `SpeedMultiplier` value.
 
+**LevelManager only swaps `_levelContainer` when a non-null container is
+passed** — required so Retry/MainMenu transitions don't break.
+
 ---
 
 ## What To Ask Before Implementing
@@ -140,5 +162,6 @@ Slow uses fixed `SpeedMultiplier` value.
 2. Can I compose this from existing components instead of writing new ones?
 3. Does this need to be pooled?
 4. Is this global enough for EventBus or local enough for a direct signal?
-5. Will this scale to 30 enemies, 20 towers, 100 upgrades?
-6. Does this add coupling I'll regret in 6 months?
+5. Is there an actual problem this solves, or is it cleaner only in the abstract?
+6. Will this still make sense once the roguelite run layer sits on top of it?
+7. Does this add coupling I'll regret in 6 months?
