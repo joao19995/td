@@ -24,6 +24,13 @@ public partial class LevelManager : Node
     {
         _levelContainer = container;
     }
+
+    public void LoadRandomLevel(Node container = null)
+    {
+        if (Levels == null || Levels.Count == 0) return;
+        int index = (int)(GD.Randi() % Levels.Count);
+        LoadLevel(index, container);
+    }
     public LevelData CurrentLevel =>
         Levels != null && _currentLevelIndex >= 0 && _currentLevelIndex < Levels.Count
             ? Levels[_currentLevelIndex]
@@ -81,8 +88,11 @@ public partial class LevelManager : Node
 
         if (CurrentLevel == null) return;
 
-        GameManager.Instance.ResetForLevel(CurrentLevel);
-        EconomyManager.Instance.ResetForLevel(CurrentLevel);
+        if (!RunState.Instance.IsRunActive)
+        {
+            GameManager.Instance.ResetForLevel(CurrentLevel);
+            EconomyManager.Instance.ResetForLevel(CurrentLevel);
+        }
 
   
     if (levelNode is not BaseLevel)

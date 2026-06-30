@@ -11,6 +11,7 @@ public partial class TowerPlacementManager : Node
     private Node2D _previewInstance;
     private TileMapLayer _activeTileMap;
     private readonly System.Collections.Generic.HashSet<Vector2I> _occupiedCells = new();
+    private readonly System.Collections.Generic.HashSet<string> _placedTowerIds = new();
     public bool IsPlacing => _selectedTowerData != null;
 
     public override void _EnterTree()
@@ -29,9 +30,12 @@ public partial class TowerPlacementManager : Node
             SceneManager.Instance.LevelLoaded -= OnLevelLoaded;
     }
 
+    public bool IsTowerTypePlaced(string towerId) => _placedTowerIds.Contains(towerId);
+
     private void OnLevelLoaded(Node _)
     {
         _occupiedCells.Clear();
+        _placedTowerIds.Clear();
         CancelPlacement();
     }
 
@@ -62,6 +66,8 @@ public partial class TowerPlacementManager : Node
             GD.PrintErr("TowerPlacementManager: GenericTowerScene not assigned.");
             return;
         }
+
+        if (_placedTowerIds.Contains(towerData.Id)) return;
 
         if (TowerSelectionManager.Instance != null)
             TowerSelectionManager.Instance.Deselect();
@@ -103,9 +109,13 @@ public partial class TowerPlacementManager : Node
             return;
 
         _occupiedCells.Add(cell);
+        _placedTowerIds.Add(_selectedTowerData.Id);
+
+        EventBus.Instance?.EmitSignal(EventBus.SignalName.TowerPlaced, _selectedTowerData.Cost);
 
         var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
-        tower.TreeExited += () => _occupiedCells.Remove(cell);
+        var towerId = _selectedTowerData.Id;
+        tower.TreeExited += () => { _occupiedCells.Remove(cell); _placedTowerIds.Remove(towerId); };
         GetTowersContainer().AddChild(tower);
 
         CancelPlacement();

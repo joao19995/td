@@ -37,7 +37,13 @@ public partial class GameManager : Node
         GetTree().Paused = true; // pausa o jogo; Fase 10 vai mostrar o menu de game over
     }
 
-	public void ResetForLevel(LevelData data)
+    public void SetLives(int amount)
+    {
+        _currentLives = amount;
+        EventBus.Instance.EmitSignal(EventBus.SignalName.LivesChanged, _currentLives);
+    }
+
+    public void ResetForLevel(LevelData data)
 	{
 		_currentLives = (data.StartingLives >= 0) ? data.StartingLives : StartingLives;
 		EventBus.Instance.EmitSignal(EventBus.SignalName.LivesChanged, _currentLives);

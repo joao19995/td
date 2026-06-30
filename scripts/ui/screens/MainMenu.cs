@@ -4,12 +4,13 @@ public partial class MainMenu : CanvasLayer
 {
     public override void _Ready()
     {
-        var btn = GetNode<Button>("VBox/PlayButton");
-        btn.Pressed += OnPlayPressed;
+        var btn = GetNode<Button>("VBox/StartRunButton");
+        btn.Pressed += OnStartRunPressed;
     }
 
-    private void OnPlayPressed()
+    private void OnStartRunPressed()
     {
-        LevelManager.Instance.LoadLevel(0);
+        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/LoadoutScreen.tscn",
+            LevelManager.Instance.LevelContainer);
     }
 }

@@ -7,18 +7,30 @@ finished, move its outcome into GAME_STATUS.md as a behavior description.
 **Global constraints:**
 - 5 tower types, fixed (Base, Fast, Ice, Poison, Splash)
 - Each map: max 1 tower of each type = max 5 towers per map
+- Loadout: max 4 tower types per run
 - Towers are placed fresh each fight (no persistence of positions between fights)
-- Runs reuse one map (Map1 for MVP)
+- Runs cycle randomly between Map1 and Map2
 
 ---
 
 ## MVP Build Order
 
-### 1. RunState
-Run-scoped state container: gold for the run, lives, and per-tower upgrade levels
-(these persist across fights within a run). Tower positions are not stored — they
-are placed fresh each fight. Each fight the player can place at most one of each
-tower type.
+### 1. RunState ✅
+**Status: Complete.**
+
+What was built:
+- **RunState autoload** — run-scoped storage for per-tower upgrade levels and selected tower IDs. Gold/lives live in EconomyManager/GameManager (single source of truth), not duplicated in RunState.
+- **Loadout screen** — choose 1–4 tower types before each run. Only chosen towers appear in HUD during fights.
+- **Run flow**: Main Menu → Loadout → random map fight → Fight Complete screen → "Next Fight" (random map, gold/lives/tower upgrades preserved) or "End Run" (back to Main Menu).
+- **1-per-type enforcement** — TowerPlacementManager blocks duplicate tower types. HUD shows "(Placed)" for placed types, updated reactively on money/tower changes.
+- **Random map rotation** — each fight picks randomly from LevelManager's level list (Map1 or Map2).
+- **Persistent tower upgrades** — upgrade level per tower type persists across fights via RunState. Selling does not downgrade the stored level.
+- **Enemy death tracking** — AllWavesCompleted only fires when all enemies are killed, not when the last enemy spawns.
+
+Key decisions:
+- Gold/lives live in EconomyManager/GameManager (not duplicated in RunState), surviving level reloads untouched during a run
+- Tower upgrade level is per-type, not per-instance — persists across fights even if the tower is sold
+- Loadout is 4 of 5 towers to force strategic choices without leaving towers unusable
 
 ### 2. SaveManager
 Persistent storage for meta-progression token and permanent unlocks.

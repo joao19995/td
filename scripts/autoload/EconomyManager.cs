@@ -41,6 +41,12 @@ public partial class EconomyManager : Node
         _currentMoney += amount;
         EventBus.Instance.EmitSignal(EventBus.SignalName.MoneyChanged, _currentMoney);
     }
+
+    public void SetMoney(int amount)
+    {
+        _currentMoney = amount;
+        EventBus.Instance.EmitSignal(EventBus.SignalName.MoneyChanged, _currentMoney);
+    }
 	public void ResetForLevel(LevelData data)
 	{
 		_currentMoney = (data.StartingMoney >= 0) ? data.StartingMoney : StartingMoney;

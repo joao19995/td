@@ -4,15 +4,31 @@ using Godot.Collections;
 public partial class EnemySpawner : Node2D
 {
     [Export] public Path2D EnemyPath;
-    // Assign res://scenes/enemies/Enemy.tscn (the single generic enemy scene).
     [Export] public PackedScene GenericEnemyScene;
     [Export] public Array<WaveData> Waves;
 
     private int _currentWaveIndex = -1;
     private bool _waveInProgress = false;
+    private int _activeEnemyCount = 0;
+    private bool _allWavesSpawned = false;
 
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
     public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
+
+    public override void _Ready()
+    {
+        EventBus.Instance.EnemyDied += OnEnemyDied;
+        EventBus.Instance.EnemyReachedEnd += OnEnemyReachedEnd;
+    }
+
+    public override void _ExitTree()
+    {
+        if (EventBus.Instance != null)
+        {
+            EventBus.Instance.EnemyDied -= OnEnemyDied;
+            EventBus.Instance.EnemyReachedEnd -= OnEnemyReachedEnd;
+        }
+    }
 
     public async void StartNextWave()
     {
@@ -31,6 +47,7 @@ public partial class EnemySpawner : Node2D
 
         for (int i = 0; i < wave.EnemyCount; i++)
         {
+            _activeEnemyCount++;
             SpawnEnemy(wave.Enemies[i % wave.Enemies.Count]);
             await ToSignal(GetTree().CreateTimer(wave.SpawnInterval), Timer.SignalName.Timeout);
         }
@@ -38,6 +55,26 @@ public partial class EnemySpawner : Node2D
         _waveInProgress = false;
 
         if (_currentWaveIndex + 1 >= Waves.Count)
+            _allWavesSpawned = true;
+
+        CheckAllWavesCompleted();
+    }
+
+    private void OnEnemyDied(int _)
+    {
+        _activeEnemyCount--;
+        CheckAllWavesCompleted();
+    }
+
+    private void OnEnemyReachedEnd(int _)
+    {
+        _activeEnemyCount--;
+        CheckAllWavesCompleted();
+    }
+
+    private void CheckAllWavesCompleted()
+    {
+        if (_allWavesSpawned && _activeEnemyCount <= 0)
             EventBus.Instance?.EmitSignal(EventBus.SignalName.AllWavesCompleted);
     }
 

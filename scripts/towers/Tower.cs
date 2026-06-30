@@ -35,7 +35,9 @@ public partial class Tower : Node2D
     public void Setup(TowerData data)
     {
         _data = data;
-        _currentUpgradeLevel = 0;
+        _currentUpgradeLevel = RunState.Instance?.IsRunActive == true
+            ? RunState.Instance.GetTowerLevel(data.Id)
+            : 0;
 
         if (IsInsideTree())
             ApplyData();
@@ -45,6 +47,8 @@ public partial class Tower : Node2D
     {
         if (_currentUpgradeLevel >= MaxUpgradeLevel) return;
         _currentUpgradeLevel++;
+        if (RunState.Instance?.IsRunActive == true)
+            RunState.Instance.SetTowerLevel(_data.Id, _currentUpgradeLevel);
         ApplyData();
     }
 

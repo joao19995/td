@@ -19,12 +19,21 @@ public partial class TowerSelectionManager : Node
     public override void _Ready()
     {
         EventBus.Instance.TowerPlaced += OnTowerPlaced;
+        SceneManager.Instance.LevelLoaded += OnLevelLoaded;
     }
 
     public override void _ExitTree()
     {
         if (EventBus.Instance != null)
             EventBus.Instance.TowerPlaced -= OnTowerPlaced;
+        if (SceneManager.Instance != null)
+            SceneManager.Instance.LevelLoaded -= OnLevelLoaded;
+    }
+
+    private void OnLevelLoaded(Node _)
+    {
+        _selectedTower = null;
+        _rangeIndicator = null;
     }
 
     public override void _Process(double delta)
@@ -44,7 +53,7 @@ public partial class TowerSelectionManager : Node
 
         TowerPlacementManager.Instance.CancelPlacement();
 
-        if (_selectedTower != null)
+        if (_selectedTower != null && IsInstanceValid(_selectedTower))
             _selectedTower.Modulate = new Color(1, 1, 1, 1);
 
         _selectedTower = tower;
@@ -61,7 +70,8 @@ public partial class TowerSelectionManager : Node
     {
         if (_selectedTower == null) return;
 
-        _selectedTower.Modulate = new Color(1, 1, 1, 1);
+        if (IsInstanceValid(_selectedTower))
+            _selectedTower.Modulate = new Color(1, 1, 1, 1);
         _selectedTower = null;
 
         if (_rangeIndicator != null)

@@ -8,11 +8,14 @@ not implementation details.
 
 ## Game Loop
 
-- Game opens on a **Main Menu** with a Play button.
-- Playing starts the first level. After placing towers and defeating waves, the player advances through levels until the final victory.
+- Game opens on a **Main Menu** with a "Start Run" button.
+- **Start Run** opens the **Loadout screen**, where the player selects 1–4 tower types to bring into the run.
+- The run begins on a random map (Map1 or Map2). After placing towers and defeating all waves (all enemies must be killed, not just spawned), a **Fight Complete** screen appears.
+- From Fight Complete the player can **"Next Fight"** (reloads a random map with gold/lives/tower upgrades preserved) or **"End Run"** (returns to Main Menu).
+- Runs are infinite by design — the player fights until they lose all lives (Game Over) or chooses to end the run.
 - Pressing **ESC** pauses the game at any time. Pressing again resumes.
-- Running out of lives shows a **Game Over** screen with a Retry button.
-- Completing all waves on a level shows **"Next Level"**. The final level shows a **Victory** screen.
+- Running out of lives shows a **Game Over** screen with Retry and Menu buttons.
+- Completing all levels in classic mode shows a **Victory** screen.
 
 ---
 
@@ -23,6 +26,15 @@ not implementation details.
 - Each level can override the play area size.
 
 ---
+
+## Run System
+
+- **RunState** tracks the active run: gold, lives, per-tower upgrade levels, and selected tower IDs.
+- **Loadout**: before each run the player chooses up to 4 tower types from the 5 available. Only chosen towers appear in the HUD during fights.
+- **Gold and lives persist** across fights within a run (no reset between fights). They are the single source of truth in EconomyManager/GameManager — RunState does not duplicate them.
+- **Tower upgrades persist** by tower type across fights. If a Base tower is upgraded to level 2 and sold, the next Base tower placed starts at level 2.
+- **1-per-type** enforcement: only one tower of each type can be on the map at once. The HUD grays out the button and shows "(Placed)" for types already placed.
+- **Random map rotation**: each "Next Fight" loads a random map (Map1 or Map2).
 
 ## Levels
 
@@ -39,9 +51,11 @@ not implementation details.
 - Waves are defined per level. Each wave specifies enemy type, count, spawn interval, and optional delay.
 - The player must manually click **"Next Wave"** to start each wave.
 - The HUD shows progress (`Wave X / Y`).
-- After all waves are completed:
+- **All enemies must be killed** (not just spawned) before the game considers all waves completed.
+- After all waves are completed in classic mode:
   - If another level exists, a **"Next Level"** button appears.
   - If it was the final level, the **Victory** screen is shown.
+- During a run, all waves completed shows the **Fight Complete** screen instead.
 
 ---
 
@@ -107,7 +121,8 @@ not implementation details.
 ## HUD (User Interface during gameplay)
 
 - Displays current **lives**, **money**, and **wave number**.
-- Shows a button for each available tower type (name + cost). Buttons are disabled when the player cannot afford the tower or during Game Over.
+- Shows a button for each available tower type (determined by loadout during runs). Buttons are disabled when the player cannot afford the tower, when that type is already placed, or during Game Over.
+- Buttons update reactively when money changes, towers are placed, or towers are deselected.
 - **"Next Wave"** button to start each wave. **"Next Level"** button after all waves are cleared.
 - When a tower is selected: shows its **name**, **upgrade level**, **upgrade cost** (or "MAX" if fully upgraded), and **sell value** with an action button.
 
@@ -116,11 +131,13 @@ not implementation details.
 ## Screens & Menus
 
 | Screen | When shown | Can pause |
-|---|---|---|
+|---|---|---|---|
 | Main Menu | On startup | N/A |
+| Loadout | After clicking "Start Run" on Main Menu | No |
 | Pause | Pressing ESC during gameplay | Yes |
 | Game Over | Lives reach zero | Yes |
-| Victory | All levels completed | Yes |
+| Victory | All levels completed (classic mode) | Yes |
+| Fight Complete | All waves cleared during a run | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
 

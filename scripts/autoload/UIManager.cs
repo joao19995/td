@@ -8,6 +8,7 @@ public partial class UIManager : Node
     [Export] public UIScreenData PauseData;
     [Export] public UIScreenData GameOverData;
     [Export] public UIScreenData VictoryData;
+    [Export] public UIScreenData FightCompleteData;
 
     private readonly List<(UIScreenData data, Node instance)> _stack = new();
     private CanvasLayer _overlayLayer;
@@ -24,6 +25,7 @@ public partial class UIManager : Node
 
         EventBus.Instance.GameOver += OnGameOver;
         EventBus.Instance.AllLevelsCompleted += OnAllLevelsCompleted;
+        EventBus.Instance.AllWavesCompleted += OnAllWavesCompleted;
     }
 
     public override void _ExitTree()
@@ -32,6 +34,7 @@ public partial class UIManager : Node
         {
             EventBus.Instance.GameOver -= OnGameOver;
             EventBus.Instance.AllLevelsCompleted -= OnAllLevelsCompleted;
+            EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
         }
     }
 
@@ -89,4 +92,10 @@ public partial class UIManager : Node
 
     private void OnGameOver() => PushScreen(GameOverData);
     private void OnAllLevelsCompleted() => PushScreen(VictoryData);
+
+    private void OnAllWavesCompleted()
+    {
+        if (RunState.Instance.IsRunActive)
+            PushScreen(FightCompleteData);
+    }
 }

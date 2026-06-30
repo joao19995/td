@@ -4,9 +4,11 @@
 [ext_resource type="Resource" path="res://resources/ui_screens/Pause.tres" id="2_pause"]
 [ext_resource type="Resource" path="res://resources/ui_screens/GameOver.tres" id="3_gameover"]
 [ext_resource type="Resource" path="res://resources/ui_screens/Victory.tres" id="4_victory"]
+[ext_resource type="Resource" path="res://resources/ui_screens/FightComplete.tres" id="5_fightcomplete"]
 
 [node name="UIManager" type="Node"]
 script = ExtResource("1_ui")
 PauseData = ExtResource("2_pause")
 GameOverData = ExtResource("3_gameover")
 VictoryData = ExtResource("4_victory")
+FightCompleteData = ExtResource("5_fightcomplete")

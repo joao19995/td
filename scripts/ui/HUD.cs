@@ -6,7 +6,6 @@ public partial class HUD : CanvasLayer
 {
     [Export] public Array<TowerData> AvailableTowers;
 
-    // Single source of truth for sizing/positioning — change here, every button updates.
     [Export] public float ButtonHeight = 14f;
     [Export] public float TowerBarSideMargin = 6f;
     [Export] public float TowerBarBottomMargin = 4f;
@@ -47,6 +46,7 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.MoneyChanged += OnMoneyChanged;
         EventBus.Instance.GameOver += OnGameOver;
         EventBus.Instance.AllWavesCompleted += OnAllWavesCompleted;
+        EventBus.Instance.TowerPlaced += OnTowerPlaced;
 
         _towerActionPanel = GetNode<VBoxContainer>("TowerActionPanel");
         _towerNameLabel = GetNode<Label>("TowerActionPanel/TowerNameLabel");
@@ -68,6 +68,7 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.MoneyChanged -= OnMoneyChanged;
         EventBus.Instance.GameOver -= OnGameOver;
         EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
+        EventBus.Instance.TowerPlaced -= OnTowerPlaced;
 
         if (TowerSelectionManager.Instance != null)
         {
@@ -76,11 +77,6 @@ public partial class HUD : CanvasLayer
         }
     }
 
-    /// <summary>
-    /// Anchors the TowerBar near the bottom of the viewport with a side
-    /// margin on both edges, computed from ButtonHeight/margins instead of
-    /// hardcoded offsets — works regardless of viewport size.
-    /// </summary>
     private void PositionTowerBar()
     {
         _towerBar.OffsetLeft = TowerBarSideMargin;
@@ -135,10 +131,37 @@ public partial class HUD : CanvasLayer
         _nextWaveButton.Visible = true;
         _nextWaveButton.Disabled = false;
         _nextLevelButton.Visible = false;
-        foreach (var btn in _allTowerButtons)
-            btn.Disabled = false;
 
+        ApplyTowerFilter();
         UpdateWaveLabel();
+    }
+
+    private void ApplyTowerFilter()
+    {
+        bool isRun = RunState.Instance.IsRunActive;
+        for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+        {
+            var data = AvailableTowers[i];
+            var btn = _allTowerButtons[i];
+            bool visible = !isRun || RunState.Instance.SelectedTowerIds.Contains(data.Id);
+            btn.Visible = visible;
+            btn.Disabled = !visible;
+        }
+        RefreshTowerButtons();
+    }
+
+    private void RefreshTowerButtons()
+    {
+        if (_allTowerButtons.Count == 0 || !Visible) return;
+        for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+        {
+            var btn = _allTowerButtons[i];
+            if (!btn.Visible) continue;
+            var data = AvailableTowers[i];
+            bool placed = TowerPlacementManager.Instance.IsTowerTypePlaced(data.Id);
+            btn.Disabled = placed || !EconomyManager.Instance.CanAfford(data.Cost);
+            btn.Text = placed ? $"{data.TowerName} (Placed)" : $"{data.TowerName} ({data.Cost}g)";
+        }
     }
 
     private void OnNextWavePressed()
@@ -161,6 +184,8 @@ public partial class HUD : CanvasLayer
     {
         _nextWaveButton.Visible = false;
 
+        if (RunState.Instance.IsRunActive) return;
+
         if (LevelManager.Instance != null && LevelManager.Instance.HasNextLevel)
             _nextLevelButton.Visible = true;
         else
@@ -174,7 +199,12 @@ public partial class HUD : CanvasLayer
     }
 
     private void OnLivesChanged(int currentLives) => UpdateLivesLabel(currentLives);
-    private void OnMoneyChanged(int currentMoney) => UpdateMoneyLabel(currentMoney);
+
+    private void OnMoneyChanged(int currentMoney)
+    {
+        UpdateMoneyLabel(currentMoney);
+        RefreshTowerButtons();
+    }
 
     private void UpdateLivesLabel(int lives) => _livesLabel.Text = $"Vida: {lives}";
     private void UpdateMoneyLabel(int money) => _moneyLabel.Text = $"Dinheiro: {money}";
@@ -208,6 +238,7 @@ public partial class HUD : CanvasLayer
     private void OnTowerDeselected()
     {
         _towerActionPanel.Hide();
+        RefreshTowerButtons();
     }
 
     private void OnUpgradePressed()
@@ -230,6 +261,11 @@ public partial class HUD : CanvasLayer
         EconomyManager.Instance.AddMoney(tower.SellValue);
         tower.QueueFree();
         TowerSelectionManager.Instance.Deselect();
+    }
+
+    private void OnTowerPlaced(int _)
+    {
+        RefreshTowerButtons();
     }
 
     private void OnGameOver()
