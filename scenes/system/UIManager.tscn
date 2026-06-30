@@ -8,6 +8,7 @@
 
 [ext_resource type="Resource" path="res://resources/ui_screens/Shop.tres" id="6_shop"]
 [ext_resource type="Resource" path="res://resources/ui_screens/MetaShop.tres" id="7_metashop"]
+[ext_resource type="Resource" path="res://resources/ui_screens/TrinketChoice.tres" id="8_trinket"]
 
 [node name="UIManager" type="Node"]
 script = ExtResource("1_ui")
@@ -17,3 +18,4 @@ VictoryData = ExtResource("4_victory")
 FightCompleteData = ExtResource("5_fightcomplete")
 ShopData = ExtResource("6_shop")
 MetaShopData = ExtResource("7_metashop")
+TrinketChoiceData = ExtResource("8_trinket")

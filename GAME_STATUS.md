@@ -40,15 +40,34 @@ not implementation details.
 ## Run Engine (Slot Machine)
 
 - After each fight during a run, a **slot machine** roll determines what happens next:
-  - **Fight** (45%): proceeds to a standard random map fight
-  - **Shop** (25%): enters the run shop to buy permanent stat bonuses for the run
-  - **Heal** (20%): restores 5 lives (configurable) without a fight
+  - **Fight** (35%): proceeds to a standard random map fight
+  - **Shop** (20%): enters the run shop to buy run-wide stat bonuses and tower equipment
+  - **Heal** (15%): restores 5 lives (configurable) without a fight
   - **Miniboss** (10%): harder fight with 1.5x enemy stats on a random map
+  - **Treasure** (20%): pick 1 of 3 random trinkets (run-wide charms)
 - After the configured number of fights (default 3), a **boss fight** triggers automatically using a dedicated boss wave (Boss enemy + minions).
 - Defeating the boss ends the run with a **Victory** screen and awards meta tokens.
-- The shop sells run-wide bonuses (damage, fire rate) that stack multiplicatively with tower upgrades and synergies.
-- All weights, heal amount, miniboss multiplier, and fights-per-run are exported on SlotManager — no code changes needed to tweak.
+- The shop sells run-wide bonuses (damage, fire rate) **and** tower-specific equipment that can be equipped per tower type.
+- All weights, heal amount, miniboss multiplier, fights-per-run, reroll cost, and skew factor are exported on SlotManager — no code changes needed to tweak.
 - Outcomes that involve a fight (Fight, Miniboss, Boss) reset all tower placement — player places towers fresh each fight.
+- **Reroll**: after seeing the slot outcome (except Boss/Heal), the player can pay gold to re-roll. Cost scales (50g → 100g → 150g). Each reroll reduces the weight of the outcome being rerolled by 50%, making repeats less likely.
+
+## Tower Equipment
+
+- Each tower type has **1 equipment slot**. Equipment is bought in the run Shop and persists across fights within the run.
+- **Type-restricted**: equipment items target specific tower types (e.g. Heavy Barrel only works on Base). Only shown in the Shop if that tower is in the loadout.
+- **Stat bonuses** are multiplicative-percent and stack additively with synergy bonuses:
+  `EffectiveX = (base + upgradeFlat) * (1 + synergy + equipPercent) * (1 + shop) * (1 + meta) * (1 + trinket)`
+- **3 items shipped**: Heavy Barrel (+15% damage, Base, 80g), Overdrive Coils (+20% fire rate, Fast, 80g), Precision Lens (+20% range, Ice, 80g).
+
+## Trinkets (Run-Wide Charms)
+
+- **Treasure outcome** on the slot machine (20% base weight) lets the player choose 1 of 3 random trinkets.
+- Trinkets apply **run-wide** effects that last for the rest of the run:
+  - *War Banner*: +10% global damage (multiplicative in EffectiveDamage formula)
+  - *Guardian Angel*: restore 5 lives immediately
+  - *Lucky Coin*: gain 100 gold immediately
+- Trinkets are single-use per run — once chosen, the effect is applied.
 
 ## Meta-Progression (Save System)
 
@@ -171,6 +190,7 @@ not implementation details.
 | Fight Complete | All waves cleared during a run | Yes |
 | Shop | Slot machine outcome — buy run upgrades | Yes |
 | Meta Shop | Main Menu — permanent upgrades with meta-tokens | Yes |
+| Trinket Choice | Slot machine Treasure outcome — pick 1 of 3 trinkets | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
 
@@ -180,7 +200,7 @@ not implementation details.
 
 - **Type-combination bonuses**: synergies activate based on which tower types are on the board. No adjacency or positioning logic — only type presence matters.
 - **Active synergies** are automatically evaluated whenever a tower is placed or removed.
-- **Stat bonuses** are multiplicative: `EffectiveX = (base + upgradeFlat) * (1 + synergyPercent)`. Damage, fire rate, and range all follow the same formula.
+- **Stat bonuses** are multiplicative: `EffectiveX = (base + upgradeFlat) * (1 + synergy + equip) * (1 + shop) * (1 + meta) * (1 + trinket)`. Damage, fire rate, and range all follow the same formula.
 - **Visual feedback**: towers affected by any synergy show a green tint. The HUD lists active synergy names at the top of the screen.
 - **Data-driven**: synergies are defined in `SynergyData` resource files under `resources/synergy_data/`. Adding a new `.tres` file in that folder is enough to register it — no code changes needed.
 - **Examples shipped**:
@@ -201,6 +221,8 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Level setup | `LevelData` | Scene path, preview image, starting money/lives, world size |
 | Screen/overlay config | `UIScreenData` | Scene path, whether it pauses the game |
 | Synergy combos | `SynergyData` | Required tower IDs, min tower count, bonus percentages (damage/fire rate/range) |
-| Run engine (slot machine) | `SlotManager` Inspector | Fight count per run, outcome weights, heal amount, miniboss multiplier |
+| Run engine (slot machine) | `SlotManager` Inspector | Fight count per run, outcome weights, heal amount, miniboss multiplier, reroll cost, skew factor |
 | Shop items (run upgrades) | `ShopItemData` resource | Item ID, name, cost, stat bonus percent |
+| Tower equipment | `EquipData` resource | Item ID, name, cost, target tower type, stat bonus percents |
+| Trinkets | `TrinketData` resource | Item ID, name, damage bonus, heal amount, gold amount |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |

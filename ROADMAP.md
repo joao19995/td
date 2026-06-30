@@ -117,11 +117,44 @@ Key decisions:
 - Multi-level cost = `CostTokens * (currentLevel + 1)` — consistent scaling, no per-level config needed.
 - Tower unlocks apply immediately on purchase (no restart needed).
 
-## Post-MVP (deferred)
+## Post-MVP
 
-- Slot machine reroll (paid) and probability-skewing
-- Tower equip slots (per-tower inventory)
-- Trinkets (global run-wide charms)
+### Slot Machine Reroll + Probability-Skewing ✅
+
+**Status: Complete.**
+
+What was built:
+- **Reroll button** on FightCompleteScreen — after seeing the outcome (except Boss/Heal), player can pay gold to re-roll.
+- **Scaling cost**: `RerollBaseCost × (rerollCount + 1)` — 50g → 100g → 150g.
+- **Probability-skewing**: rerolling an outcome reduces its weight by `SkewReductionFactor` (default 50%), making repeated same outcomes less likely.
+- **Configurable** via SlotManager Inspector: `RerollBaseCost`, `SkewReductionFactor`.
+- Weights reset per fight session.
+
+### Tower Equipment (Per-Tower Inventory) ✅
+
+**Status: Complete.**
+
+What was built:
+- **EquipData resource** — id, name, description, icon, cost, target tower type, stat percent bonuses (damage/fire rate/range).
+- **1 equip slot per tower** — equipment bought in the run Shop, stored per tower type in RunState.
+- **Tower restriction** — each equipment item targets a specific tower type (e.g. Heavy Barrel → Base). Only shows in Shop if that tower is in the loadout.
+- **Stat formula**: `EffectiveX = base * (1 + synergy + equipPercent) * (1 + shop) * (1 + meta) * (1 + trinket)` — equip bonus is additive with synergy.
+- **3 items shipped**: Heavy Barrel (+15% damage, Base), Overdrive Coils (+20% fire rate, Fast), Precision Lens (+20% range, Ice). All cost 80g.
+- Equipment persists across fights within a run (like upgrades).
+
+### Trinkets (Run-Wide Charms) ✅
+
+**Status: Complete.**
+
+What was built:
+- **TrinketData resource** — id, name, description, damage percent bonus, heal amount, gold amount.
+- **Treasure outcome** — new slot machine outcome (default 20% weight). Weights adjusted: Fight 35%, Shop 20%, Heal 15%, Miniboss 10%, Treasure 20%.
+- **Choose 1 of 3** — on Treasure, a TrinketChoiceScreen shows 3 random trinkets. Player picks one.
+- **Run-wide application** — trinkets affect the entire run via `RunState.TrinketDamageBonusPercent` (multiplicative in EffectiveDamage formula).
+- **3 trinkets shipped**: War Banner (+10% global damage), Guardian Angel (+5 lives), Lucky Coin (+100 gold).
+
+### Deferred
+
 - Expanded meta-progression catalog
 - Real loadout curation (vs. all towers available)
 - Second map / more waves

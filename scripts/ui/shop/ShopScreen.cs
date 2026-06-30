@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public partial class ShopScreen : Control
 {
     private VBoxContainer _itemsContainer;
+    private VBoxContainer _equipContainer;
     private Label _moneyLabel;
     private Button _leaveButton;
 
@@ -11,11 +12,18 @@ public partial class ShopScreen : Control
     {
         _moneyLabel = GetNode<Label>("VBox/MoneyLabel");
         _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsContainer");
+        _equipContainer = GetNode<VBoxContainer>("VBox/EquipContainer");
         _leaveButton = GetNode<Button>("VBox/LeaveButton");
 
         _leaveButton.Pressed += OnLeavePressed;
         UpdateMoney();
         BuildItemList();
+        BuildEquipList();
+    }
+
+    private void UpdateMoney()
+    {
+        _moneyLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
     }
 
     private List<ShopItemData> LoadItems()
@@ -33,11 +41,6 @@ public partial class ShopScreen : Control
                 items.Add(item);
         }
         return items;
-    }
-
-    private void UpdateMoney()
-    {
-        _moneyLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
     }
 
     private void BuildItemList()
@@ -74,6 +77,60 @@ public partial class ShopScreen : Control
         RunState.Instance.ShopDamageBonusPercent += item.DamageBonusPercent;
         RunState.Instance.ShopFireRateBonusPercent += item.FireRateBonusPercent;
         RunState.Instance.ShopRangeBonusPercent += item.RangeBonusPercent;
+    }
+
+    private void BuildEquipList()
+    {
+        var path = "res://resources/equip_data/";
+        var ids = new[] { "heavy_barrel", "overdrive_coils", "precision_lens" };
+        foreach (var id in ids)
+        {
+            var equip = GD.Load<EquipData>($"{path}{id}.tres");
+            if (equip == null) continue;
+
+            bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
+            string equippedId = RunState.Instance?.GetEquippedItem(equip.TargetTowerId);
+            bool alreadyEquipped = equippedId == equip.Id;
+
+            var hbox = new HBoxContainer();
+            var label = new Label();
+            label.Text = inLoadout
+                ? $"{equip.Name} ({equip.Cost}g) [{equip.TargetTowerId.ToUpper()}]"
+                : $"{equip.Name} (LOCKED - {equip.TargetTowerId} not in loadout)";
+
+            var buyBtn = new Button();
+            if (!inLoadout)
+            {
+                buyBtn.Text = "-";
+                buyBtn.Disabled = true;
+            }
+            else if (alreadyEquipped)
+            {
+                buyBtn.Text = "Equipped";
+                buyBtn.Disabled = true;
+            }
+            else
+            {
+                buyBtn.Text = "Buy & Equip";
+                var capturedEquip = equip;
+                buyBtn.Pressed += () => OnBuyEquip(capturedEquip, buyBtn);
+            }
+
+            hbox.AddChild(label);
+            hbox.AddChild(buyBtn);
+            _equipContainer.AddChild(hbox);
+        }
+    }
+
+    private void OnBuyEquip(EquipData equip, Button btn)
+    {
+        if (!EconomyManager.Instance.CanAfford(equip.Cost)) return;
+
+        EconomyManager.Instance.SpendMoney(equip.Cost);
+        RunState.Instance.SetEquippedItem(equip.TargetTowerId, equip.Id);
+        UpdateMoney();
+        btn.Text = "Equipped";
+        btn.Disabled = true;
     }
 
     private void OnLeavePressed()

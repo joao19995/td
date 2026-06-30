@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "precision_lens"
+Name = "Precision Lens"
+Description = "+20% alcance para torre Ice"
+Cost = 80
+TargetTowerId = "ice"
+DamagePercentBonus = 0.0
+FireRatePercentBonus = 0.0
+RangePercentBonus = 0.2
