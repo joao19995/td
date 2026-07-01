@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="TrinketData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/trinkets/oven_heart_ember.png" id="1_oven_heart_ember1"]
 
 [resource]
 script = ExtResource("1_sc")
 Id = "oven_heart_ember"
 Name = "Oven Heart Ember"
 Description = "+1 starting tower range (global)"
+Icon = ExtResource("1_oven_heart_ember1")

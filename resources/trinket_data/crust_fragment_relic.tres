@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TrinketData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/trinkets/crust_fragment_relic.png" id="1_crust_fragment_relic1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -8,3 +9,4 @@ Id = "crust_fragment_relic"
 Name = "Crust Fragment Relic"
 Description = "+12% crit damage"
 CritDamageBonusPercent = 0.12
+Icon = ExtResource("1_crust_fragment_relic1")

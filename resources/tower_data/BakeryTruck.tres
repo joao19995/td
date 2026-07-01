@@ -5,9 +5,7 @@
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_k6g6c"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/SplashUpgrade1.tres" id="3_spl1"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/SplashUpgrade2.tres" id="4_spl2"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3qluu"]
-load_path = "res://.godot/imported/spr_tower_splash.png-fddd5523b8b45f06e9adfa68e7e5120a.ctex"
+[ext_resource type="Texture2D" path="res://assets/sprites/towers/bakery_truck.png" id="1_bakery_truck1"]
 
 [resource]
 script = ExtResource("2_k6g6c")
@@ -18,7 +16,7 @@ FireRate = 0.8
 Range = 44.0
 Cost = 180
 ProjectileScene = ExtResource("1_3qluu")
-Sprite = SubResource("CompressedTexture2D_3qluu")
+Sprite = ExtResource("1_bakery_truck1")
 HasSplash = true
 SplashRadius = 5.0
 UpgradePath = Array[ExtResource("2_iqf0o")]([ExtResource("3_spl1"), ExtResource("4_spl2")])

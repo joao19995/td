@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="TrinketData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/trinkets/heretic_census.png" id="1_heretic_census1"]
 
 [resource]
 script = ExtResource("1_sc")
 Id = "heretic_census"
 Name = "Heretic Census List"
 Description = "+10% damage vs basic enemies"
+Icon = ExtResource("1_heretic_census1")

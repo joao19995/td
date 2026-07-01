@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="EquipData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/equipment/stone_oven.png" id="1_stone_oven1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -12,3 +13,4 @@ TargetTowerId = "bread_baker"
 DamagePercentBonus = 0.15
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.0
+Icon = ExtResource("1_stone_oven1")

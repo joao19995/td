@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TrinketData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/trinkets/fermentation_diary.png" id="1_fermentation_diary1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -8,3 +9,4 @@ Id = "fermentation_diary"
 Name = "Fermentation Diary"
 Description = "+15% status effect duration"
 StatusDurationBonusPercent = 0.15
+Icon = ExtResource("1_fermentation_diary1")

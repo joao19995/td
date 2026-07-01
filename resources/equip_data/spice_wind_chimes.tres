@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="EquipData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/equipment/spice_wind_chimes.png" id="1_spice_wind_chimes1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -10,3 +11,4 @@ Description = "+30% slow duration, -10% damage"
 Cost = 120
 TargetTowerId = "aroma_keeper"
 DamagePercentBonus = -0.1
+Icon = ExtResource("1_spice_wind_chimes1")

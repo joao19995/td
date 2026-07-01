@@ -5,9 +5,7 @@
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="3_data"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/ProphetUpgrade1.tres" id="4_up1"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/ProphetUpgrade2.tres" id="5_up2"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_base"]
-load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec01886b1bc.ctex"
+[ext_resource type="Texture2D" path="res://assets/sprites/towers/high_prophet.png" id="1_high_prophet1"]
 
 [resource]
 script = ExtResource("3_data")
@@ -18,7 +16,7 @@ FireRate = 0.9
 Range = 56.0
 Cost = 400
 ProjectileScene = ExtResource("1_proj")
-Sprite = SubResource("CompressedTexture2D_base")
+Sprite = ExtResource("1_high_prophet1")
 HasGlobalAura = true
 GlobalAuraDamagePerTower = 0.02
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])

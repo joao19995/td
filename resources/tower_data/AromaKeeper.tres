@@ -5,9 +5,7 @@
 [ext_resource type="Script" uid="uid://c6i1yvfl7snxf" path="res://scripts/resources/UpgradeData.cs" id="2_od6i1"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/IceUpgrade1.tres" id="3_ice1"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/IceUpgrade2.tres" id="4_ice2"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_o66bj"]
-load_path = "res://.godot/imported/spr_tower_ice.png-bcebcb5cf700b5770b1bf06c7b080d5c.ctex"
+[ext_resource type="Texture2D" path="res://assets/sprites/towers/aroma_keeper.png" id="1_aroma_keeper1"]
 
 [resource]
 script = ExtResource("2_4fycm")
@@ -18,7 +16,7 @@ FireRate = 0.9
 Range = 50.0
 Cost = 140
 ProjectileScene = ExtResource("1_o66bj")
-Sprite = SubResource("CompressedTexture2D_o66bj")
+Sprite = ExtResource("1_aroma_keeper1")
 HasSlow = true
 UpgradePath = Array[ExtResource("2_od6i1")]([ExtResource("3_ice1"), ExtResource("4_ice2")])
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

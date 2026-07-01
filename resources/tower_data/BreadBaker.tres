@@ -5,9 +5,7 @@
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="3_y6wqu"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/BaseUpgrade1.tres" id="4_base1"]
 [ext_resource type="Resource" path="res://resources/upgrade_data/BaseUpgrade2.tres" id="5_base2"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_iejku"]
-load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec01886b1bc.ctex"
+[ext_resource type="Texture2D" path="res://assets/sprites/towers/bread_baker.png" id="1_bread_baker1"]
 
 [resource]
 script = ExtResource("3_y6wqu")
@@ -17,6 +15,6 @@ Damage = 18.0
 Range = 48.0
 Cost = 100
 ProjectileScene = ExtResource("1_iejku")
-Sprite = SubResource("CompressedTexture2D_iejku")
+Sprite = ExtResource("1_bread_baker1")
 UpgradePath = Array[ExtResource("2_y6wqu")]([ExtResource("4_base1"), ExtResource("5_base2")])
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

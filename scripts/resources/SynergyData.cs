@@ -13,4 +13,6 @@ public partial class SynergyData : Resource
     [Export] public float DamageBonusPercent { get; set; }
     [Export] public float FireRateBonusPercent { get; set; }
     [Export] public float RangeBonusPercent { get; set; }
+
+    [Export] public Texture2D Icon { get; set; }
 }

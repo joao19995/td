@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ShopItemData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/shop_items/rapid_oven_upgrade.png" id="1_rapid_oven_upgrade1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -10,3 +11,4 @@ Description = "+8% fire rate, but -5% range"
 Cost = 100
 FireRateBonusPercent = 0.08
 RangeBonusPercent = -0.05
+Icon = ExtResource("1_rapid_oven_upgrade1")

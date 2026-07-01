@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://c7sk17164impj"]
 
-[ext_resource type="Texture2D" uid="uid://dly3ahba2hkxy" path="res://assets/sprites/enemies/spr_enemy_tank.png" id="1_7uk0w"]
+[ext_resource type="Texture2D" uid="uid://dly3ahba2hkxy" path="res://assets/sprites/enemies/alley_cat.png" id="1_7uk0w"]
 [ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_cd5nw"]
 
 [resource]

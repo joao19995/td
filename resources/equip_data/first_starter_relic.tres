@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="EquipData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/equipment/first_starter_relic.png" id="1_first_starter_relic1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -10,3 +11,4 @@ Description = "+5% damage por torre próxima (range 40), -15% range"
 Cost = 180
 TargetTowerId = "high_prophet"
 RangePercentBonus = -0.15
+Icon = ExtResource("1_first_starter_relic1")

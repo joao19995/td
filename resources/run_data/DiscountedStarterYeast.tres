@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ShopItemData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/shop_items/discounted_starter_yeast.png" id="1_discounted_starter_yeast1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -9,3 +10,4 @@ ItemName = "Discounted Starter Yeast"
 Description = "First purchase in the shop costs -30% gold"
 Cost = 120
 FirstPurchaseDiscountPercent = 0.3
+Icon = ExtResource("1_discounted_starter_yeast1")

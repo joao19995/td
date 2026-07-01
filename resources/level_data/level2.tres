@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="LevelData" format=3 uid="uid://blgkxfgn6ymy"]
 
-[ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/spr_grass_01.png" id="1_dycob"]
+[ext_resource type="Texture2D" uid="uid://8nkqkdxiqvwp" path="res://assets/sprites/environment/grass_01.png" id="1_dycob"]
 [ext_resource type="Script" uid="uid://cskmyplrhc7o6" path="res://scripts/resources/LevelData.cs" id="2_q28nb"]
 [ext_resource type="Resource" uid="uid://b6tf2gi72om33" path="res://resources/wave_data/Wave1.tres" id="3_w1"]
 [ext_resource type="Resource" uid="uid://cfei48hjeoj3l" path="res://resources/wave_data/Wave3.tres" id="4_w3"]

@@ -14,4 +14,6 @@ public partial class MetaUpgradeData : Resource
 
     [Export] public string StatType { get; set; } = "";
     [Export] public float BonusPerLevel { get; set; } = 0f;
+
+    [Export] public Texture2D Icon { get; set; }
 }

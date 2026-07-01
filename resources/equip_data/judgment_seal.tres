@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="EquipData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/equipment/judgment_seal.png" id="1_judgment_seal1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -10,3 +11,4 @@ Description = "Executa abaixo de 15% HP, -15% damage"
 Cost = 150
 TargetTowerId = "dough_exorcist"
 DamagePercentBonus = -0.15
+Icon = ExtResource("1_judgment_seal1")

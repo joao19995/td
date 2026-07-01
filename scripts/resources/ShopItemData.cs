@@ -12,4 +12,6 @@ public partial class ShopItemData : Resource
     [Export] public float RangeBonusPercent { get; set; } = 0f;
     [Export] public float HeavyDamageBonusPercent { get; set; } = 0f;
     [Export] public float FirstPurchaseDiscountPercent { get; set; } = 0f;
+
+    [Export] public Texture2D Icon { get; set; }
 }

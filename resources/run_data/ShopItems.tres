@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ShopItemData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/shop_items/secret_ingredient.png" id="1_secret_ingredient1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -9,3 +10,4 @@ ItemName = "Secret Ingredient"
 Description = "+5% damage for all towers"
 Cost = 80
 DamageBonusPercent = 0.05
+Icon = ExtResource("1_secret_ingredient1")

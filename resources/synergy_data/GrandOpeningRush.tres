@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="SynergyData" format=3 uid="uid://bkr0edonh36cg"]
 
 [ext_resource type="Script" uid="uid://dgbes4krnhlla" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/synergies/grand_opening_rush.png" id="1_grand_opening_rush1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -11,3 +12,4 @@ MinTowerCount = 3
 DamageBonusPercent = 0.0
 FireRateBonusPercent = 0.1
 RangeBonusPercent = 0.0
+Icon = ExtResource("1_grand_opening_rush1")

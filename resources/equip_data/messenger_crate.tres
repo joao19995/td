@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="EquipData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/equipment/messenger_crate.png" id="1_messenger_crate1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -11,3 +12,4 @@ Cost = 120
 TargetTowerId = "bread_courier"
 DamagePercentBonus = 0.0
 FireRatePercentBonus = -0.1
+Icon = ExtResource("1_messenger_crate1")

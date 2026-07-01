@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="EquipData" format=3]
 
 [ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/equipment/double_sampling.png" id="1_double_sampling1"]
 
 [resource]
 script = ExtResource("1_sc")
@@ -10,3 +11,4 @@ Description = "Aplica poison a +1 alvo extra, -15% fire rate"
 Cost = 120
 TargetTowerId = "taste_tester"
 FireRatePercentBonus = -0.15
+Icon = ExtResource("1_double_sampling1")
