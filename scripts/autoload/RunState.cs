@@ -115,8 +115,11 @@ public partial class RunState : Node
 
     public string GetWaveTier()
     {
-        if (FightsCompleted >= 2) return "tier3";
-        if (FightsCompleted == 1) return "tier2";
+        float ratio = SlotManager.Instance != null
+            ? (float)FightsCompleted / SlotManager.Instance.FightsPerRun
+            : 0f;
+        if (ratio >= 0.66f) return "tier3";
+        if (ratio >= 0.33f) return "tier2";
         return "tier1";
     }
 

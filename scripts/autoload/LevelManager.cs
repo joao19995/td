@@ -2,10 +2,9 @@ using Godot;
 using Godot.Collections;
 
 /// <summary>
-/// Autoload singleton that manages level order, loading, and progression.
+/// Autoload singleton that manages level loading and progression.
 /// Add all <see cref="LevelData"/> assets to the <see cref="Levels"/> array in
-/// the Inspector. Call <see cref="LoadLevel(int, Node)"/> to start a specific
-/// level, or <see cref="LoadNextLevel"/> to advance to the next one.
+/// the Inspector. Call <see cref="LoadLevel(int, Node)"/> to start a specific level.
 /// </summary>
 public partial class LevelManager : Node
 {
@@ -36,8 +35,6 @@ public partial class LevelManager : Node
         Levels != null && _currentLevelIndex >= 0 && _currentLevelIndex < Levels.Count
             ? Levels[_currentLevelIndex]
             : null;
-    public bool HasNextLevel => Levels != null && _currentLevelIndex + 1 < Levels.Count;
-
     public override void _EnterTree()
     {
         Instance = this;
@@ -96,18 +93,6 @@ public partial class LevelManager : Node
         PendingRunWaves = null;
     }
 
-    /// <summary>Loads the level that follows the current one.</summary>
-    public void LoadNextLevel()
-    {
-        if (!HasNextLevel)
-        {
-            GD.PushWarning("LevelManager: LoadNextLevel called but there is no next level.");
-            return;
-        }
-
-        LoadLevel(_currentLevelIndex + 1, _levelContainer);
-    }
-
     private void OnLevelLoaded(Node levelNode)
     {   
         CurrentLevelNode = levelNode;
@@ -116,12 +101,7 @@ public partial class LevelManager : Node
 
         if (CurrentLevel == null) return;
 
-        if (!RunState.Instance.IsRunActive)
-        {
-            GameManager.Instance.ResetForLevel(CurrentLevel);
-            EconomyManager.Instance.ResetForLevel(CurrentLevel);
-        }
-        else if (levelNode is BaseLevel baseLevel)
+        if (levelNode is BaseLevel baseLevel)
         {
             baseLevel.ConfigureForRun(PendingRunWaves);
         }

@@ -11,8 +11,8 @@ public partial class ShopScreen : Control
     public override void _Ready()
     {
         _moneyLabel = GetNode<Label>("VBox/MoneyLabel");
-        _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsContainer");
-        _equipContainer = GetNode<VBoxContainer>("VBox/EquipContainer");
+        _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsScroll/ItemsContainer");
+        _equipContainer = GetNode<VBoxContainer>("VBox/EquipScroll/EquipContainer");
         _leaveButton = GetNode<Button>("VBox/LeaveButton");
 
         _leaveButton.Pressed += OnLeavePressed;
@@ -54,6 +54,7 @@ public partial class ShopScreen : Control
             label.Text = $"{item.ItemName} ({item.Cost}g)";
             var buyBtn = new Button();
             buyBtn.Text = "Buy";
+            buyBtn.Disabled = !EconomyManager.Instance.CanAfford(item.Cost);
             buyBtn.Pressed += () => OnBuyItem(item, buyBtn);
             hbox.AddChild(label);
             hbox.AddChild(buyBtn);
@@ -119,6 +120,7 @@ public partial class ShopScreen : Control
             else
             {
                 buyBtn.Text = "Buy & Equip";
+                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equip.Cost);
                 var capturedEquip = equip;
                 buyBtn.Pressed += () => OnBuyEquip(capturedEquip, buyBtn);
             }

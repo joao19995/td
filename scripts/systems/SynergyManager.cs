@@ -61,6 +61,7 @@ public partial class SynergyManager : Node
     private void OnLevelLoaded(Node _)
     {
         _activeSynergies.Clear();
+        EmitSignal(SignalName.SynergiesChanged);
     }
 
     private void OnTowerPlaced(int _)

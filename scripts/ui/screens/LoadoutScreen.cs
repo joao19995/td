@@ -8,7 +8,7 @@ public partial class LoadoutScreen : CanvasLayer
     private bool[] _selected;
     private Button _startButton;
     private Label _infoLabel;
-    private const int MaxTowers = 4;
+    [Export] private int MaxTowers = 4;
 
     public override void _Ready()
     {
@@ -16,6 +16,8 @@ public partial class LoadoutScreen : CanvasLayer
         _startButton = GetNode<Button>("VBox/StartRunButton");
         _selected = new bool[AllTowers.Count];
         _startButton.Pressed += OnStartRunPressed;
+
+        GetNode<Label>("VBox/Title").Text = $"SELECT TOWERS (max {MaxTowers})";
 
         int i = 0;
         foreach (var data in AllTowers)
@@ -27,7 +29,7 @@ public partial class LoadoutScreen : CanvasLayer
             btn.ToggleMode = unlocked;
             int idx = i;
             btn.Toggled += (toggledOn) => OnTowerToggled(idx, toggledOn);
-            GetNode<VBoxContainer>("VBox/TowerList").AddChild(btn);
+            GetNode<VBoxContainer>("VBox/TowerScroll/TowerList").AddChild(btn);
             i++;
         }
 
@@ -42,7 +44,7 @@ public partial class LoadoutScreen : CanvasLayer
             foreach (bool s in _selected) { if (s) count++; }
             if (count >= MaxTowers)
             {
-                var btn = GetNode<VBoxContainer>("VBox/TowerList").GetChild<Button>(index);
+                var btn = GetNode<VBoxContainer>("VBox/TowerScroll/TowerList").GetChild<Button>(index);
                 btn.ButtonPressed = false;
                 return;
             }

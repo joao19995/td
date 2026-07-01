@@ -50,9 +50,7 @@ public partial class Tower : Node2D
     public void Setup(TowerData data)
     {
         _data = data;
-        _currentUpgradeLevel = RunState.Instance?.IsRunActive == true
-            ? RunState.Instance.GetTowerLevel(data.Id)
-            : 0;
+        _currentUpgradeLevel = RunState.Instance?.GetTowerLevel(data.Id) ?? 0;
         _equipId = RunState.Instance?.GetEquippedItem(data.Id);
         _equipData = !string.IsNullOrEmpty(_equipId)
             ? GD.Load<EquipData>($"res://resources/equip_data/{_equipId}.tres")
@@ -66,8 +64,7 @@ public partial class Tower : Node2D
     {
         if (_currentUpgradeLevel >= MaxUpgradeLevel) return;
         _currentUpgradeLevel++;
-        if (RunState.Instance?.IsRunActive == true)
-            RunState.Instance.SetTowerLevel(_data.Id, _currentUpgradeLevel);
+        RunState.Instance?.SetTowerLevel(_data.Id, _currentUpgradeLevel);
         ApplyData();
     }
 

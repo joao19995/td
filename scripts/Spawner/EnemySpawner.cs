@@ -16,6 +16,7 @@ public partial class EnemySpawner : Node2D
     private bool _isBossFight = false;
     private bool _isMiniboss = false;
     private float _minibossMultiplier = 1.5f;
+    private bool _isActive = false;
 
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
     public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
@@ -39,12 +40,14 @@ public partial class EnemySpawner : Node2D
 
     public override void _Ready()
     {
+        _isActive = true;
         EventBus.Instance.EnemyDied += OnEnemyDied;
         EventBus.Instance.EnemyReachedEnd += OnEnemyReachedEnd;
     }
 
     public override void _ExitTree()
     {
+        _isActive = false;
         if (EventBus.Instance != null)
         {
             EventBus.Instance.EnemyDied -= OnEnemyDied;
@@ -69,6 +72,7 @@ public partial class EnemySpawner : Node2D
 
         for (int i = 0; i < wave.EnemyCount; i++)
         {
+            if (!_isActive) return;
             _activeEnemyCount++;
             SpawnEnemy(wave.Enemies[i % wave.Enemies.Count]);
             await ToSignal(GetTree().CreateTimer(wave.SpawnInterval), Timer.SignalName.Timeout);

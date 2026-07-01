@@ -29,7 +29,6 @@ public partial class UIManager : Node
         AddChild(_overlayLayer);
 
         EventBus.Instance.GameOver += OnGameOver;
-        EventBus.Instance.AllLevelsCompleted += OnAllLevelsCompleted;
         EventBus.Instance.AllWavesCompleted += OnAllWavesCompleted;
     }
 
@@ -38,7 +37,6 @@ public partial class UIManager : Node
         if (EventBus.Instance != null)
         {
             EventBus.Instance.GameOver -= OnGameOver;
-            EventBus.Instance.AllLevelsCompleted -= OnAllLevelsCompleted;
             EventBus.Instance.AllWavesCompleted -= OnAllWavesCompleted;
         }
     }
@@ -96,12 +94,9 @@ public partial class UIManager : Node
     }
 
     private void OnGameOver() => PushScreen(GameOverData);
-    private void OnAllLevelsCompleted() => PushScreen(VictoryData);
 
     private void OnAllWavesCompleted()
     {
-        if (!RunState.Instance.IsRunActive) return;
-
         if (RunState.Instance.IsBossFight)
         {
             RunState.Instance.EndRun();

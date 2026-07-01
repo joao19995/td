@@ -18,7 +18,6 @@ public partial class HUD : CanvasLayer
     private HBoxContainer _towerBar;
 
     private Button _nextWaveButton;
-    private Button _nextLevelButton;
     private readonly List<Button> _allTowerButtons = new();
 
     private TileMapLayer _activeTileMap;
@@ -96,8 +95,6 @@ public partial class HUD : CanvasLayer
         var size = new Vector2(WaveButtonWidth, ButtonHeight);
 
         _nextWaveButton = CreateButton(_waveBar, "Next Wave", size, OnNextWavePressed);
-        _nextLevelButton = CreateButton(_waveBar, "Next Level", size, OnNextLevelPressed);
-        _nextLevelButton.Visible = false;
     }
 
     private void BuildTowerButtons()
@@ -136,7 +133,6 @@ public partial class HUD : CanvasLayer
 
         _nextWaveButton.Visible = true;
         _nextWaveButton.Disabled = false;
-        _nextLevelButton.Visible = false;
 
         OnTowerDeselected();
         ApplyTowerFilter();
@@ -145,12 +141,11 @@ public partial class HUD : CanvasLayer
 
     private void ApplyTowerFilter()
     {
-        bool isRun = RunState.Instance.IsRunActive;
         for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
         {
             var data = AvailableTowers[i];
             var btn = _allTowerButtons[i];
-            bool visible = !isRun || RunState.Instance.SelectedTowerIds.Contains(data.Id);
+            bool visible = RunState.Instance.SelectedTowerIds.Contains(data.Id);
             btn.Visible = visible;
             btn.Disabled = !visible;
         }
@@ -160,6 +155,23 @@ public partial class HUD : CanvasLayer
     private void RefreshTowerButtons()
     {
         if (_allTowerButtons.Count == 0 || !Visible) return;
+
+        int visibleCount = 0;
+        for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+            if (_allTowerButtons[i].Visible) visibleCount++;
+
+        if (visibleCount > 0)
+        {
+            float barWidth = GetViewport().GetVisibleRect().Size.X - (TowerBarSideMargin * 2f);
+            var size = new Vector2(barWidth / visibleCount, ButtonHeight);
+            for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+            {
+                var btn = _allTowerButtons[i];
+                if (btn.Visible)
+                    btn.CustomMinimumSize = size;
+            }
+        }
+
         for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
         {
             var btn = _allTowerButtons[i];
@@ -190,19 +202,6 @@ public partial class HUD : CanvasLayer
     private void OnAllWavesCompleted()
     {
         _nextWaveButton.Visible = false;
-
-        if (RunState.Instance.IsRunActive) return;
-
-        if (LevelManager.Instance != null && LevelManager.Instance.HasNextLevel)
-            _nextLevelButton.Visible = true;
-        else
-            EventBus.Instance.EmitSignal(EventBus.SignalName.AllLevelsCompleted);
-    }
-
-    private void OnNextLevelPressed()
-    {
-        _nextLevelButton.Visible = false;
-        LevelManager.Instance?.LoadNextLevel();
     }
 
     private void OnLivesChanged(int currentLives) => UpdateLivesLabel(currentLives);
@@ -278,7 +277,6 @@ public partial class HUD : CanvasLayer
     private void OnGameOver()
     {
         _nextWaveButton.Disabled = true;
-        _nextLevelButton.Visible = false;
         foreach (var btn in _allTowerButtons)
             btn.Disabled = true;
     }

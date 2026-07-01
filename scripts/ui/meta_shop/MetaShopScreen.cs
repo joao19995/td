@@ -12,7 +12,7 @@ public partial class MetaShopScreen : Control
     public override void _Ready()
     {
         _tokenLabel = GetNode<Label>("VBox/TokenLabel");
-        _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsContainer");
+        _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsScroll/ItemsContainer");
         _backButton = GetNode<Button>("VBox/BackButton");
 
         _backButton.Pressed += () => UIManager.Instance.PopScreen();
