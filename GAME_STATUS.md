@@ -55,32 +55,32 @@ not implementation details.
 ## Tower Equipment
 
 - Each tower type has **1 equipment slot**. Equipment is bought in the run Shop and persists across fights within the run.
-- **Type-restricted**: equipment items target specific tower types (e.g. Heavy Barrel only works on Base). Only shown in the Shop if that tower is in the loadout.
+- **Type-restricted**: equipment items target specific tower types (e.g. Stone Oven only works on Corner Baker). Only shown in the Shop if that tower is in the loadout.
 - **Stat bonuses** are multiplicative-percent and stack additively with synergy bonuses:
   `EffectiveX = (base + upgradeFlat) * (1 + synergy + equipPercent) * (1 + shop) * (1 + meta) * (1 + trinket)`
-- **3 items shipped**: Heavy Barrel (+15% damage, Base, 80g), Overdrive Coils (+20% fire rate, Fast, 80g), Precision Lens (+20% range, Ice, 80g).
+- **3 items shipped**: Stone Oven (+15% damage, Corner Baker, 80g), Electric Bike (+20% fire rate, Bike Courier, 80g), Megaphone (+20% range, Aroma, 80g).
 
 ## Trinkets (Run-Wide Charms)
 
 - **Treasure outcome** on the slot machine (20% base weight) lets the player choose 1 of 3 random trinkets.
 - Trinkets apply **run-wide** effects that last for the rest of the run:
-  - *War Banner*: +10% global damage (multiplicative in EffectiveDamage formula)
-  - *Guardian Angel*: restore 5 lives immediately
-  - *Lucky Coin*: gain 100 gold immediately
+  - *Secret Recipe Scroll*: +10% global damage (multiplicative in EffectiveDamage formula)
+  - *Starter's Blessing*: restore 5 lives immediately
+  - *Regular's Tip Jar*: gain 100 gold immediately
 - Trinkets are single-use per run — once chosen, the effect is applied.
 
 ## Meta-Progression (Save System)
 
 - **Persistence**: meta-progression data (tokens, unlocked towers) is saved to `user://save_data.json` using `FileAccess` + JSON — no `.tres` resources for save data (avoids documented security vector of `ResourceLoader.Load` on untrusted files).
 - **Meta tokens**: awarded at the end of every run (win or lose). Configurable via `SaveManager.MetaTokensPerRun` (default 10).
-- **Unlocked towers**: only Base and Fast start unlocked. Ice, Poison, and Splash are purchased with tokens in the Meta Shop.
+- **Unlocked towers**: only Corner Baker and Bike Courier start unlocked. Aroma, Taste Tester, and Bakery Truck are purchased with tokens in the Meta Shop.
 - **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
 - **Upgrade catalog** (5 items):
-  - Unlock Ice Tower (20 tokens)
-  - Unlock Poison Tower (30 tokens)
-  - Unlock Splash Tower (50 tokens)
-  - Global Damage +5% per level (15 tokens base, 3 levels max)
-  - Starting Gold +50 per level (10 tokens base, 3 levels max)
+  - Unlock Aroma (20 tokens)
+  - Unlock Taste Tester (30 tokens)
+  - Unlock Bakery Truck (50 tokens)
+  - Secret Recipe +5% per level (15 tokens base, 3 levels max)
+  - Local Sponsorship +50 per level (10 tokens base, 3 levels max)
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens × 1`, level 2 costs `CostTokens × 2`, etc. Each level grants the configured bonus.
 - **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage × (1 + metaPercent)`). Starting gold bonus is added before the run begins.
 - **Corruption handling**: save file corruption or incompatible schema triggers a clean default reset with a warning — the game never crashes on broken save data.
@@ -111,8 +111,8 @@ not implementation details.
 
 - Waves are **decoupled from map layout** during runs. Each fight picks a wave from a **difficulty tier** based on `FightsCompleted`:
   - Fight 1 → `tier1` (easy: Normal, Flying)
-  - Fight 2 → `tier2` (medium: Normal+Fast, Boss+Tank)
-  - Fight 3+ → `tier3` (hard: Tank+Fast+Normal, Flying+Tank)
+  - Fight 2 → `tier2` (medium: Tourist+Jogger, Dragon+AlleyCat)
+  - Fight 3+ → `tier3` (hard: AlleyCat+Jogger+Tourist, Pigeon+AlleyCat)
 - Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change.
 - `LevelData.Waves` is used only in classic mode (non-run) — unchanged.
 - **Boss fights** ignore the tier system and always use `BossWaveData` (set in `LevelManager` Inspector).
@@ -122,7 +122,7 @@ not implementation details.
 
 ## Towers
 
-- **5 tower types**: Base, Fast, Ice, Poison, Splash. Each has configurable damage, fire rate, range, cost, and projectile.
+- **5 tower types**: Corner Baker, Bike Courier, Aroma, Taste Tester, Bakery Truck. Each has configurable damage, fire rate, range, cost, and projectile.
 - **Placement**: towers can only be placed on designated buildable tiles. Already-occupied tiles are blocked.
 - **Selection**: clicking a placed tower selects it. A semi-transparent circle shows its range. Right-click deselects.
 - **Upgrades**: each tower has a fixed upgrade path (2 tiers per tower). Upgrades increase damage, fire rate, and/or range. Each upgrade tier is a separate resource file with configurable cost and stat bonuses.
@@ -132,11 +132,11 @@ not implementation details.
 
 | Tower | Behavior | Configurable in |
 |---|---|---|
-| **Base** | Standard single-target | TowerData resource |
-| **Fast** | High fire rate, lower damage | TowerData resource |
-| **Ice** | Slows enemies on hit (blue tint). Reapplying refreshes duration, does not stack intensity | TowerData + SlowEffectData resources |
-| **Poison** | Damage-over-time on hit (green tint). Reapplying refreshes duration, does not stack intensity | TowerData + PoisonEffectData resources |
-| **Splash** | Area damage to all enemies within a radius of the impact point. Shows a fading circle effect | TowerData resource (radius, damage) |
+| **Corner Baker** | Standard single-target | TowerData resource |
+| **Bike Courier** | High fire rate, lower damage | TowerData resource |
+| **Aroma** | Slows enemies on hit (blue tint). Reapplying refreshes duration, does not stack intensity | TowerData + SlowEffectData resources |
+| **Taste Tester** | Damage-over-time on hit (green tint). Reapplying refreshes duration, does not stack intensity | TowerData + PoisonEffectData resources |
+| **Bakery Truck** | Area damage to all enemies within a radius of the impact point. Shows a fading circle effect | TowerData resource (radius, damage) |
 
 ---
 
@@ -150,7 +150,7 @@ not implementation details.
 
 ## Enemies
 
-- **5 enemy types**: Normal, Fast, Tank, Flying, Boss. Each has configurable health, speed, gold reward, sprite, and damage to player on reaching the end.
+- **5 enemy types**: Sliced Bread Tourist, Grocery Run Jogger, Lazy Alley Cat, Pigeon with a Stolen Baguette, The Industrial Bread Dragon. Each has configurable health, speed, gold reward, sprite, and damage to player on reaching the end.
 - Enemies follow a fixed path defined per level.
 - If an enemy reaches the end, it damages the player's lives and is removed.
 - Each enemy displays:
@@ -216,8 +216,8 @@ not implementation details.
 - **Visual feedback**: towers affected by any synergy show a green tint. The HUD lists active synergy names at the top of the screen.
 - **Data-driven**: synergies are defined in `SynergyData` resource files under `resources/synergy_data/`. Adding a new `.tres` file in that folder is enough to register it — no code changes needed.
 - **Examples shipped**:
-  - *Frost Venom*: Ice + Poison towers on the board → +15% damage to both
-  - *Overclock*: 3+ different tower types → +10% fire rate to all towers
+  - *One Whiff, One Bite*: Aroma + Taste Tester towers on the board → +15% damage to both
+  - *Grand Opening Rush*: 3+ different tower types → +10% fire rate to all towers
 
 ---
 

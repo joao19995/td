@@ -104,8 +104,8 @@ scenes/
 ├── ui/              # HUD.tscn, screens/
 ├── system/          # Autoload scenes
 resources/
-├── tower_data/      # Base.tres, Fast.tres, Ice.tres, Poison.tres, Splash.tres
-├── enemy_data/      # Normal, Fast, Tank, Flying, Boss
+├── tower_data/      # CornerBaker.tres, BikeCourier.tres, Aroma.tres, TasteTester.tres, BakeryTruck.tres
+├── enemy_data/      # SlicedBreadTourist, GroceryJogger, AlleyCat, BaguettePigeon, BreadDragon
 ├── wave_data/       # Wave1-4 + tier1/ tier2/ tier3/ (tiered for run mode)
 ├── upgrade_data/    # 10 upgrade files (2 per tower)
 ├── level_data/      # level1.tres, level2.tres
@@ -124,7 +124,7 @@ resources/
 See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP plan.
 
 ### Works
-- 5 tower types with unique behaviors (Base, Fast, Ice, Poison, Splash)
+- 5 tower types with unique behaviors (Corner Baker, Bike Courier, Aroma, Taste Tester, Bakery Truck)
 - 5 enemy types with configurable stats
 - 2 maps with wave-based spawning
 - Tower placement, selection, upgrade (2 tiers each)

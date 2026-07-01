@@ -41,8 +41,8 @@ This is not a greenfield prototype. The following exists and works:
 - `UIManager` — overlay stack (Pause/GameOver/Victory/Shop/MetaShop/TrinketChoice/Briefing), pause coordination
 
 ## Gameplay Systems
-- 5 tower types (Base, Fast, Ice, Poison, Splash), each a `TowerData` Resource
-- 5 enemy types (Normal, Fast, Tank, Flying, Boss), each an `EnemyData` Resource
+- 5 tower types (Corner Baker, Bike Courier, Aroma, Taste Tester, Bakery Truck), each a `TowerData` Resource
+- 5 enemy types (Sliced Bread Tourist, Grocery Run Jogger, Lazy Alley Cat, Pigeon with a Stolen Baguette, The Industrial Bread Dragon), each an `EnemyData` Resource
 - Wave system via `WaveData`, per-level wave lists, BossWave for boss fights
 - Tower upgrades: 2-tier `UpgradePath` (Array<UpgradeData>) per tower, computed
   at runtime via `EffectiveDamage/EffectiveFireRate/EffectiveRange` — **never**

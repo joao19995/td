@@ -5,7 +5,7 @@ detailed (tasks, design decisions) when work on it actually starts. When an item
 finished, move its outcome into GAME_STATUS.md as a behavior description.
 
 **Global constraints:**
-- 5 tower types, fixed (Base, Fast, Ice, Poison, Splash)
+- 5 tower types, fixed (Corner Baker, Bike Courier, Aroma, Taste Tester, Bakery Truck)
 - Each map: max 1 tower of each type = max 5 towers per map
 - Loadout: max 4 tower types per run
 - Towers are placed fresh each fight (no persistence of positions between fights)
@@ -55,7 +55,7 @@ What was built:
 - **SynergyManager autoload** — scans `res://resources/synergy_data/` at startup, re-evaluates active synergies whenever a tower is placed or removed, emits `SynergiesChanged` signal.
 - **Reactive stat application** — each tower subscribes to `SynergiesChanged` in `_Ready` and calls `ApplyData()` on change, ensuring already-placed towers receive synergy bonuses immediately.
 - **Visual feedback** — towers affected by any synergy get a green tint (`Modulate`); synergy names appear in the HUD.
-- **2 example synergies**: Frost Venom (Ice + Poison → +15% damage), Overclock (3+ types → +10% fire rate).
+- **2 example synergies**: One Whiff, One Bite (Aroma + Taste Tester → +15% damage), Grand Opening Rush (3+ types → +10% fire rate).
 - **Formula**: `EffectiveX = (baseX + upgradeFlatBonus) * (1 + synergyPercentBonus)` — consistent for damage, fire rate, and range.
 
 Key decisions:
@@ -105,12 +105,12 @@ Key decisions:
 What was built:
 - **MetaUpgradeData resource** — defines a purchasable meta-progression item (ID, name, cost, max level, tower unlock or stat type with per-level bonus).
 - **Meta Shop screen** — accessible from Main Menu; lists all available upgrades with current level, cost, and Buy button. Items are loaded from `.tres` files.
-- **5 items in catalog**: Unlock Ice (20t), Unlock Poison (30t), Unlock Splash (50t), Global Damage +5%/level (15t base, 3 levels), Starting Gold +50/level (10t base, 3 levels).
+- **5 items in catalog**: Unlock Aroma (20t), Unlock Taste Tester (30t), Unlock Bakery Truck (50t), Secret Recipe +5%/level (15t base, 3 levels), Local Sponsorship +50/level (10t base, 3 levels).
 - **Multi-level upgrades** — costs scale by level (`CostTokens * level`). Buy button disabled when maxed or insufficient tokens.
 - **Tower unlocks** — purchasing a tower unlock calls `SaveManager.UnlockTower()`; Loadout screen disables locked towers.
 - **Stat application** — `RunState.StartRun()` reads `SaveManager.GetMetaUpgradeLevel()` and applies `MetaDamageBonusPercent` (×0.05 per level) to `Tower.EffectiveDamage` and `StartingGoldBonus` (×50 per level) to starting gold.
 - **Formula**: `EffectiveDamage = base * (1 + synergy) * (1 + shop) * (1 + meta)` — meta bonus is a separate multiplicative layer.
-- **Defaults**: only Base and Fast towers start unlocked (changed from all 5). Ice/Poison/Splash must be purchased.
+- **Defaults**: only Corner Baker and Bike Courier towers start unlocked (changed from all 5). Aroma/Taste Tester/Bakery Truck must be purchased.
 
 Key decisions:
 - Upgrade levels stored in SaveManager's JSON as a `meta_upgrade_levels` dictionary.
@@ -137,9 +137,9 @@ What was built:
 What was built:
 - **EquipData resource** — id, name, description, icon, cost, target tower type, stat percent bonuses (damage/fire rate/range).
 - **1 equip slot per tower** — equipment bought in the run Shop, stored per tower type in RunState.
-- **Tower restriction** — each equipment item targets a specific tower type (e.g. Heavy Barrel → Base). Only shows in Shop if that tower is in the loadout.
+- **Tower restriction** — each equipment item targets a specific tower type (e.g. Stone Oven → Corner Baker). Only shows in Shop if that tower is in the loadout.
 - **Stat formula**: `EffectiveX = base * (1 + synergy + equipPercent) * (1 + shop) * (1 + meta) * (1 + trinket)` — equip bonus is additive with synergy.
-- **3 items shipped**: Heavy Barrel (+15% damage, Base), Overdrive Coils (+20% fire rate, Fast), Precision Lens (+20% range, Ice). All cost 80g.
+- **3 items shipped**: Stone Oven (+15% damage, Corner Baker), Electric Bike (+20% fire rate, Bike Courier), Megaphone (+20% range, Aroma). All cost 80g.
 - Equipment persists across fights within a run (like upgrades).
 
 ### Trinkets (Run-Wide Charms) ✅
@@ -151,7 +151,7 @@ What was built:
 - **Treasure outcome** — new slot machine outcome (default 20% weight). Weights adjusted: Fight 35%, Shop 20%, Heal 15%, Miniboss 10%, Treasure 20%.
 - **Choose 1 of 3** — on Treasure, a TrinketChoiceScreen shows 3 random trinkets. Player picks one.
 - **Run-wide application** — trinkets affect the entire run via `RunState.TrinketDamageBonusPercent` (multiplicative in EffectiveDamage formula).
-- **3 trinkets shipped**: War Banner (+10% global damage), Guardian Angel (+5 lives), Lucky Coin (+100 gold).
+- **3 trinkets shipped**: Secret Recipe Scroll (+10% global damage), Starter's Blessing (+5 lives), Regular's Tip Jar (+100 gold).
 
 ### Deferred
 
@@ -184,8 +184,8 @@ What was built:
 What was built:
 - **Difficulty tiers** — waves organized by `resources/wave_data/tier1/tier2/tier3/`, selected by `RunState.FightsCompleted`:
   - Fight 1 → tier1 (easy: Normal, Flying)
-  - Fight 2 → tier2 (medium: Normal+Fast, Boss+Tank)
-  - Fight 3+ → tier3 (hard: Tank+Fast+Normal, Flying+Tank)
+  - Fight 2 → tier2 (medium: Tourist+Jogger, Dragon+AlleyCat)
+  - Fight 3+ → tier3 (hard: AlleyCat+Jogger+Tourist, Pigeon+AlleyCat)
 - **Map independence** — during runs, `LevelData.Waves` is ignored. Waves are injected into `EnemySpawner.ConfigureForRun()` at level load.
 - **Random selection within tier** — `RunState.PickRunWaves()` scans the tier folder and picks one wave randomly.
 - **Boss fights** unchanged — always use `BossWaveData` from `LevelManager` Inspector.
