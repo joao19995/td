@@ -118,6 +118,15 @@ public partial class AttackComponent : Node
         if (_equipId == "holy_flour_pouch" && (target.IsBoss || target.IsHeavy))
             damage *= 1.2f;
 
+        // Shop: Golden Proof Flour — +heavy damage% vs boss/heavy
+        float shopHeavyPct = RunState.Instance?.ShopHeavyDamageBonusPercent ?? 0f;
+        if (shopHeavyPct > 0f && (target.IsBoss || target.IsHeavy))
+            damage *= 1f + shopHeavyPct;
+
+        // Trinket: Heretic Census List — +10% vs basic (non-boss, non-heavy)
+        if (RunState.Instance?.HasHereticCensus == true && !target.IsBoss && !target.IsHeavy)
+            damage *= 1.1f;
+
         var projectile = ProjectileFactory.Create(_data.ProjectileScene, damage, target, towerPos);
         projectile.WasCrit = wasCrit;
 

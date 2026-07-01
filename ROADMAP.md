@@ -14,6 +14,141 @@ finished have been removed — their outcomes are described in GAME_STATUS.md.
 
 ---
 
+## Content Completion — Missing Items
+
+### 1. Game Assets (16x16 Sprites)
+
+**Why**: 5 new towers and 5 new enemies use placeholder sprites. Equipment (20), trinkets (10), shop items (5), synergies (4), and projectile variants all have no unique icons. The game has no visual identity — every tower looks the same, no item has an icon.
+
+**Folder structure** (16x16 PNG, pixel art):
+
+```
+assets/sprites/
+├── towers/        (10 sprites — one per tower type)
+│   ├── bread_baker.png
+│   ├── bread_courier.png
+│   ├── aroma_keeper.png
+│   ├── taste_tester.png
+│   ├── bakery_truck.png
+│   ├── bread_monk.png
+│   ├── fermentation_sage.png
+│   ├── crust_crusader.png
+│   ├── dough_exorcist.png
+│   └── high_prophet.png
+├── enemies/        (10 sprites — one per enemy type)
+│   ├── sliced_bread_tourist.png
+│   ├── grocery_jogger.png
+│   ├── alley_cat.png
+│   ├── baguette_pigeon.png
+│   ├── bread_dragon.png
+│   ├── microwave_preacher.png
+│   ├── sandwich_man.png
+│   ├── frozen_dough_abomination.png
+│   ├── gluten_null_bishop.png
+│   └── supermarket_overlord.png
+├── projectiles/    (10 sprites — one per tower type)
+│   ├── proj_bread_baker.png
+│   ├── proj_bread_courier.png
+│   ├── proj_aroma_keeper.png
+│   ├── proj_taste_tester.png
+│   ├── proj_bakery_truck.png
+│   ├── proj_bread_monk.png
+│   ├── proj_fermentation_sage.png
+│   ├── proj_crust_crusader.png
+│   ├── proj_dough_exorcist.png
+│   └── proj_high_prophet.png
+├── equipment/      (20 icons — one per equip item)
+│   ├── stone_oven.png
+│   ├── ancient_starter.png
+│   ├── electric_bike.png
+│   ├── messenger_crate.png
+│   ├── megaphone.png
+│   ├── spice_wind_chimes.png
+│   ├── silver_tray.png
+│   ├── double_sampling.png
+│   ├── reinforced_suspension.png
+│   ├── street_parade.png
+│   ├── sacred_robes.png
+│   ├── prayer_beads.png
+│   ├── golden_proofing_bowl.png
+│   ├── wild_yeast.png
+│   ├── tempered_crust_blade.png
+│   ├── blessed_crunch_seal.png
+│   ├── holy_flour_pouch.png
+│   ├── judgment_seal.png
+│   ├── golden_staff.png
+│   └── first_starter_relic.png
+├── trinkets/       (10 icons — one per trinket)
+│   ├── secret_recipe_scroll.png
+│   ├── starters_blessing.png
+│   ├── tip_jar.png
+│   ├── proofing_time_candle.png
+│   ├── crust_fragment_relic.png
+│   ├── fermentation_diary.png
+│   ├── sacred_flour_dust.png
+│   ├── heretic_census.png
+│   ├── oven_heart_ember.png
+│   └── first_starter_vessel.png
+├── shop_items/     (5 icons — one per shop item)
+│   ├── secret_ingredient.png
+│   ├── fresh_batch.png
+│   ├── golden_proof_flour.png
+│   ├── rapid_oven_upgrade.png
+│   └── discounted_starter_yeast.png
+├── synergies/      (4 icons — one per synergy)
+│   ├── one_whiff_one_bite.png
+│   ├── grand_opening_rush.png
+│   ├── holy_fermentation_network.png
+│   └── crust_judgment_protocol.png
+├── ui/             (UI elements — hearts, coin, crosshair, etc.)
+│   ├── heart_full.png
+│   ├── heart_empty.png
+│   ├── coin.png
+│   ├── crosshair.png
+│   ├── arrow.png
+│   ├── star.png
+│   └── sword.png
+└── environment/    (tiles, ground)
+    ├── grass_01.png
+    ├── tile_ground.png
+    └── tile_stone.png
+```
+
+**What to do**:
+- Create all missing sprites at 16x16 resolution (pixel art style)
+- Add `Icon` (16x16) and `Sprite` (16x16) fields to each `.tres` resource pointing to the new files
+- Existing 5 tower sprites can be kept or replaced for consistency
+- Existing 5 enemy sprites can be kept or replaced for consistency
+- Existing 5 projectile sprites can be kept or replaced for consistency
+
+**Estimate**: 5-8 days with an artist
+
+---
+
+### 2. Golden Proof Flour (Shop Item #3) — Damage Not Applied
+
+**Why**: `ShopHeavyDamageBonusPercent` is stored on purchase but never read in the damage formula. The item costs 90g and does nothing.
+
+**Status**: Fixed — `AttackComponent.Fire()` now applies `damage *= 1f + shopHeavyPct` when target is boss or heavy.
+
+---
+
+### 3. Heretic Census List (Trinket #8) — Wrong Damage Application
+
+**Why**: The trinket applied flat +10% damage to all enemies instead of only basic (non-boss, non-heavy) enemies. `DamagePercentBonus` has been removed from the `.tres`; `IsBasicEnemy` flag replaced by `!IsBoss && !IsHeavy` check.
+
+**Status**: Fixed — `AttackComponent.Fire()` applies 1.1x multiplier when `HasHereticCensus` is true and target is neither boss nor heavy.
+
+---
+
+### 4. Oven Heart Ember (Trinket #9) — Wrong Range Bonus
+
+**Why**: The trinket applied +2% range instead of +1 flat range. `RangePercentBonus` removed from `.tres`; `TrinketRangeFlatBonus = 1f` stored in RunState.
+
+**Status**: Fixed — `Tower.EffectiveRange` adds `flatBonus` to base range.
+
+---
+
 ## Camada de Polimento — Improvements to Existing Features
 
 Each item below builds on existing features and adds the visual, interactive,
@@ -362,18 +497,19 @@ no purchase feedback.
 
 | # | Item | Impact | Effort | Dependencies |
 |---|---|---|---|---|---|
-| 1 | Sound System | Critical | 2-3d | None |
-| 2 | Shop + Level Icons | High | 2-3d | None |
-| 3 | HUD Tooltips + Buff Icons | High | 2-3d | Shop (#2) |
-| 4 | Enemy/Projectile VFX | High | 3-5d | None |
-| 5 | Tower Equipment Visuals | Medium | 2-3d | Shop (#2) |
-| 6 | Trinkets Cards | Medium | 2-3d | None |
-| 7 | UI Transitions | Medium | 2-3d | None |
-| 8 | Meta-Progression Expansion | Medium | 2-3d | None |
-| 9 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#7) |
-| 10 | Briefing + Preview | Medium | 1-2d | None |
-| 11 | Bestiary Sprites + Lore | Medium | 2-3d | None |
-| 12 | Waves + Elites | Low | 2-3d | None |
-| 13 | Targeted Priority UI | Low | 1d | None |
-| 14 | Loadout Preview | Low | 2-3d | None |
-| 15 | Tutorial/Onboarding | Low | 1-2d | None |
+| 1 | Custom Sprites (towers + enemies) | Critical | 3-5d | None |
+| 2 | Sound System | Critical | 2-3d | None |
+| 3 | Shop + Level Icons | High | 2-3d | None |
+| 4 | HUD Tooltips + Buff Icons | High | 2-3d | Shop (#3) |
+| 5 | Enemy/Projectile VFX | High | 3-5d | None |
+| 6 | Tower Equipment Visuals | Medium | 2-3d | Shop (#3) |
+| 7 | Trinkets Cards | Medium | 2-3d | None |
+| 8 | UI Transitions | Medium | 2-3d | None |
+| 9 | Meta-Progression Expansion | Medium | 2-3d | None |
+| 10 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#8) |
+| 11 | Briefing + Preview | Medium | 1-2d | None |
+| 12 | Bestiary Sprites + Lore | Medium | 2-3d | None |
+| 13 | Waves + Elites | Low | 2-3d | None |
+| 14 | Targeted Priority UI | Low | 1d | None |
+| 15 | Loadout Preview | Low | 2-3d | None |
+| 16 | Tutorial/Onboarding | Low | 1-2d | None |

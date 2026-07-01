@@ -7,4 +7,3 @@ script = ExtResource("1_sc")
 Id = "oven_heart_ember"
 Name = "Oven Heart Ember"
 Description = "+1 starting tower range (global)"
-RangePercentBonus = 0.02

@@ -7,4 +7,3 @@ script = ExtResource("1_sc")
 Id = "heretic_census"
 Name = "Heretic Census List"
 Description = "+10% damage vs basic enemies"
-DamagePercentBonus = 0.1

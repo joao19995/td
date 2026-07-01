@@ -29,6 +29,9 @@ public partial class RunState : Node
     public float TrinketStatusDurationBonusPercent { get; set; } = 0f;
     public float TrinketStatusStrengthBonusPercent { get; set; } = 0f;
     public float GlobalAuraDamagePercent { get; set; } = 0f;
+    public bool HasHereticCensus { get; set; } = false;
+    public bool HasOvenHeartEmber { get; set; } = false;
+    public float TrinketRangeFlatBonus { get; set; } = 0f;
     private float _passiveGoldTimer;
 
     private Dictionary<string, int> _towerLevels = new();
@@ -64,6 +67,9 @@ public partial class RunState : Node
         TrinketStatusDurationBonusPercent = 0f;
         TrinketStatusStrengthBonusPercent = 0f;
         GlobalAuraDamagePercent = 0f;
+        HasHereticCensus = false;
+        HasOvenHeartEmber = false;
+        TrinketRangeFlatBonus = 0f;
         _passiveGoldTimer = 0f;
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
@@ -162,6 +168,13 @@ public partial class RunState : Node
             EconomyManager.Instance.AddMoney(trinket.GoldAmount);
         if (trinket.PassiveGoldPerInterval > 0 && trinket.PassiveGoldInterval > 0f)
             _passiveGoldTimer = trinket.PassiveGoldInterval;
+        if (trinket.Id == "heretic_census")
+            HasHereticCensus = true;
+        if (trinket.Id == "oven_heart_ember")
+        {
+            HasOvenHeartEmber = true;
+            TrinketRangeFlatBonus = 1f;
+        }
     }
 
     public override void _Process(double delta)

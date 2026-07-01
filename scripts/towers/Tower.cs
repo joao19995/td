@@ -194,7 +194,8 @@ public partial class Tower : Node2D
             if (_data.UpgradePath != null)
                 for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
                     bonus += _data.UpgradePath[i].RangeBonus;
-            float baseWithUpgrade = _data.Range + bonus;
+            float flatBonus = RunState.Instance?.TrinketRangeFlatBonus ?? 0f;
+            float baseWithUpgrade = _data.Range + bonus + flatBonus;
             float synergyPercent = SynergyManager.Instance?.GetRangeBonus(_data.Id) ?? 0f;
             float shopPercent = RunState.Instance?.ShopRangeBonusPercent ?? 0f;
             float equipPercent = GetEquipRangePercent();
