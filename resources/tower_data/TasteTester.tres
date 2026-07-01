@@ -11,8 +11,8 @@ load_path = "res://.godot/imported/spr_tower_poison.png-fa8f962e568e16433b5476e8
 
 [resource]
 script = ExtResource("2_2xlvy")
-Id = "poison"
-TowerName = "Poison"
+Id = "taste_tester"
+TowerName = "The Taste Tester"
 Damage = 1.0
 FireRate = 1.2
 Range = 56.0

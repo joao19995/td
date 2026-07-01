@@ -4,11 +4,11 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "overdrive_coils"
-Name = "Overdrive Coils"
-Description = "+20% fire rate para torre Fast"
+Id = "electric_bike"
+Name = "Electric Bike"
+Description = "+20% fire rate para torre Bike Courier"
 Cost = 80
-TargetTowerId = "fast"
+TargetTowerId = "bike_courier"
 DamagePercentBonus = 0.0
 FireRatePercentBonus = 0.2
 RangePercentBonus = 0.0

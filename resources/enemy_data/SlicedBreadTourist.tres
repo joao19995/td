@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("1_a5ocf")
-Id = "enemy_normal"
-EnemyName = "Normal"
+Id = "enemy_tourist"
+EnemyName = "Sliced Bread Tourist"
 MaxHealth = 100.0
 MoveSpeed = 24.0
 RewardGold = 10

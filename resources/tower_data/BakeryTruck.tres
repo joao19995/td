@@ -11,8 +11,8 @@ load_path = "res://.godot/imported/spr_tower_splash.png-fddd5523b8b45f06e9adfa68
 
 [resource]
 script = ExtResource("2_k6g6c")
-Id = "splash"
-TowerName = "Splash"
+Id = "bakery_truck"
+TowerName = "The Bakery Truck"
 Damage = 35.0
 FireRate = 0.5
 Range = 36.0

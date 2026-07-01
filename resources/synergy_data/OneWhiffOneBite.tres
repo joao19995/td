@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "frost_venom"
-DisplayName = "Frost Venom"
-Description = "Ice + Poison: +15% damage to both"
-RequiredTowerIds = Array[String](["ice", "poison"])
-AppliesToTowerIds = Array[String](["ice", "poison"])
+Id = "one_whiff_one_bite"
+DisplayName = "One Whiff, One Bite"
+Description = "Aroma + Taste Tester: +15% damage to both"
+RequiredTowerIds = Array[String](["aroma", "taste_tester"])
+AppliesToTowerIds = Array[String](["aroma", "taste_tester"])
 DamageBonusPercent = 0.15

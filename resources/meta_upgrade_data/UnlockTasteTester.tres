@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "unlock_ice"
-Name = "Desbloquear Torre de Gelo"
-Description = "Libera a torre de Gelo (Ice) para uso nas runs"
-CostTokens = 20
+Id = "unlock_taste_tester"
+Name = "Learn the Taste-Test Ritual"
+Description = "Unlocks The Taste Tester tower for use in runs"
+CostTokens = 30
 MaxLevel = 1
 IsTowerUnlock = true
-TowerId = "ice"
+TowerId = "taste_tester"
 StatType = ""
 BonusPerLevel = 0.0

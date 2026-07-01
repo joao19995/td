@@ -18,7 +18,7 @@ offset_bottom = 150.0
 
 [node name="Title" type="Label" parent="VBox" unique_id=1037953614]
 layout_mode = 2
-text = "TOWER DEFENSE"
+text = "SOURDOUGH SIEGE"
 horizontal_alignment = 1
 
 [node name="StartRunButton" type="Button" parent="VBox" unique_id=1274921229]

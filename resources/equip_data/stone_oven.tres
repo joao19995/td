@@ -4,11 +4,11 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "heavy_barrel"
-Name = "Heavy Barrel"
-Description = "+15% dano para torre Base"
+Id = "stone_oven"
+Name = "Stone Oven"
+Description = "+15% dano para torre Corner Baker"
 Cost = 80
-TargetTowerId = "base"
+TargetTowerId = "corner_baker"
 DamagePercentBonus = 0.15
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.0

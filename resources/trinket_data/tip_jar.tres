@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "lucky_coin"
-Name = "Lucky Coin"
-Description = "Ganha 100 de ouro imediatamente"
+Id = "tip_jar"
+Name = "Regular's Tip Jar"
+Description = "Gain 100 gold immediately"
 DamagePercentBonus = 0.0
 HealAmount = 0
 GoldAmount = 100

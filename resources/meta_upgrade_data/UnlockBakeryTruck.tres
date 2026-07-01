@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "unlock_poison"
-Name = "Desbloquear Torre de Veneno"
-Description = "Libera a torre de Veneno (Poison) para uso nas runs"
-CostTokens = 30
+Id = "unlock_bakery_truck"
+Name = "Buy the Bakery Truck"
+Description = "Unlocks The Bakery Truck tower for use in runs"
+CostTokens = 50
 MaxLevel = 1
 IsTowerUnlock = true
-TowerId = "poison"
+TowerId = "bakery_truck"
 StatType = ""
 BonusPerLevel = 0.0

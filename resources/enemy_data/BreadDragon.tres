@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("1_rrnri")
-Id = "enemy_boss"
-EnemyName = "Boss"
+Id = "enemy_dragon"
+EnemyName = "The Industrial Bread Dragon"
 MaxHealth = 1000.0
 MoveSpeed = 16.0
 RewardGold = 100

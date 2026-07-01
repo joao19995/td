@@ -4,11 +4,11 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "precision_lens"
-Name = "Precision Lens"
-Description = "+20% alcance para torre Ice"
+Id = "megaphone"
+Name = "Megaphone"
+Description = "+20% alcance para torre Aroma"
 Cost = 80
-TargetTowerId = "ice"
+TargetTowerId = "aroma"
 DamagePercentBonus = 0.0
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.2

@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "global_damage"
-Name = "Dano Global +5%"
-Description = "Aumenta o dano de todas as torres em 5% por nivel"
-CostTokens = 15
+Id = "local_sponsorship"
+Name = "Local Sponsorship"
+Description = "Start each run with 50 additional gold per level"
+CostTokens = 10
 MaxLevel = 3
 IsTowerUnlock = false
 TowerId = ""
-StatType = "Damage"
-BonusPerLevel = 0.05
+StatType = "StartingGold"
+BonusPerLevel = 50

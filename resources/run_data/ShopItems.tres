@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_sc")
-ItemId = "damage_boost"
-ItemName = "Damage Boost"
+ItemId = "secret_ingredient"
+ItemName = "Secret Ingredient"
 Description = "+5% damage for all towers"
 Cost = 80
 DamageBonusPercent = 0.05

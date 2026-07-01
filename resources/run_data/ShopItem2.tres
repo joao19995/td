@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_sc")
-ItemId = "fire_rate_boost"
-ItemName = "Fire Rate Boost"
+ItemId = "fresh_batch"
+ItemName = "Fresh Batch"
 Description = "+5% fire rate for all towers"
 Cost = 60
 FireRateBonusPercent = 0.05

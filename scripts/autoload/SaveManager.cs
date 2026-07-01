@@ -17,7 +17,7 @@ public partial class SaveManager : Node
     public int MetaTokens => _metaTokens;
     public Array<string> UnlockedTowerIds => _unlockedTowerIds;
 
-    private static readonly string[] DefaultTowerIds = { "base", "fast" };
+    private static readonly string[] DefaultTowerIds = { "corner_baker", "bike_courier" };
 
     public override void _EnterTree()
     {

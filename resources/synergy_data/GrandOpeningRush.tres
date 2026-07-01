@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "overclock"
-DisplayName = "Overclock"
+Id = "grand_opening_rush"
+DisplayName = "Grand Opening Rush"
 Description = "3+ tower types: +10% fire rate to all"
 MinTowerCount = 3
 DamageBonusPercent = 0.0

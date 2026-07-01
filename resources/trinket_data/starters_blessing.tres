@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "guardian_angel"
-Name = "Guardian Angel"
-Description = "Recupera 5 vidas"
+Id = "starters_blessing"
+Name = "Starter's Blessing"
+Description = "Restore 5 lives"
 DamagePercentBonus = 0.0
 HealAmount = 5
 GoldAmount = 0

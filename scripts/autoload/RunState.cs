@@ -44,9 +44,9 @@ public partial class RunState : Node
         ShopRangeBonusPercent = 0f;
         TrinketDamageBonusPercent = 0f;
 
-        int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("global_damage");
+        int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
         MetaDamageBonusPercent = damageLevel * 0.05f;
-        int goldLevel = SaveManager.Instance.GetMetaUpgradeLevel("starting_gold");
+        int goldLevel = SaveManager.Instance.GetMetaUpgradeLevel("local_sponsorship");
         StartingGoldBonus = goldLevel * 50;
 
         EconomyManager.Instance.SetMoney(gold + StartingGoldBonus);
