@@ -6,9 +6,9 @@
 script = ExtResource("1_sc")
 Id = "stone_oven"
 Name = "Stone Oven"
-Description = "+15% dano para torre Corner Baker"
+Description = "+15% dano para torre Bread Baker"
 Cost = 80
-TargetTowerId = "corner_baker"
+TargetTowerId = "bread_baker"
 DamagePercentBonus = 0.15
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.0

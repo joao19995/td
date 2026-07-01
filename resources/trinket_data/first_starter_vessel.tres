@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TrinketData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "first_starter_vessel"
+Name = "First Starter Vessel"
+Description = "Each 30s gains +5 gold passive"
+PassiveGoldPerInterval = 5
+PassiveGoldInterval = 30.0

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "prayer_beads"
+Name = "Prayer Beads of Gluten"
+Description = "Buffs +5% stronger, Monk não ataca"
+Cost = 150
+TargetTowerId = "bread_monk"

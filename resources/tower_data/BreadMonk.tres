@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" uid="uid://c3dwx6ywtdw3d" path="res://scenes/projectiles/projectile_base.tscn" id="1_proj"]
+[ext_resource type="Script" uid="uid://c6i1yvfl7snxf" path="res://scripts/resources/UpgradeData.cs" id="2_upg"]
+[ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="3_data"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/MonkUpgrade1.tres" id="4_up1"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/MonkUpgrade2.tres" id="5_up2"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_base"]
+load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec01886b1bc.ctex"
+
+[resource]
+script = ExtResource("3_data")
+Id = "bread_monk"
+TowerName = "Bread Monk"
+Damage = 19.0
+FireRate = 1.0
+Range = 50.0
+Cost = 220
+ProjectileScene = ExtResource("1_proj")
+Sprite = SubResource("CompressedTexture2D_base")
+HasAura = true
+AuraRange = 60.0
+AuraDamageBonusPercent = 0.1
+AuraFireRateBonusPercent = 0.1
+UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])

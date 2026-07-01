@@ -12,11 +12,11 @@ load_path = "res://.godot/imported/spr_tower_splash.png-fddd5523b8b45f06e9adfa68
 [resource]
 script = ExtResource("2_k6g6c")
 Id = "bakery_truck"
-TowerName = "The Bakery Truck"
-Damage = 35.0
-FireRate = 0.5
-Range = 36.0
-Cost = 250
+TowerName = "Bakery Truck"
+Damage = 20.0
+FireRate = 0.8
+Range = 44.0
+Cost = 180
 ProjectileScene = ExtResource("1_3qluu")
 Sprite = SubResource("CompressedTexture2D_3qluu")
 HasSplash = true

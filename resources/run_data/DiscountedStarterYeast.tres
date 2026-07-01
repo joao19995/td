@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+ItemId = "discounted_starter_yeast"
+ItemName = "Discounted Starter Yeast"
+Description = "First purchase in the shop costs -30% gold"
+Cost = 120
+FirstPurchaseDiscountPercent = 0.3

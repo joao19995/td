@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Texture2D" uid="uid://cqr2yt25dtax8" path="res://assets/sprites/enemies/spr_enemy_normal.png" id="1_sprite"]
+[ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "enemy_preacher"
+EnemyName = "Microwave Meal Preacher"
+MaxHealth = 200.0
+MoveSpeed = 20.0
+RewardGold = 25
+DamageToPlayer = 2
+Sprite = ExtResource("1_sprite")
+IsHeavy = true

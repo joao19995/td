@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "holy_flour_pouch"
+Name = "Holy Flour Pouch"
+Description = "+20% damage vs elites/boss"
+Cost = 100
+TargetTowerId = "dough_exorcist"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Texture2D" uid="uid://c7sk17164impj" path="res://assets/sprites/enemies/spr_enemy_tank.png" id="1_sprite"]
+[ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "enemy_abomination"
+EnemyName = "Frozen Dough Abomination"
+MaxHealth = 400.0
+MoveSpeed = 10.0
+RewardGold = 35
+DamageToPlayer = 3
+Sprite = ExtResource("1_sprite")
+IsHeavy = true

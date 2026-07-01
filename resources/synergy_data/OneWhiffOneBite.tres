@@ -6,7 +6,7 @@
 script = ExtResource("1_sc")
 Id = "one_whiff_one_bite"
 DisplayName = "One Whiff, One Bite"
-Description = "Aroma + Taste Tester: +15% damage to both"
-RequiredTowerIds = Array[String](["aroma", "taste_tester"])
-AppliesToTowerIds = Array[String](["aroma", "taste_tester"])
+Description = "Aroma Keeper + Taste Tester: +15% damage to both"
+RequiredTowerIds = Array[String](["aroma_keeper", "taste_tester"])
+AppliesToTowerIds = Array[String](["aroma_keeper", "taste_tester"])
 DamageBonusPercent = 0.15

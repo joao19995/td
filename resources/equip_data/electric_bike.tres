@@ -6,9 +6,9 @@
 script = ExtResource("1_sc")
 Id = "electric_bike"
 Name = "Electric Bike"
-Description = "+20% fire rate para torre Bike Courier"
+Description = "+20% fire rate para torre Bread Courier"
 Cost = 80
-TargetTowerId = "bike_courier"
+TargetTowerId = "bread_courier"
 DamagePercentBonus = 0.0
 FireRatePercentBonus = 0.2
 RangePercentBonus = 0.0

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ShopItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+ItemId = "rapid_oven_upgrade"
+ItemName = "Rapid Oven Upgrade"
+Description = "+8% fire rate, but -5% range"
+Cost = 100
+FireRateBonusPercent = 0.08
+RangeBonusPercent = -0.05

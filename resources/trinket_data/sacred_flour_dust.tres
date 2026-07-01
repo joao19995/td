@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TrinketData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "sacred_flour_dust"
+Name = "Sacred Flour Dust"
+Description = "+10% slow/poison strength"
+StatusStrengthBonusPercent = 0.1

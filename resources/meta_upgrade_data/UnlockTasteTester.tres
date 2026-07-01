@@ -6,7 +6,7 @@
 script = ExtResource("1_sc")
 Id = "unlock_taste_tester"
 Name = "Learn the Taste-Test Ritual"
-Description = "Unlocks The Taste Tester tower for use in runs"
+Description = "Unlocks Taste Tester tower for use in runs"
 CostTokens = 30
 MaxLevel = 1
 IsTowerUnlock = true

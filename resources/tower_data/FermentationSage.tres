@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" uid="uid://c3dwx6ywtdw3d" path="res://scenes/projectiles/projectile_base.tscn" id="1_proj"]
+[ext_resource type="Script" uid="uid://c6i1yvfl7snxf" path="res://scripts/resources/UpgradeData.cs" id="2_upg"]
+[ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="3_data"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/SageUpgrade1.tres" id="4_up1"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/SageUpgrade2.tres" id="5_up2"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_base"]
+load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec01886b1bc.ctex"
+
+[resource]
+script = ExtResource("3_data")
+Id = "fermentation_sage"
+TowerName = "Fermentation Sage"
+Damage = 18.0
+FireRate = 0.9
+Range = 52.0
+Cost = 250
+ProjectileScene = ExtResource("1_proj")
+Sprite = SubResource("CompressedTexture2D_base")
+HasChain = true
+ChainBounceCount = 1
+ChainBounceRange = 40.0
+ChainBounceDamageMultiplier = 0.5
+UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])

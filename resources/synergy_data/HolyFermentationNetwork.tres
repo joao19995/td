@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SynergyData" format=3]
+
+[ext_resource type="Script" uid="uid://dgbes4krnhlla" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "holy_fermentation_network"
+DisplayName = "Holy Fermentation Network"
+Description = "Aroma Keeper + Fermentation Sage: slow/chain spread +30% further"
+RequiredTowerIds = Array[String](["aroma_keeper", "fermentation_sage"])
+AppliesToTowerIds = Array[String](["aroma_keeper", "fermentation_sage"])

@@ -6,9 +6,9 @@
 script = ExtResource("1_sc")
 Id = "megaphone"
 Name = "Megaphone"
-Description = "+20% alcance para torre Aroma"
+Description = "+20% alcance para torre Aroma Keeper"
 Cost = 80
-TargetTowerId = "aroma"
+TargetTowerId = "aroma_keeper"
 DamagePercentBonus = 0.0
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.2

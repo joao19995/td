@@ -1,10 +1,9 @@
 using Godot;
-using Godot.Collections;
 using System.Collections.Generic;
 
 public partial class HUD : CanvasLayer
 {
-    [Export] public Array<TowerData> AvailableTowers;
+    private List<TowerData> _availableTowers;
 
     [Export] public float ButtonHeight = 14f;
     [Export] public float TowerBarSideMargin = 6f;
@@ -41,6 +40,7 @@ public partial class HUD : CanvasLayer
         _towerBar = GetNode<HBoxContainer>("TowerBar");
 
         PositionTowerBar();
+        _availableTowers = LoadAllTowers();
         BuildWaveButtons();
         BuildTowerButtons();
 
@@ -97,14 +97,30 @@ public partial class HUD : CanvasLayer
         _nextWaveButton = CreateButton(_waveBar, "Next Wave", size, OnNextWavePressed);
     }
 
+    private static List<TowerData> LoadAllTowers()
+    {
+        var list = new List<TowerData>();
+        var dir = DirAccess.Open("res://resources/tower_data/");
+        if (dir == null) return list;
+        foreach (var file in dir.GetFiles())
+        {
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
+                continue;
+            var res = ResourceLoader.Load<Resource>("res://resources/tower_data/" + file, "", ResourceLoader.CacheMode.Replace);
+            if (res is TowerData t)
+                list.Add(t);
+        }
+        return list;
+    }
+
     private void BuildTowerButtons()
     {
-        if (AvailableTowers == null || AvailableTowers.Count == 0) return;
+        if (_availableTowers == null || _availableTowers.Count == 0) return;
 
         float barWidth = GetViewport().GetVisibleRect().Size.X - (TowerBarSideMargin * 2f);
-        var size = new Vector2(barWidth / AvailableTowers.Count, ButtonHeight);
+        var size = new Vector2(barWidth / _availableTowers.Count, ButtonHeight);
 
-        foreach (var towerData in AvailableTowers)
+        foreach (var towerData in _availableTowers)
         {
             var button = CreateButton(_towerBar, $"{towerData.TowerName} ({towerData.Cost}g)", size,
                 () => OnTowerButtonPressed(towerData));
@@ -141,9 +157,9 @@ public partial class HUD : CanvasLayer
 
     private void ApplyTowerFilter()
     {
-        for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+        for (int i = 0; i < _availableTowers.Count && i < _allTowerButtons.Count; i++)
         {
-            var data = AvailableTowers[i];
+            var data = _availableTowers[i];
             var btn = _allTowerButtons[i];
             bool visible = RunState.Instance.SelectedTowerIds.Contains(data.Id);
             btn.Visible = visible;
@@ -157,14 +173,14 @@ public partial class HUD : CanvasLayer
         if (_allTowerButtons.Count == 0 || !Visible) return;
 
         int visibleCount = 0;
-        for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+        for (int i = 0; i < _availableTowers.Count && i < _allTowerButtons.Count; i++)
             if (_allTowerButtons[i].Visible) visibleCount++;
 
         if (visibleCount > 0)
         {
             float barWidth = GetViewport().GetVisibleRect().Size.X - (TowerBarSideMargin * 2f);
             var size = new Vector2(barWidth / visibleCount, ButtonHeight);
-            for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+            for (int i = 0; i < _availableTowers.Count && i < _allTowerButtons.Count; i++)
             {
                 var btn = _allTowerButtons[i];
                 if (btn.Visible)
@@ -172,11 +188,11 @@ public partial class HUD : CanvasLayer
             }
         }
 
-        for (int i = 0; i < AvailableTowers.Count && i < _allTowerButtons.Count; i++)
+        for (int i = 0; i < _availableTowers.Count && i < _allTowerButtons.Count; i++)
         {
             var btn = _allTowerButtons[i];
             if (!btn.Visible) continue;
-            var data = AvailableTowers[i];
+            var data = _availableTowers[i];
             bool placed = TowerPlacementManager.Instance.IsTowerTypePlaced(data.Id);
             btn.Disabled = placed || !EconomyManager.Instance.CanAfford(data.Cost);
             btn.Text = placed ? $"{data.TowerName} (Placed)" : $"{data.TowerName} ({data.Cost}g)";

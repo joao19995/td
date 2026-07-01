@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Texture2D" uid="uid://5r2uwhpwl3kp" path="res://assets/sprites/enemies/spr_enemy_fast.png" id="1_sprite"]
+[ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "enemy_sandwich"
+EnemyName = "Plastic Wrapped Sandwich Man"
+MaxHealth = 180.0
+MoveSpeed = 28.0
+RewardGold = 22
+DamageToPlayer = 2
+Sprite = ExtResource("1_sprite")

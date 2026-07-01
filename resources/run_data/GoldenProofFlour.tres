@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShopItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ShopItemData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+ItemId = "golden_proof_flour"
+ItemName = "Golden Proof Flour"
+Description = "+5% damage vs armored/heavy enemies"
+Cost = 90
+HeavyDamageBonusPercent = 0.05

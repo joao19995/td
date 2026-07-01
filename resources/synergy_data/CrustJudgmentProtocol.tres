@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SynergyData" format=3]
+
+[ext_resource type="Script" uid="uid://dgbes4krnhlla" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "crust_judgment_protocol"
+DisplayName = "Crust Judgment Protocol"
+Description = "Crust Crusader + Dough Exorcist: crits vs <50% HP execute (10s cd)"
+RequiredTowerIds = Array[String](["crust_crusader", "dough_exorcist"])
+AppliesToTowerIds = Array[String](["crust_crusader", "dough_exorcist"])
+FireRateBonusPercent = 0.0

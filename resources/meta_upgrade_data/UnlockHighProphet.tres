@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "unlock_high_prophet"
+Name = "Convert the High Prophet"
+Description = "Unlocks High Prophet of Sourdough tower for use in runs"
+CostTokens = 150
+MaxLevel = 1
+IsTowerUnlock = true
+TowerId = "high_prophet"
+StatType = ""
+BonusPerLevel = 0.0

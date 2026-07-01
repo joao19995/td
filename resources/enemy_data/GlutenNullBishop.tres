@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Texture2D" uid="uid://c3ymadkhg2klu" path="res://assets/sprites/enemies/spr_enemy_boss.png" id="1_sprite"]
+[ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "enemy_gluten_bishop"
+EnemyName = "The Gluten Null Bishop"
+MaxHealth = 1500.0
+MoveSpeed = 14.0
+RewardGold = 120
+DamageToPlayer = 6
+Sprite = ExtResource("1_sprite")
+IsBoss = true
+IsHeavy = true
+HasAntiBuffAura = true
+AntiBuffAuraRadius = 60.0

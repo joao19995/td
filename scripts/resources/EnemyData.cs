@@ -10,4 +10,8 @@ public partial class EnemyData : Resource
     [Export] public int RewardGold { get; set; } = 5;
     [Export] public int DamageToPlayer { get; set; } = 1;
     [Export] public Texture2D Sprite { get; set; }
+    [Export] public bool IsBoss { get; set; } = false;
+    [Export] public bool IsHeavy { get; set; } = false;
+    [Export] public bool HasAntiBuffAura { get; set; } = false;
+    [Export] public float AntiBuffAuraRadius { get; set; } = 60f;
 }

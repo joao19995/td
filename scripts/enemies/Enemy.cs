@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 public partial class Enemy : Area2D
 {
@@ -11,7 +12,11 @@ public partial class Enemy : Area2D
     private bool _signalsConnected;
     private bool _returningToPool;
     private float _statMultiplier = 1f;
+    private float _antiBuffScanTimer;
+    private readonly HashSet<Tower> _affectedTowers = new();
     public bool IsDead { get; private set; }
+    public bool IsBoss => _data?.IsBoss ?? false;
+    public bool IsHeavy => _data?.IsHeavy ?? false;
 
     public override void _Ready()
     {
@@ -92,6 +97,8 @@ public partial class Enemy : Area2D
     }
 
     public float GetCurrentHealth() => _health?.GetCurrentHealth() ?? 0f;
+    public float MaxHealth => _health?.MaxHealth ?? 1f;
+    public float HealthPercent => GetCurrentHealth() / MaxHealth;
 
     private void OnDamageTaken(float amount)
     {
@@ -107,9 +114,67 @@ public partial class Enemy : Area2D
         popup.ShowDamage(amount, Colors.White);
     }
 
+    public override void _Process(double delta)
+    {
+        if (_data == null || !_data.HasAntiBuffAura || IsDead) return;
+
+        _antiBuffScanTimer -= (float)delta;
+        if (_antiBuffScanTimer > 0f) return;
+        _antiBuffScanTimer = 0.5f;
+
+        var myPos = GlobalPosition;
+        var allTowers = GetTree().GetNodesInGroup("towers");
+        var currentInRange = new HashSet<Tower>();
+
+        foreach (var node in allTowers)
+        {
+            if (node is Tower tower)
+            {
+                float dist = tower.GlobalPosition.DistanceTo(myPos);
+                if (dist <= _data.AntiBuffAuraRadius)
+                    currentInRange.Add(tower);
+            }
+        }
+
+        foreach (var tower in currentInRange)
+        {
+            if (!_affectedTowers.Contains(tower))
+            {
+                _affectedTowers.Add(tower);
+                Tower.AddAntiBuff(tower);
+                tower.RefreshStats();
+            }
+        }
+
+        var left = new List<Tower>();
+        foreach (var tower in _affectedTowers)
+        {
+            if (!currentInRange.Contains(tower))
+                left.Add(tower);
+        }
+        foreach (var tower in left)
+        {
+            _affectedTowers.Remove(tower);
+            Tower.RemoveAntiBuff(tower);
+            tower.RefreshStats();
+        }
+    }
+
+    private void RemoveAllAntiBuffEffects()
+    {
+        foreach (var tower in _affectedTowers)
+        {
+            Tower.RemoveAntiBuff(tower);
+            if (IsInstanceValid(tower))
+                tower.RefreshStats();
+        }
+        _affectedTowers.Clear();
+    }
+
     private void OnReachedEnd()
     {
         IsDead = true;
+        RemoveAllAntiBuffEffects();
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, Mathf.RoundToInt(_data.DamageToPlayer * _statMultiplier));
         ReturnToPool();
     }
@@ -117,6 +182,7 @@ public partial class Enemy : Area2D
     private void OnDied()
     {
         IsDead = true;
+        RemoveAllAntiBuffEffects();
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, Mathf.RoundToInt(_data.RewardGold * _statMultiplier));
         ReturnToPool();
     }
@@ -126,6 +192,7 @@ public partial class Enemy : Area2D
         if (_returningToPool)
             return;
         _returningToPool = true;
+        RemoveAllAntiBuffEffects();
         _statusEffects?.ClearEffects();
         DisconnectSignals();
         CallDeferred(nameof(DeferredReturnToPool));

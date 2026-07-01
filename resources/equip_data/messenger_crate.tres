@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "messenger_crate"
+Name = "Messenger Crate Upgrade"
+Description = "Ataques penetram +1 inimigo, -10% fire rate"
+Cost = 120
+TargetTowerId = "bread_courier"
+DamagePercentBonus = 0.0
+FireRatePercentBonus = -0.1

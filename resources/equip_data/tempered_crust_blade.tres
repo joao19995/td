@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "tempered_crust_blade"
+Name = "Tempered Crust Blade"
+Description = "+10% crit chance"
+Cost = 100
+TargetTowerId = "crust_crusader"

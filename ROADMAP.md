@@ -1,194 +1,379 @@
 # Roadmap
 
-MVP feature list, in a sensible build order based on dependencies. Each item gets
-detailed (tasks, design decisions) when work on it actually starts. When an item is
-finished, move its outcome into GAME_STATUS.md as a behavior description.
+MVP feature list, in a sensible build order based on dependencies. Items that are
+finished have been removed — their outcomes are described in GAME_STATUS.md.
 
 **Global constraints:**
-- 5 tower types, fixed (Corner Baker, Bike Courier, Aroma, Taste Tester, Bakery Truck)
-- Each map: max 1 tower of each type = max 5 towers per map
+- 10 tower types, fixed (Bread Baker, Bread Courier, Aroma Keeper, Taste Tester,
+  Bakery Truck, Bread Monk, Fermentation Sage, Crust Crusader, Dough Exorcist,
+  High Prophet of Sourdough)
+- Each map: max 1 tower of each type = max 10 towers per map (practical: 5 max per map)
 - Loadout: max 4 tower types per run
 - Towers are placed fresh each fight (no persistence of positions between fights)
 - Runs cycle randomly between Map1 and Map2
 
 ---
 
-## MVP Build Order
+## Camada de Polimento — Improvements to Existing Features
 
-### 1. RunState ✅
-**Status: Complete.**
+Each item below builds on existing features and adds the visual, interactive,
+and depth polish that a real game needs.
 
-What was built:
-- **RunState autoload** — run-scoped storage for per-tower upgrade levels and selected tower IDs. Gold/lives live in EconomyManager/GameManager (single source of truth), not duplicated in RunState.
-- **Loadout screen** — choose 1–4 tower types before each run. Only chosen towers appear in HUD during fights.
-- **Run flow**: Main Menu → Loadout → random map fight → Fight Complete screen → "Next Fight" (random map, gold/lives/tower upgrades preserved) or "End Run" (back to Main Menu).
-- **1-per-type enforcement** — TowerPlacementManager blocks duplicate tower types. HUD shows "(Placed)" for placed types, updated reactively on money/tower changes.
-- **Random map rotation** — each fight picks randomly from LevelManager's level list (Map1 or Map2).
-- **Persistent tower upgrades** — upgrade level per tower type persists across fights via RunState.
-- **Enemy death tracking** — AllWavesCompleted only fires when all enemies are killed, not when the last enemy spawns.
-
-Key decisions:
-- Gold/lives live in EconomyManager/GameManager (not duplicated in RunState), surviving level reloads untouched during a run
-- Tower upgrade level is per-type, not per-instance — persists across fights even if the tower is sold
-- Loadout is 4 of 5 towers to force strategic choices without leaving towers unusable
-
-### 2. SaveManager ✅
-**Status: Complete.**
-
-What was built:
-- **SaveManager autoload** — persistent meta-progression storage (tokens + unlocked tower IDs).
-- **JSON file** (`user://save_data.json`) via `FileAccess`, not Resource serialization (avoids documented security vector of loading untrusted `.tres` files).
-- **Configurable token reward** (default 10 per run), adjustable via Inspector without code changes.
-- **Corruption-safe** — load failures reset to defaults with a warning instead of crashing.
-- **Migration** — existing saves auto-include new tower IDs when a game update adds towers.
-- **Integration**: tokens awarded on run end, locked towers shown as "(LOCKED)" in loadout, token count displayed on Main Menu.
-
-Key decisions:
-- JSON over `.tres` for user-writable save data (security).
-- Save-on-mutation is acceptable for expected frequency (end of run, meta-shop purchases).
-
-### 3. Synergies ✅
-**Status: Complete.**
-
-What was built:
-- **SynergyData resource** (`[GlobalClass]`) — defines required tower IDs, minimum tower count, which towers the bonus applies to, and percent bonuses for damage/fire rate/range.
-- **SynergyManager autoload** — scans `res://resources/synergy_data/` at startup, re-evaluates active synergies whenever a tower is placed or removed, emits `SynergiesChanged` signal.
-- **Reactive stat application** — each tower subscribes to `SynergiesChanged` in `_Ready` and calls `ApplyData()` on change, ensuring already-placed towers receive synergy bonuses immediately.
-- **Visual feedback** — towers affected by any synergy get a green tint (`Modulate`); synergy names appear in the HUD.
-- **2 example synergies**: One Whiff, One Bite (Aroma + Taste Tester → +15% damage), Grand Opening Rush (3+ types → +10% fire rate).
-- **Formula**: `EffectiveX = (baseX + upgradeFlatBonus) * (1 + synergyPercentBonus)` — consistent for damage, fire rate, and range.
-
-Key decisions:
-- SynergyManager as autoload (not per-level child) — preserves zero-code-change map addition.
-- Tower subscribes to signal rather than polling — reactive, no stale stats.
-- Synergy `.tres` files can drop default-valued properties (editor auto-clean). C# defaults cover missing values, so functionality is unaffected.
-- `CacheMode.Replace` used in ResourceLoader to avoid stale cache after .tres edits.
-
-### 4+5. Run Engine (Slot Machine + Fight Integration) ✅
-
-**Status: Complete.**
-
-Merges original items 4 (Fight Integration, ~85% done from earlier work) and
-5 (Slot Machine) into one.
-
-What was built:
-- **SlotManager autoload** — weighted roll (Fight 45%, Shop 25%, Heal 20%, Miniboss 10%)
-  that runs after each fight. Configurable weights and fight count via Inspector.
-- **Run length**: N regular fights (default 3, configurable) + 1 boss fight.
-  Boss triggers automatically when `FightsCompleted >= FightsPerRun`.
-- **FightCompleteScreen** now shows outcome text on first click ("Continue"),
-  resolves on second click — player controls the pacing.
-- **Shop outcome** — pushes a ShopScreen with run-wide stat bonuses (damage,
-  fire rate). Items defined as `ShopItemData` resources.
-- **Heal outcome** — restores configurable HP (default 5) without a fight.
-- **Miniboss outcome** — loads a random map with 1.5x enemy stat multiplier.
-- **Boss fight** — uses a dedicated boss wave (BossWave.tres) with mix of
-  enemies including the Boss enemy type. Victory ends the run.
-- **Shop bonuses** stack multiplicatively with upgrades and synergies in tower
-  EffectiveDamage/EffectiveFireRate/EffectiveRange formulas.
-- **Miniboss scaling** — Enemy accepts a statMultiplier parameter in
-  Initialize(), applied to HP, reward gold, and damage.
-
-Key decisions:
-- Slot spin happens AFTER fight ends — FightCompleteScreen shows outcome,
-  second click resolves it. Player always sees what's coming.
-- IsBossFight/IsMiniboss flags on RunState, read by EnemySpawner via
-  BaseLevel.ConfigureForRun() called from LevelManager.OnLevelLoaded.
-- Shop screen is a placeholder (single category, 2 items) — expandable.
-- BossWave is a separate .tres file; EnemySpawner falls back to loading it
-  from `res://resources/run_data/BossWave.tres` if `BossWaveData` export is
-  not set on the map scene.
-### 6. Meta-Progression (Shop) ✅
-
-**Status: Complete.**
-
-What was built:
-- **MetaUpgradeData resource** — defines a purchasable meta-progression item (ID, name, cost, max level, tower unlock or stat type with per-level bonus).
-- **Meta Shop screen** — accessible from Main Menu; lists all available upgrades with current level, cost, and Buy button. Items are loaded from `.tres` files.
-- **5 items in catalog**: Unlock Aroma (20t), Unlock Taste Tester (30t), Unlock Bakery Truck (50t), Secret Recipe +5%/level (15t base, 3 levels), Local Sponsorship +50/level (10t base, 3 levels).
-- **Multi-level upgrades** — costs scale by level (`CostTokens * level`). Buy button disabled when maxed or insufficient tokens.
-- **Tower unlocks** — purchasing a tower unlock calls `SaveManager.UnlockTower()`; Loadout screen disables locked towers.
-- **Stat application** — `RunState.StartRun()` reads `SaveManager.GetMetaUpgradeLevel()` and applies `MetaDamageBonusPercent` (×0.05 per level) to `Tower.EffectiveDamage` and `StartingGoldBonus` (×50 per level) to starting gold.
-- **Formula**: `EffectiveDamage = base * (1 + synergy) * (1 + shop) * (1 + meta)` — meta bonus is a separate multiplicative layer.
-- **Defaults**: only Corner Baker and Bike Courier towers start unlocked (changed from all 5). Aroma/Taste Tester/Bakery Truck must be purchased.
-
-Key decisions:
-- Upgrade levels stored in SaveManager's JSON as a `meta_upgrade_levels` dictionary.
-- Multi-level cost = `CostTokens * (currentLevel + 1)` — consistent scaling, no per-level config needed.
-- Tower unlocks apply immediately on purchase (no restart needed).
-
-## Post-MVP
-
-### Slot Machine Reroll + Probability-Skewing ✅
-
-**Status: Complete.**
-
-What was built:
-- **Reroll button** on FightCompleteScreen — after seeing the outcome (except Boss/Heal), player can pay gold to re-roll.
-- **Scaling cost**: `RerollBaseCost × (rerollCount + 1)` — 50g → 100g → 150g.
-- **Probability-skewing**: rerolling an outcome reduces its weight by `SkewReductionFactor` (default 50%), making repeated same outcomes less likely.
-- **Configurable** via SlotManager Inspector: `RerollBaseCost`, `SkewReductionFactor`.
-- Weights reset per fight session.
-
-### Tower Equipment (Per-Tower Inventory) ✅
-
-**Status: Complete.**
-
-What was built:
-- **EquipData resource** — id, name, description, icon, cost, target tower type, stat percent bonuses (damage/fire rate/range).
-- **1 equip slot per tower** — equipment bought in the run Shop, stored per tower type in RunState.
-- **Tower restriction** — each equipment item targets a specific tower type (e.g. Stone Oven → Corner Baker). Only shows in Shop if that tower is in the loadout.
-- **Stat formula**: `EffectiveX = base * (1 + synergy + equipPercent) * (1 + shop) * (1 + meta) * (1 + trinket)` — equip bonus is additive with synergy.
-- **3 items shipped**: Stone Oven (+15% damage, Corner Baker), Electric Bike (+20% fire rate, Bike Courier), Megaphone (+20% range, Aroma). All cost 80g.
-- Equipment persists across fights within a run (like upgrades).
-
-### Trinkets (Run-Wide Charms) ✅
-
-**Status: Complete.**
-
-What was built:
-- **TrinketData resource** — id, name, description, damage percent bonus, heal amount, gold amount.
-- **Treasure outcome** — new slot machine outcome (default 20% weight). Weights adjusted: Fight 35%, Shop 20%, Heal 15%, Miniboss 10%, Treasure 20%.
-- **Choose 1 of 3** — on Treasure, a TrinketChoiceScreen shows 3 random trinkets. Player picks one.
-- **Run-wide application** — trinkets affect the entire run via `RunState.TrinketDamageBonusPercent` (multiplicative in EffectiveDamage formula).
-- **3 trinkets shipped**: Secret Recipe Scroll (+10% global damage), Starter's Blessing (+5 lives), Regular's Tip Jar (+100 gold).
-
-### Deferred
-
-- Expanded meta-progression catalog
-- Real loadout curation (vs. all towers available)
+Suggested execution order (lowest dependencies, maximum impact per effort).
 
 ---
 
-## Post-MVP (cont.)
+### 1. Sound System
 
-### Bestiary + Discovery Tracking ✅
+**Why**: the game has no sound at all — the most noticeable gap. Without audio,
+the game feels dead regardless of visual polish.
 
-**Status: Complete.**
+**What to build**:
+- `SoundManager` autoload with SFX and Music buses, `PlaySFX()` and `PlayMusic()`
+  categorized, persistent volume in SaveManager JSON
+- Pool of `AudioStreamPlayer` for overlapping SFX
+- Sound events: button click, purchase, slot machine, projectile hit, enemy death,
+  tower place/upgrade, wave complete, game over, victory
 
-What was built:
-- **BestiaryScreen** — full-screen overlay accessible from Main Menu (button) and Pause screen (button). Shows 5 categories: Towers, Enemies, Equipment, Trinkets, Synergies.
-- **Discovery system** — items hidden (grayed out with `???`) until first encounter:
-  - Enemies: discovered when they spawn in a fight
-  - Equipment: discovered when seen in the Shop
-  - Trinkets: discovered when shown in Treasure choice
-  - Synergies: discovered when activated (required towers placed)
-  - Towers: use unlock system (meta-progression)
-- **Zero-code-change** — all data scanned from directories (`tower_data/`, `enemy_data/`, etc.). Adding a new `.tres` file auto-registers it.
-- **`SaveManager` persistence** — discovered state saved to JSON (`discovered` dict), persists across runs.
+**Decisions**:
+- Placeholder audio assets go to `assets/audio/sfx/` and `assets/audio/music/`
+- Use `.ogg` streams for short SFX
+- `SoundManager.Instance.PlaySFX("res://assets/audio/sfx/click.ogg")` — direct path,
+  no resource wrapper
 
-### Wave Decoupling (Run Mode) ✅
+**Estimate**: 2-3 days with placeholder assets
 
-**Status: Complete.**
+---
 
-What was built:
-- **Difficulty tiers** — waves organized by `resources/wave_data/tier1/tier2/tier3/`, selected by `RunState.FightsCompleted`:
-  - Fight 1 → tier1 (easy: Normal, Flying)
-  - Fight 2 → tier2 (medium: Tourist+Jogger, Dragon+AlleyCat)
-  - Fight 3+ → tier3 (hard: AlleyCat+Jogger+Tourist, Pigeon+AlleyCat)
-- **Map independence** — during runs, `LevelData.Waves` is ignored. Waves are injected into `EnemySpawner.ConfigureForRun()` at level load.
-- **Random selection within tier** — `RunState.PickRunWaves()` scans the tier folder and picks one wave randomly.
-- **Boss fights** unchanged — always use `BossWaveData` from `LevelManager` Inspector.
-- **Zero-code-change** — adding a `.tres` to any tier folder makes it available.
-- **6 waves shipped**: 2 per tier.
-- Second map / more waves
+### 2. Shop — Expansion + Visual Feedback
+
+**Why**: current shop has basic text items, no visible descriptions, no icons,
+no purchase feedback.
+
+**What to build**:
+- **Icons on items**: `ShopItemData.Icon` exported and displayed in UI
+- **Visible description**: `Description` field shown below the name
+- **In-level buff icon**: when buying an item, a persistent icon appears in the
+  HUD corner for the rest of the run (e.g. golden bread roll for damage boost)
+- **Tooltip on icon**: hovering the icon shows "Secret Ingredient: +5% damage (run-wide)"
+- **1-per-item enforcement**: already exists (button becomes "Owned"), but with
+  clearer visual feedback (checkmark, dimming, different color)
+- **Purchase feedback**: brief animation/pulse on the icon when bought
+
+**Decisions**:
+- Run-wide item icons are 2D sprites in the HUD, added by `HUD.AddRunBuffIcon()`
+- Tooltips use `Control` with `mouse_entered`/`mouse_exited` + `Control.show()`/`hide()`
+- New items are `.tres` files — zero-code-change to add
+
+**Estimate**: 2-3 days
+
+---
+
+### 3. Tower Equipment — Visual Feedback
+
+**Why**: 20 equipment items exist but no visible icons, no indicator on the tower.
+
+**What to build**:
+- **Icon in TowerData**: `EquipData.Icon` already exists, show it in the shop and
+  on the selected tower panel
+- **Visual indicator on tower**: when equipped, the tower shows a small icon/glow
+  over its sprite
+- **Tooltip in HUD**: hovering the equip label shows stats
+- **Swap equipment**: button in the shop to swap existing equipment (costs gold,
+  loses the previous one)
+- **Description in shop**: `Description` field displayed
+
+**Decisions**:
+- Tower visual indicator = `Sprite2D` child added in `Tower.SetEquippedItem()`
+- Swap destroys the previous equip (no refund for simplicity)
+
+**Estimate**: 2-3 days
+
+---
+
+
+
+### 4. Trinkets — UI Card + Visual Polish
+
+**Why**: 10 trinkets exist but the UI is basic with no icons or card presentation.
+
+**What to build**:
+- **UI card-based**: each trinket presented as a card with icon, name, description,
+  border with rarity color
+- **Choice animation**: fade-in of cards, hover highlight, brief animation on "Take"
+- **Skip option**: "Skip" button if no trinket interests the player
+- **Rarity**: common (1 effect) and rare (2 effects)
+
+**Decisions**:
+- Cards = `PanelContainer` with `TextureRect` + `Label` children, instantiated
+  from a `TrinketCard.tscn` scene
+- Rarity = `Rarity` field (enum: Common/Uncommon/Rare) on `TrinketData`
+- Skip = advances without applying a trinket (RunState gets no bonus)
+
+**Estimate**: 2-3 days
+
+---
+
+### 5. Meta-Progression — Expansion
+
+**Why**: 10 upgrades (5 base + 5 tower unlocks) is still slim for long-term progression.
+
+**What to build**:
+- **Catalog expansion**: 15-20 upgrades total:
+  - Tower unlocks (existing: 2 default + 8 purchasable)
+  - Stat upgrades: damage, fire rate, range, starting gold (existing)
+  - "Starting lives +2 per level"
+  - "Shop discount 5% per level"
+  - "Reroll cost -10% per level"
+  - "Start with 1 random equipment" (unlock)
+  - "Start towers at level 1" (unlock)
+  - "Enemy gold bonus +10% per level"
+- **Token reward scaling**: tokens = base × (1 + fightsCompleted / totalFights)
+  — bigger reward for longer runs
+- **Victory bonus**: +50% tokens if run beats the boss
+- **UI categories**: tabs for "Unlocks", "Stats", "Economy"
+
+**Decisions**:
+- New upgrades = `.tres` files — zero-code-change
+- Cost scaling remains `CostTokens × (level + 1)` — simple, consistent
+- Token scaling is a simple formula, no external config (can be exported later)
+
+**Estimate**: 2-3 days
+
+---
+
+### 6. HUD — Tooltips + Run Buff Icons
+
+**Why**: HUD shows raw text without tooltips or visual representation of active bonuses.
+
+**What to build**:
+- **Universal tooltips**: `Control.tooltip_text` or custom popup on:
+  - Tower bar buttons (shows cost, damage, fire rate, range)
+  - Tower action panel (shows detailed stats + equip description)
+  - Synergy label (shows which towers trigger each synergy)
+  - Run buff icons (shows shop/trinket item description)
+- **Run buff icons area**: HUD area showing icons of:
+  - Purchased shop items (with tooltip)
+  - Active trinket (with tooltip)
+  - Active synergies (separate from label text)
+- **Life counter**: show lives as hearts instead of "Lives: 5" text
+
+**Decisions**:
+- Tooltips = `Panel` child of HUD, show/hide on mouse enter/exit
+- Buff icons = `TextureRect` with `mouse_filter = Ignore` + tooltip control
+- Hearts = `TextureRect` array, updated on `LivesChanged`
+
+**Estimate**: 2-3 days
+
+---
+
+### 7. Bestiary — Sprites + Stats + Lore
+
+**Why**: bestiary currently shows only text, no sprites, no lore.
+
+**What to build**:
+- **Sprite display**: each entry shows the tower/enemy/equip/trinket sprite
+- **Stat bars**: visual bars for main stats (damage, speed, range, HP)
+- **Lore/flavor text**: `FlavorText` field on Resources, displayed in bestiary
+- **Progress tracking**: "3/5 Towers", "4/5 Enemies" at the top
+- **Detail view**: clicking an entry expands to a detailed view with all stats
+
+**Decisions**:
+- `FlavorText` added to `TowerData`, `EnemyData`, `EquipData`, `TrinketData`,
+  `SynergyData` — optional field, no save-breaking changes
+- Stat bars = `ColorRect` with width proportional to value / max in category
+
+**Estimate**: 2-3 days
+
+---
+
+### 8. Briefing — Map Preview + Loadout Reminder
+
+**Why**: briefing shows only text, no map preview or chosen towers.
+
+**What to build**:
+- **Map preview**: `LevelData.PreviewTexture` displayed as thumbnail
+- **Loadout reminder**: shows names/icons of the 1-4 selected towers
+- **Synergies preview**: if selected towers activate synergies, shows
+  "Active synergies: One Whiff, One Bite (+15% dmg)"
+- **Difficulty indicator**: tier label (tier1/tier2/tier3) with color (green/yellow/red)
+- **Miniboss indicator**: when fighting a miniboss, shows "MINIBOSS" with danger icon
+- **Start animation**: brief fade-in, "START!" pulse before closing
+
+**Estimate**: 1-2 days
+
+---
+
+### 9. Enemy/Projectile VFX
+
+**Why**: enemies spawn and die instantly with no visual feedback.
+
+**What to build**:
+- **Spawn animation**: fade-in or dust poof on enemies when appearing
+- **Death animation**: particle burst, fade-out, or "splat" sprite
+- **Hit-flash**: sprite turns white for 1 frame when hit
+- **Damage number colors**: normal dmg = white, crit = red, poison = green
+- **Projectile impact**: small particle burst at projectile impact point
+- **Tower fire effect**: muzzle flash sprite on tower when firing
+- **Status effect particles**: green bubbles (poison), blue crystals (slow)
+
+**Decisions**:
+- Effects go to `effects/` — `SpawnEffect`, `DeathEffect`, `HitFlash`, `MuzzleFlash`
+- Use `GPUParticles2D` or `AnimatedSprite2D` depending on complexity
+- PoolManager for high-frequency effects (hit-flash, muzzle flash)
+
+**Estimate**: 3-5 days
+
+---
+
+### 10. Slot Machine — Animation + State-Aware Weights
+
+**Why**: current slot is text "Next: FIGHT" — no emotion, no visual feedback.
+
+**What to build**:
+- **Slot animation**: icons spinning (like a real slot machine) for 1-2s,
+  then stop on result with bounce
+- **Outcome reveal**: result highlighted with color, border glow, themed icon
+- **State-aware weights**: weights adjust based on state:
+  - Low lives (<30%) → Heal weight +50%
+  - High gold (>200) → Shop weight +30%
+  - Already had Treasure this run → Treasure weight -30%
+- **Pity timer**: guarantees rare outcomes (Treasure, Miniboss) appear at least
+  once every N outcomes
+- **Reroll cost preview**: shows reroll cost before clicking
+- **Outcome history**: small indicator of the last 3 outcomes
+
+**Decisions**:
+- Slot animation = `AnimationPlayer` with sprite frames or `TextureRect` rotation
+- State-aware weights = `SlotManager.GetDynamicWeights()` that modifies base weights
+- Pity timer = counters per outcome on `SlotManager`, reset after appearing
+
+**Estimate**: 3-4 days
+
+---
+
+### 11. UI Transitions + Loading Screen
+
+**Why**: all screen transitions are instant — no fade, no slide.
+
+**What to build**:
+- **Fade-in/fade-out**: all screen pushes/pops do crossfade (0.2s)
+- **Easing config**: `UIScreenData` gains `TransitionIn`/`TransitionOut` fields
+  (Fade/SlideLeft/SlideRight/None) and `TransitionDuration`
+- **Loading screen**: "Loading..." screen with spinning icon during level load
+  (currently instant, but scales to larger levels)
+- **Screen lifecycle callbacks**: `OnShown()` / `OnHidden()` on screens
+- **Backdrop dim**: overlay screens darken the background with semi-transparent `ColorRect`
+- **Pop guard**: `PushScreen` checks if screen is already on the stack (prevents duplicates)
+
+**Decisions**:
+- Transitions = `Tween` on `CanvasLayer` `Modulate` (0→1 fade-in, 1→0 fade-out)
+- Loading screen = separate `CanvasLayer`, not on the normal stack
+
+**Estimate**: 2-3 days
+
+---
+
+### 12. Waves — Elite Enemies + Modifiers
+
+**Why**: waves are always the same — same enemy queues, no variation.
+
+**What to build**:
+- **Elite/champion enemies**: random enemy in wave gets 2x HP, 1.5x damage,
+  2x gold reward, golden glow, star on health bar
+- **Wave modifiers**: `WaveData` gets optional `Modifier` field (enum):
+  - `None`: normal
+  - `Horde`: 2x enemies, 0.5x spawn interval
+  - `Armored`: all enemies 2x HP
+  - `Swift`: all enemies 1.5x speed
+  - `GoldRush`: enemies grant 2x gold
+- **Elite spawn**: configurable chance on `EnemySpawner.EliteChance` (default 20%)
+- **More wave variety**: +3 waves per tier (total 5 per tier = 15 waves)
+
+**Decisions**:
+- Elite = new flag on `Enemy`, stats multiplied in `Initialize()`
+- Modifier = `WaveModifier` enum field on `WaveData`, read by `EnemySpawner`
+- New waves = `.tres` files — zero-code-change
+
+**Estimate**: 2-3 days
+
+---
+
+### 13. Tutorial / Onboarding
+
+**Why**: new player has no guidance at all.
+
+**What to build**:
+- **Brief tutorial** on first game (check flag in SaveManager):
+  - "Click a tower button to place it on a buildable tile"
+  - "Click a placed tower to see its stats"
+  - "Click Next Wave to start"
+  - "Enemies reaching the end cost you lives"
+  - "Kill all enemies to complete the wave"
+- **Highlight overlay**: points arrows/glow to relevant HUD elements
+- **Dismiss**: click anywhere to close each tip
+- **Replayable**: "Show Tutorial" option on Main Menu
+
+**Decisions**:
+- Tutorial = `CanvasLayer` overlay with `Control` + `Label` + `TextureRect` (arrow)
+- State = `_tutorialCompleted` bool in SaveManager JSON
+
+**Estimate**: 1-2 days
+
+---
+
+### 14. Targeting Priority UI + Strategy Change
+
+**Why**: targeting strategy is only configurable in the Inspector — inaccessible in-game.
+
+**What to build**:
+- "Target" button on the selected tower panel
+- Click cycles between: First, Closest, Strongest, Last
+- Visual indicator on the panel (e.g. "First → Closest" text changes)
+- `TargetingComponent.Strategy` set at runtime, not just in `_Ready`
+- Tooltip explains each strategy
+
+**Decisions**:
+- Strategy persists only for that instance (not per-type)
+- Reset to default when tower is sold and re-placed
+
+**Estimate**: 1 day
+
+---
+
+### 15. Loadout — Stat Preview + Synergy Hints
+
+**Why**: loadout shows only names and costs — no stats, no synergy hints.
+
+**What to build**:
+- **Stat preview**: clicking a tower in the loadout shows damage, fire rate, range,
+  special ability (slow/poison/splash/aura/chain/crit/execute/global-aura)
+- **Synergy hints**: when 2+ towers that activate a synergy are selected, shows
+  "Synergy: One Whiff, One Bite (+15% to both)"
+- **Tower sprite**: shows the tower sprite next to the name
+- **Random loadout button**: "Random" selects 4 random towers
+- **Loadout save**: 3 loadout slots saved in SaveManager JSON
+
+**Estimate**: 2-3 days
+
+---
+
+## Recommended Priority
+
+| # | Item | Impact | Effort | Dependencies |
+|---|---|---|---|---|---|
+| 1 | Sound System | Critical | 2-3d | None |
+| 2 | Shop + Level Icons | High | 2-3d | None |
+| 3 | HUD Tooltips + Buff Icons | High | 2-3d | Shop (#2) |
+| 4 | Enemy/Projectile VFX | High | 3-5d | None |
+| 5 | Tower Equipment Visuals | Medium | 2-3d | Shop (#2) |
+| 6 | Trinkets Cards | Medium | 2-3d | None |
+| 7 | UI Transitions | Medium | 2-3d | None |
+| 8 | Meta-Progression Expansion | Medium | 2-3d | None |
+| 9 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#7) |
+| 10 | Briefing + Preview | Medium | 1-2d | None |
+| 11 | Bestiary Sprites + Lore | Medium | 2-3d | None |
+| 12 | Waves + Elites | Low | 2-3d | None |
+| 13 | Targeted Priority UI | Low | 1d | None |
+| 14 | Loadout Preview | Low | 2-3d | None |
+| 15 | Tutorial/Onboarding | Low | 1-2d | None |

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "reinforced_suspension"
+Name = "Reinforced Suspension"
+Description = "+15% splash radius"
+Cost = 80
+TargetTowerId = "bakery_truck"
+RangePercentBonus = 0.15

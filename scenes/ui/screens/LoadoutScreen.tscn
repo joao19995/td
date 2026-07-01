@@ -1,11 +1,11 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/screens/LoadoutScreen.cs" id="1_sc"]
-[ext_resource type="Resource" uid="uid://djax877vl8tw" path="res://resources/tower_data/Base.tres" id="2_base"]
-[ext_resource type="Resource" uid="uid://4knhurn3ttj2" path="res://resources/tower_data/Fast.tres" id="3_fast"]
-[ext_resource type="Resource" uid="uid://c707con3f00r" path="res://resources/tower_data/Ice.tres" id="4_ice"]
-[ext_resource type="Resource" uid="uid://euqe6r08pnw4" path="res://resources/tower_data/Poison.tres" id="5_poison"]
-[ext_resource type="Resource" uid="uid://bmqfmt6j1xc5h" path="res://resources/tower_data/Splash.tres" id="6_splash"]
+[ext_resource type="Resource" uid="uid://djax877vl8tw" path="res://resources/tower_data/BreadBaker.tres" id="2_base"]
+[ext_resource type="Resource" uid="uid://4knhurn3ttj2" path="res://resources/tower_data/BreadCourier.tres" id="3_fast"]
+[ext_resource type="Resource" uid="uid://c707con3f00r" path="res://resources/tower_data/AromaKeeper.tres" id="4_ice"]
+[ext_resource type="Resource" uid="uid://euqe6r08pnw4" path="res://resources/tower_data/TasteTester.tres" id="5_poison"]
+[ext_resource type="Resource" uid="uid://bmqfmt6j1xc5h" path="res://resources/tower_data/BakeryTruck.tres" id="6_splash"]
 
 [node name="LoadoutScreen" type="CanvasLayer"]
 script = ExtResource("1_sc")

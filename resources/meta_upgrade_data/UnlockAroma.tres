@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "unlock_aroma"
-Name = "Hire the Aroma Specialist"
-Description = "Unlocks The Aroma tower for use in runs"
+Id = "unlock_aroma_keeper"
+Name = "Hire the Aroma Keeper"
+Description = "Unlocks Aroma Keeper tower for use in runs"
 CostTokens = 20
 MaxLevel = 1
 IsTowerUnlock = true
-TowerId = "aroma"
+TowerId = "aroma_keeper"
 StatType = ""
 BonusPerLevel = 0.0

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EquipData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/EquipData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "golden_staff"
+Name = "Golden Staff of Fermentation"
+Description = "+10% all stats"
+Cost = 120
+TargetTowerId = "high_prophet"
+DamagePercentBonus = 0.1
+FireRatePercentBonus = 0.1
+RangePercentBonus = 0.1

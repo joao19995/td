@@ -21,4 +21,26 @@ public partial class TowerData : Resource
     [Export] public float SlowMultiplier { get; set; } = 0.5f;
     [Export] public float SlowDuration { get; set; } = 2f;
     [Export] public Array<UpgradeData> UpgradePath { get; set; } = new();
+
+    [Export] public bool HasAura { get; set; } = false;
+    [Export] public float AuraRange { get; set; } = 60f;
+    [Export] public float AuraDamageBonusPercent { get; set; } = 0f;
+    [Export] public float AuraFireRateBonusPercent { get; set; } = 0f;
+
+    [Export] public bool HasChain { get; set; } = false;
+    [Export] public int ChainBounceCount { get; set; } = 1;
+    [Export] public float ChainBounceRange { get; set; } = 40f;
+    [Export] public float ChainBounceDamageMultiplier { get; set; } = 0.5f;
+
+    [Export] public bool HasCrit { get; set; } = false;
+    [Export] public float CritChance { get; set; } = 0.15f;
+    [Export] public float CritMultiplier { get; set; } = 2.0f;
+
+    [Export] public bool HasExecute { get; set; } = false;
+    [Export] public float ExecuteThresholdHPPercent { get; set; } = 0.2f;
+    [Export] public float ExecuteMultiplier { get; set; } = 2.0f;
+    [Export] public float EliteBonusMultiplier { get; set; } = 1.5f;
+
+    [Export] public bool HasGlobalAura { get; set; } = false;
+    [Export] public float GlobalAuraDamagePerTower { get; set; } = 0.02f;
 }

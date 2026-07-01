@@ -152,6 +152,13 @@ public partial class SynergyManager : Node
         return total;
     }
 
+    public bool IsSynergyActive(string synergyId)
+    {
+        foreach (var s in _activeSynergies)
+            if (s.Id == synergyId) return true;
+        return false;
+    }
+
     public string GetActiveDisplayText()
     {
         if (_activeSynergies.Count == 0) return "";

@@ -11,9 +11,9 @@ load_path = "res://.godot/imported/spr_tower_base.png-db4cb31733a0b4333884cec018
 
 [resource]
 script = ExtResource("3_y6wqu")
-Id = "corner_baker"
-TowerName = "The Corner Baker"
-Damage = 20.0
+Id = "bread_baker"
+TowerName = "Bread Baker"
+Damage = 18.0
 Range = 48.0
 Cost = 100
 ProjectileScene = ExtResource("1_iejku")

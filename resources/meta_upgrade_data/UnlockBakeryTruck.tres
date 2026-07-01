@@ -6,7 +6,7 @@
 script = ExtResource("1_sc")
 Id = "unlock_bakery_truck"
 Name = "Buy the Bakery Truck"
-Description = "Unlocks The Bakery Truck tower for use in runs"
+Description = "Unlocks Bakery Truck tower for use in runs"
 CostTokens = 50
 MaxLevel = 1
 IsTowerUnlock = true

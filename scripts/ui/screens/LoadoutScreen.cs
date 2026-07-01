@@ -1,10 +1,10 @@
 using Godot;
 using Godot.Collections;
+using System.Collections.Generic;
 
 public partial class LoadoutScreen : CanvasLayer
 {
-    [Export] public Array<TowerData> AllTowers;
-
+    private List<TowerData> _allTowers;
     private bool[] _selected;
     private Button _startButton;
     private Label _infoLabel;
@@ -14,13 +14,15 @@ public partial class LoadoutScreen : CanvasLayer
     {
         _infoLabel = GetNode<Label>("VBox/InfoLabel");
         _startButton = GetNode<Button>("VBox/StartRunButton");
-        _selected = new bool[AllTowers.Count];
         _startButton.Pressed += OnStartRunPressed;
+
+        _allTowers = LoadAllTowers();
+        _selected = new bool[_allTowers.Count];
 
         GetNode<Label>("VBox/Title").Text = $"SELECT TOWERS (max {MaxTowers})";
 
         int i = 0;
-        foreach (var data in AllTowers)
+        foreach (var data in _allTowers)
         {
             bool unlocked = SaveManager.Instance.IsTowerUnlocked(data.Id);
             var btn = new Button();
@@ -34,6 +36,22 @@ public partial class LoadoutScreen : CanvasLayer
         }
 
         UpdateStartButton();
+    }
+
+    private static List<TowerData> LoadAllTowers()
+    {
+        var list = new List<TowerData>();
+        var dir = DirAccess.Open("res://resources/tower_data/");
+        if (dir == null) return list;
+        foreach (var file in dir.GetFiles())
+        {
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
+                continue;
+            var res = ResourceLoader.Load<Resource>("res://resources/tower_data/" + file, "", ResourceLoader.CacheMode.Replace);
+            if (res is TowerData t)
+                list.Add(t);
+        }
+        return list;
     }
 
     private void OnTowerToggled(int index, bool toggledOn)
@@ -70,7 +88,7 @@ public partial class LoadoutScreen : CanvasLayer
         for (int i = 0; i < _selected.Length; i++)
         {
             if (_selected[i])
-                ids.Add(AllTowers[i].Id);
+                ids.Add(_allTowers[i].Id);
         }
 
         RunState.Instance.StartRun(EconomyManager.Instance.StartingMoney, GameManager.Instance.StartingLives, ids);

@@ -16,14 +16,25 @@ public partial class RunState : Node
     public float ShopDamageBonusPercent { get; set; } = 0f;
     public float ShopFireRateBonusPercent { get; set; } = 0f;
     public float ShopRangeBonusPercent { get; set; } = 0f;
+    public float ShopHeavyDamageBonusPercent { get; set; } = 0f;
+    public float FirstPurchaseDiscountPercent { get; set; } = 0f;
 
     public float MetaDamageBonusPercent { get; private set; } = 0f;
     public int StartingGoldBonus { get; private set; } = 0;
 
     public float TrinketDamageBonusPercent { get; set; } = 0f;
+    public float TrinketFireRateBonusPercent { get; set; } = 0f;
+    public float TrinketRangeBonusPercent { get; set; } = 0f;
+    public float TrinketCritDamageBonusPercent { get; set; } = 0f;
+    public float TrinketStatusDurationBonusPercent { get; set; } = 0f;
+    public float TrinketStatusStrengthBonusPercent { get; set; } = 0f;
+    public float GlobalAuraDamagePercent { get; set; } = 0f;
+    private float _passiveGoldTimer;
 
     private Dictionary<string, int> _towerLevels = new();
     private Dictionary<string, string> _equippedItems = new();
+    private Dictionary<string, int> _ancientStarterAttackCount = new();
+    private Dictionary<string, int> _ancientStarterStacks = new();
 
     public override void _EnterTree()
     {
@@ -34,6 +45,8 @@ public partial class RunState : Node
     {
         _towerLevels.Clear();
         _equippedItems.Clear();
+        _ancientStarterAttackCount.Clear();
+        _ancientStarterStacks.Clear();
         SelectedTowerIds = selectedTowerIds;
         IsRunActive = true;
         FightsCompleted = 0;
@@ -42,7 +55,16 @@ public partial class RunState : Node
         ShopDamageBonusPercent = 0f;
         ShopFireRateBonusPercent = 0f;
         ShopRangeBonusPercent = 0f;
+        ShopHeavyDamageBonusPercent = 0f;
+        FirstPurchaseDiscountPercent = 0f;
         TrinketDamageBonusPercent = 0f;
+        TrinketFireRateBonusPercent = 0f;
+        TrinketRangeBonusPercent = 0f;
+        TrinketCritDamageBonusPercent = 0f;
+        TrinketStatusDurationBonusPercent = 0f;
+        TrinketStatusStrengthBonusPercent = 0f;
+        GlobalAuraDamagePercent = 0f;
+        _passiveGoldTimer = 0f;
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
         MetaDamageBonusPercent = damageLevel * 0.05f;
@@ -75,6 +97,8 @@ public partial class RunState : Node
         SaveManager.Instance.AddMetaTokens(SaveManager.Instance.MetaTokensPerRun);
         _towerLevels.Clear();
         _equippedItems.Clear();
+        _ancientStarterAttackCount.Clear();
+        _ancientStarterStacks.Clear();
         SelectedTowerIds.Clear();
         FightsCompleted = 0;
         IsBossFight = false;
@@ -104,13 +128,54 @@ public partial class RunState : Node
         _equippedItems[towerId] = equipId;
     }
 
+    public int GetAncientStarterStacks(string towerId)
+    {
+        return _ancientStarterStacks.ContainsKey(towerId) ? _ancientStarterStacks[towerId] : 0;
+    }
+
+    public void SetAncientStarterStacks(string towerId, int stacks)
+    {
+        _ancientStarterStacks[towerId] = stacks;
+    }
+
+    public int GetAncientStarterAttackCounter(string towerId)
+    {
+        return _ancientStarterAttackCount.ContainsKey(towerId) ? _ancientStarterAttackCount[towerId] : 0;
+    }
+
+    public void SetAncientStarterAttackCounter(string towerId, int count)
+    {
+        _ancientStarterAttackCount[towerId] = count;
+    }
+
     public void ApplyTrinket(TrinketData trinket)
     {
         TrinketDamageBonusPercent += trinket.DamagePercentBonus;
+        TrinketFireRateBonusPercent += trinket.FireRatePercentBonus;
+        TrinketRangeBonusPercent += trinket.RangePercentBonus;
+        TrinketCritDamageBonusPercent += trinket.CritDamageBonusPercent;
+        TrinketStatusDurationBonusPercent += trinket.StatusDurationBonusPercent;
+        TrinketStatusStrengthBonusPercent += trinket.StatusStrengthBonusPercent;
         if (trinket.HealAmount > 0)
             GameManager.Instance.Heal(trinket.HealAmount);
         if (trinket.GoldAmount > 0)
             EconomyManager.Instance.AddMoney(trinket.GoldAmount);
+        if (trinket.PassiveGoldPerInterval > 0 && trinket.PassiveGoldInterval > 0f)
+            _passiveGoldTimer = trinket.PassiveGoldInterval;
+    }
+
+    public override void _Process(double delta)
+    {
+        if (!IsRunActive) return;
+        if (_passiveGoldTimer > 0f)
+        {
+            _passiveGoldTimer -= (float)delta;
+            if (_passiveGoldTimer <= 0f)
+            {
+                EconomyManager.Instance.AddMoney(5);
+                _passiveGoldTimer = 30f;
+            }
+        }
     }
 
     public string GetWaveTier()

@@ -64,9 +64,19 @@ public partial class ShopScreen : Control
 
     private void OnBuyItem(ShopItemData item, Button btn)
     {
-        if (!EconomyManager.Instance.CanAfford(item.Cost)) return;
+        int cost = item.Cost;
 
-        EconomyManager.Instance.SpendMoney(item.Cost);
+        bool hasPendingDiscount = RunState.Instance.FirstPurchaseDiscountPercent > 0f
+            && item.FirstPurchaseDiscountPercent <= 0f;
+
+        if (hasPendingDiscount)
+            cost -= Mathf.RoundToInt(cost * RunState.Instance.FirstPurchaseDiscountPercent);
+
+        if (!EconomyManager.Instance.CanAfford(cost)) return;
+
+        EconomyManager.Instance.SpendMoney(cost);
+        if (hasPendingDiscount)
+            RunState.Instance.FirstPurchaseDiscountPercent = 0f;
         ApplyItemEffect(item);
         UpdateMoney();
         btn.Disabled = true;
@@ -79,6 +89,9 @@ public partial class ShopScreen : Control
         RunState.Instance.ShopDamageBonusPercent += item.DamageBonusPercent;
         RunState.Instance.ShopFireRateBonusPercent += item.FireRateBonusPercent;
         RunState.Instance.ShopRangeBonusPercent += item.RangeBonusPercent;
+        RunState.Instance.ShopHeavyDamageBonusPercent += item.HeavyDamageBonusPercent;
+        if (item.FirstPurchaseDiscountPercent > 0f)
+            RunState.Instance.FirstPurchaseDiscountPercent += item.FirstPurchaseDiscountPercent;
     }
 
     private void BuildEquipList()

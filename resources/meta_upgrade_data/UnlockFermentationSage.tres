@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "unlock_fermentation_sage"
+Name = "Find the Fermentation Sage"
+Description = "Unlocks Fermentation Sage tower for use in runs"
+CostTokens = 80
+MaxLevel = 1
+IsTowerUnlock = true
+TowerId = "fermentation_sage"
+StatType = ""
+BonusPerLevel = 0.0

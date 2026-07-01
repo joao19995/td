@@ -8,6 +8,8 @@ public partial class Projectile : Area2D
 
     public Enemy Target { get; set; }
     public Action<Enemy, Vector2> OnHitEffect { get; set; }
+    public bool WasCrit { get; set; }
+    public int PierceCount { get; set; }
     private bool _returningToPool;
 
     public override void _Ready()
@@ -19,6 +21,8 @@ public partial class Projectile : Area2D
     {
         Target = target;
         Damage = damage;
+        WasCrit = false;
+        PierceCount = 0;
         _returningToPool = false;
         Visible = true;
         Monitoring = true;
@@ -52,10 +56,59 @@ public partial class Projectile : Area2D
     protected virtual void OnHitTarget(Enemy mainEnemy)
     {
         SetPhysicsProcess(false);
-        Visible = false;
         mainEnemy.TakeDamage(Damage);
         OnHitEffect?.Invoke(mainEnemy, mainEnemy.GlobalPosition);
-        ReturnToPool();
+
+        if (PierceCount > 0)
+        {
+            PierceCount--;
+            FindNextTarget(mainEnemy);
+        }
+        else
+        {
+            Visible = false;
+            ReturnToPool();
+        }
+    }
+
+    private void FindNextTarget(Enemy exclude)
+    {
+        var spaceState = GetWorld2D().DirectSpaceState;
+        var query = new PhysicsShapeQueryParameters2D();
+        var circle = new CircleShape2D { Radius = 200f };
+        query.Shape = circle;
+        query.Transform = new Transform2D(0, GlobalPosition);
+        query.CollideWithAreas = true;
+        query.CollideWithBodies = false;
+        query.CollisionMask = 1;
+
+        var results = spaceState.IntersectShape(query);
+        Enemy nearest = null;
+        float nearestDist = float.MaxValue;
+
+        foreach (var result in results)
+        {
+            if (result["collider"].AsGodotObject() is Enemy enemy && enemy != exclude && !enemy.IsDead)
+            {
+                float dist = enemy.GlobalPosition.DistanceTo(GlobalPosition);
+                if (dist < nearestDist)
+                {
+                    nearestDist = dist;
+                    nearest = enemy;
+                }
+            }
+        }
+
+        if (nearest != null)
+        {
+            Target = nearest;
+            SetPhysicsProcess(true);
+        }
+        else
+        {
+            Visible = false;
+            ReturnToPool();
+        }
     }
 
     private void ReturnToPool()

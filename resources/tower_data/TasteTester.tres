@@ -12,11 +12,11 @@ load_path = "res://.godot/imported/spr_tower_poison.png-fa8f962e568e16433b5476e8
 [resource]
 script = ExtResource("2_2xlvy")
 Id = "taste_tester"
-TowerName = "The Taste Tester"
-Damage = 1.0
-FireRate = 1.2
-Range = 56.0
-Cost = 200
+TowerName = "Taste Tester"
+Damage = 17.0
+FireRate = 1.0
+Range = 48.0
+Cost = 160
 ProjectileScene = ExtResource("1_2ujgf")
 Sprite = SubResource("CompressedTexture2D_2ujgf")
 HasPoison = true

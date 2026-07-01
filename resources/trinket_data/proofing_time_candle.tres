@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TrinketData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/TrinketData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "proofing_time_candle"
+Name = "Proofing Time Candle"
+Description = "+8% attack speed, -5% range"
+FireRatePercentBonus = 0.08
+RangePercentBonus = -0.05
