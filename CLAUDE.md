@@ -2,6 +2,32 @@
 
 ## Project Overview
 
+### Game Premise
+
+Sourdough Siege is a humorous tower defense where you command the Order of the
+Mother Dough, a brotherhood dedicated to eradicating industrial bread and
+converting all followers to true slow-fermentation sourdough. Over each run,
+hordes of humans, animals, and increasingly absurd creatures march down your
+street, loyal to packaged sliced bread, industrial croissants, and other baking
+heresies. Your mission is not to destroy them but to convert them through the
+power of artisan bread.
+
+You build a network of towers, each representing a member of the Order — from
+the humble Bread Baker to the legendary High Prophet of Sourdough. Each tower
+has unique mechanics, equipment, synergies, and a distinct role in your
+strategy. Between waves you can buy run-wide upgrades at the shop, equip
+towers with unique artifacts, pick trinkets that modify the entire run, and
+combine towers to unlock powerful synergies. Permanent upgrades carry over
+between runs via meta-progression.
+
+Enemies grow stranger and tougher as waves progress: from sliced-bread tourists
+and grocery joggers to bread-dragon bosses and other heresy leaders. Each boss
+is a unique challenge requiring a solid tower-and-synergy composition. The goal
+is to prevent industrial-bread followers from crossing your defense, converting
+them one by one and restoring the true faith of the mother dough.
+
+### Tech Stack
+
 Godot 4.7 (.NET 8) tower defense, expanding into a roguelite hybrid
 (Darkest Dungeon / Slay the Spire inspired run structure). 320×190 pixel
 resolution, GL Compatibility renderer, integer scaling. C# only — no GDScript.
