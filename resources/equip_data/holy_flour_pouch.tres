@@ -11,3 +11,4 @@ Description = "+20% damage vs elites/boss"
 Cost = 100
 TargetTowerId = "dough_exorcist"
 Icon = ExtResource("1_holy_flour_pouch1")
+EliteDamagePercentBonus = 0.2

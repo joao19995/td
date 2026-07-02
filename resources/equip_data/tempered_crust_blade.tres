@@ -11,3 +11,4 @@ Description = "+10% crit chance"
 Cost = 100
 TargetTowerId = "crust_crusader"
 Icon = ExtResource("1_tempered_crust_blade1")
+CritChanceBonus = 0.1

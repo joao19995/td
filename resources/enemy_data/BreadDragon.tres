@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://dqjgbguvoadto"]
 
 [ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_rrnri"]
-[ext_resource type="Texture2D" uid="uid://c3ymadkhg2klu" path="res://assets/sprites/enemies/bread_dragon.png" id="1_sr60t"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/bread_dragon.png" id="1_sr60t"]
 
 [resource]
 script = ExtResource("1_rrnri")

@@ -35,6 +35,7 @@ public partial class TrinketChoiceScreen : Control
 
         foreach (var trinket in chosen)
         {
+            SaveManager.Instance?.MarkDiscovered($"trinket_{trinket.Id}");
             var hbox = new HBoxContainer();
             var label = new Label();
             label.Text = $"{trinket.Name} - {trinket.Description}";
@@ -54,16 +55,15 @@ public partial class TrinketChoiceScreen : Control
         var dir = DirAccess.Open("res://resources/trinket_data/");
         if (dir == null) return list;
 
+        var alreadyApplied = RunState.Instance?.AppliedTrinketIds;
+
         foreach (var file in dir.GetFiles())
         {
             if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
                 continue;
             var t = ResourceLoader.Load<TrinketData>("res://resources/trinket_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (t != null)
-            {
-                SaveManager.Instance?.MarkDiscovered($"trinket_{t.Id}");
+            if (t != null && (alreadyApplied == null || !alreadyApplied.Contains(t.Id)))
                 list.Add(t);
-            }
         }
 
         return list;

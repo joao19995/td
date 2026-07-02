@@ -10,5 +10,5 @@ Name = "Reinforced Suspension"
 Description = "+15% splash radius"
 Cost = 80
 TargetTowerId = "bakery_truck"
-RangePercentBonus = 0.15
 Icon = ExtResource("1_reinforced_suspension1")
+SplashRadiusPercentBonus = 0.15

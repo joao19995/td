@@ -10,5 +10,5 @@ Name = "Golden Proofing Bowl"
 Description = "+15% effect duration"
 Cost = 100
 TargetTowerId = "fermentation_sage"
-DamagePercentBonus = 0.0
 Icon = ExtResource("1_golden_proofing_bowl1")
+StatusDurationPercentBonus = 0.15

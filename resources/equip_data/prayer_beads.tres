@@ -11,3 +11,5 @@ Description = "Buffs +5% stronger, Monk não ataca"
 Cost = 150
 TargetTowerId = "bread_monk"
 Icon = ExtResource("1_prayer_beads1")
+AuraPotencyMultiplier = 1.05
+DisablesAttack = true

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3]
 
-[ext_resource type="Texture2D" uid="uid://c3ymadkhg2klu" path="res://assets/sprites/enemies/gluten_null_bishop.png" id="1_sprite"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/gluten_null_bishop.png" id="1_sprite"]
 [ext_resource type="Script" uid="uid://frd5h03o6xdd" path="res://scripts/resources/EnemyData.cs" id="1_sc"]
 
 [resource]

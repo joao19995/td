@@ -18,6 +18,6 @@ Cost = 180
 ProjectileScene = ExtResource("1_3qluu")
 Sprite = ExtResource("1_bakery_truck1")
 HasSplash = true
-SplashRadius = 5.0
+SplashRadius = 36.0
 UpgradePath = Array[ExtResource("2_iqf0o")]([ExtResource("3_spl1"), ExtResource("4_spl2")])
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

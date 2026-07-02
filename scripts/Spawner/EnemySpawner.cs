@@ -6,7 +6,6 @@ public partial class EnemySpawner : Node2D
     [Export] public Path2D EnemyPath;
     [Export] public PackedScene GenericEnemyScene;
     [Export] public Array<WaveData> Waves;
-    [Export] public WaveData BossWaveData;
 
     private int _currentWaveIndex = -1;
     private bool _waveInProgress = false;
@@ -21,14 +20,13 @@ public partial class EnemySpawner : Node2D
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
     public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
 
-    public void ConfigureForRun(bool isBoss, bool isMiniboss, float minibossMult, Array<WaveData> runWaves = null)
+    public void ConfigureForRun(bool isBoss, bool isMiniboss, float minibossMult, Array<WaveData> runWaves = null, WaveData bossWave = null)
     {
         _isBossFight = isBoss;
         _isMiniboss = isMiniboss;
         _minibossMultiplier = minibossMult;
         if (_isBossFight)
         {
-            var bossWave = BossWaveData ?? GD.Load<WaveData>("res://resources/run_data/BossWave.tres");
             if (bossWave != null)
                 Waves = new Array<WaveData> { bossWave };
         }
@@ -76,6 +74,7 @@ public partial class EnemySpawner : Node2D
             _activeEnemyCount++;
             SpawnEnemy(wave.Enemies[i % wave.Enemies.Count]);
             await ToSignal(GetTree().CreateTimer(wave.SpawnInterval), Timer.SignalName.Timeout);
+            if (!_isActive || !IsInstanceValid(this)) return;
         }
 
         _waveInProgress = false;

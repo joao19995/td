@@ -10,6 +10,6 @@ Name = "Messenger Crate Upgrade"
 Description = "Ataques penetram +1 inimigo, -10% fire rate"
 Cost = 120
 TargetTowerId = "bread_courier"
-DamagePercentBonus = 0.0
 FireRatePercentBonus = -0.1
 Icon = ExtResource("1_messenger_crate1")
+PierceBonus = 1

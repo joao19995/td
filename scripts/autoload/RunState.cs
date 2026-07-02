@@ -6,6 +6,7 @@ public partial class RunState : Node
     public static RunState Instance { get; private set; }
 
     public bool IsRunActive { get; private set; }
+    public System.Collections.Generic.HashSet<string> AppliedTrinketIds { get; } = new();
 
     public Array<string> SelectedTowerIds { get; private set; } = new();
 
@@ -29,9 +30,8 @@ public partial class RunState : Node
     public float TrinketStatusDurationBonusPercent { get; set; } = 0f;
     public float TrinketStatusStrengthBonusPercent { get; set; } = 0f;
     public float GlobalAuraDamagePercent { get; set; } = 0f;
-    public bool HasHereticCensus { get; set; } = false;
-    public bool HasOvenHeartEmber { get; set; } = false;
     public float TrinketRangeFlatBonus { get; set; } = 0f;
+    public float TrinketBasicDamagePercentBonus { get; set; } = 0f;
     private float _passiveGoldTimer;
 
     private Dictionary<string, int> _towerLevels = new();
@@ -53,6 +53,7 @@ public partial class RunState : Node
         SelectedTowerIds = selectedTowerIds;
         IsRunActive = true;
         FightsCompleted = 0;
+        AppliedTrinketIds.Clear();
         IsBossFight = false;
         IsMiniboss = false;
         ShopDamageBonusPercent = 0f;
@@ -67,9 +68,8 @@ public partial class RunState : Node
         TrinketStatusDurationBonusPercent = 0f;
         TrinketStatusStrengthBonusPercent = 0f;
         GlobalAuraDamagePercent = 0f;
-        HasHereticCensus = false;
-        HasOvenHeartEmber = false;
         TrinketRangeFlatBonus = 0f;
+        TrinketBasicDamagePercentBonus = 0f;
         _passiveGoldTimer = 0f;
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
@@ -107,6 +107,7 @@ public partial class RunState : Node
         _ancientStarterStacks.Clear();
         SelectedTowerIds.Clear();
         FightsCompleted = 0;
+        AppliedTrinketIds.Clear();
         IsBossFight = false;
         IsMiniboss = false;
         MetaDamageBonusPercent = 0f;
@@ -156,25 +157,21 @@ public partial class RunState : Node
 
     public void ApplyTrinket(TrinketData trinket)
     {
+        AppliedTrinketIds.Add(trinket.Id);
         TrinketDamageBonusPercent += trinket.DamagePercentBonus;
-        TrinketFireRateBonusPercent += trinket.FireRatePercentBonus;
+        TrinketFireRateBonusPercent += trinket.FireRateBonusPercent;
         TrinketRangeBonusPercent += trinket.RangePercentBonus;
         TrinketCritDamageBonusPercent += trinket.CritDamageBonusPercent;
         TrinketStatusDurationBonusPercent += trinket.StatusDurationBonusPercent;
         TrinketStatusStrengthBonusPercent += trinket.StatusStrengthBonusPercent;
+        TrinketRangeFlatBonus += trinket.RangeFlatBonus;
+        TrinketBasicDamagePercentBonus += trinket.BasicDamagePercentBonus;
         if (trinket.HealAmount > 0)
             GameManager.Instance.Heal(trinket.HealAmount);
         if (trinket.GoldAmount > 0)
             EconomyManager.Instance.AddMoney(trinket.GoldAmount);
         if (trinket.PassiveGoldPerInterval > 0 && trinket.PassiveGoldInterval > 0f)
             _passiveGoldTimer = trinket.PassiveGoldInterval;
-        if (trinket.Id == "heretic_census")
-            HasHereticCensus = true;
-        if (trinket.Id == "oven_heart_ember")
-        {
-            HasOvenHeartEmber = true;
-            TrinketRangeFlatBonus = 1f;
-        }
     }
 
     public override void _Process(double delta)

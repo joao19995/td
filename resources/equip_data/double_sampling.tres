@@ -12,3 +12,4 @@ Cost = 120
 TargetTowerId = "taste_tester"
 FireRatePercentBonus = -0.15
 Icon = ExtResource("1_double_sampling1")
+PoisonSpreadRadius = 30

@@ -58,13 +58,14 @@ public abstract partial class BaseLevel : Node2D
         OnLevelReady();
     }
 
-    public void ConfigureForRun(Array<WaveData> runWaves = null)
+    public void ConfigureForRun(Array<WaveData> runWaves = null, WaveData bossWave = null)
     {
         Spawner?.ConfigureForRun(
             RunState.Instance.IsBossFight,
             RunState.Instance.IsMiniboss,
             SlotManager.Instance.MinibossStatMultiplier,
-            runWaves
+            runWaves,
+            bossWave
         );
     }
 

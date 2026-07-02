@@ -37,7 +37,6 @@ public partial class Tower : Node2D
 
     private string _equipId;
     private EquipData _equipData;
-    private bool _auraOnly;
     private int _ancientStarterStacks;
     private int _ancientStarterAttackCounter;
 
@@ -105,7 +104,6 @@ public partial class Tower : Node2D
         _equipData = !string.IsNullOrEmpty(_equipId)
             ? GD.Load<EquipData>($"res://resources/equip_data/{_equipId}.tres")
             : null;
-        _auraOnly = _equipId == "prayer_beads";
         _ancientStarterStacks = (_equipId == "ancient_starter") ? (RunState.Instance?.GetAncientStarterStacks(data.Id) ?? 0) : 0;
         _ancientStarterAttackCounter = (_equipId == "ancient_starter") ? (RunState.Instance?.GetAncientStarterAttackCounter(data.Id) ?? 0) : 0;
 
@@ -181,7 +179,8 @@ public partial class Tower : Node2D
             float equipPercent = GetEquipFireRatePercent();
             float auraPercent = AuraComponent.GetFireRateBonus(this);
             float trinketPercent = RunState.Instance?.TrinketFireRateBonusPercent ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent + equipPercent + auraPercent + trinketPercent) * (1f + shopPercent);
+            float buffMultiplier = IsAntiBuffed(this) ? 0.5f : 1f;
+            return baseWithUpgrade * (1f + (synergyPercent + equipPercent + auraPercent + trinketPercent) * buffMultiplier) * (1f + shopPercent);
         }
     }
 
@@ -200,14 +199,15 @@ public partial class Tower : Node2D
             float shopPercent = RunState.Instance?.ShopRangeBonusPercent ?? 0f;
             float equipPercent = GetEquipRangePercent();
             float trinketPercent = RunState.Instance?.TrinketRangeBonusPercent ?? 0f;
-            return baseWithUpgrade * (1f + synergyPercent + equipPercent + trinketPercent) * (1f + shopPercent);
+            float buffMultiplier = IsAntiBuffed(this) ? 0.5f : 1f;
+            return baseWithUpgrade * (1f + (synergyPercent + equipPercent + trinketPercent) * buffMultiplier) * (1f + shopPercent);
         }
     }
 
     private float GetEquipDamagePercent() => _equipData?.DamagePercentBonus ?? 0f;
     private float GetEquipFireRatePercent() => _equipData?.FireRatePercentBonus ?? 0f;
     private float GetEquipRangePercent() => _equipData?.RangePercentBonus ?? 0f;
-    private float GetEquipCritChance() => _equipId == "tempered_crust_blade" ? 0.10f : 0f;
+    private float GetEquipCritChance() => _equipData?.CritChanceBonus ?? 0f;
 
 
     public void RefreshStats()
@@ -228,16 +228,18 @@ public partial class Tower : Node2D
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
 
         _attack.Setup(_data);
-        _attack.SetEquipId(_equipId);
+        _attack.SetEquipData(_equipData);
         _attack.SetEffectiveStats(EffectiveDamage, EffectiveFireRate);
 
         float trinketStatusDuration = RunState.Instance?.TrinketStatusDurationBonusPercent ?? 0f;
-        float trinketStatusStrength = RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f;
-        float splashRadiusMult = _equipId == "reinforced_suspension" ? 1.15f : 1f;
-        float slowDurationMult = (1f + trinketStatusDuration) * (_equipId == "spice_wind_chimes" ? 1.3f : (_equipId == "golden_proofing_bowl" ? 1.15f : 1f));
-        float poisonDurationMult = (1f + trinketStatusDuration) * (_equipId == "golden_proofing_bowl" ? 1.15f : 1f);
-        int extraChainBounces = _equipId == "wild_yeast" ? 1 : 0;
+        float equipStatusDuration = _equipData?.StatusDurationPercentBonus ?? 0f;
+        float slowDurationMult = (1f + trinketStatusDuration) * (1f + (_equipData?.SlowDurationPercentBonus ?? 0f) + equipStatusDuration);
+        float poisonDurationMult = (1f + trinketStatusDuration) * (1f + equipStatusDuration);
+        float splashRadiusMult = 1f + (_equipData?.SplashRadiusPercentBonus ?? 0f);
+        int extraChainBounces = _equipData?.ExtraChainBounces ?? 0;
         _attack.SetEquipModifiers(splashRadiusMult, slowDurationMult, poisonDurationMult, extraChainBounces);
+
+        _attack.Refresh();
 
         if (_data.HasCrit)
         {
@@ -248,15 +250,14 @@ public partial class Tower : Node2D
 
         if (_aura != null)
         {
-            float auraRange = _data.AuraRange;
+            float auraRange = _data.AuraRange * (1f + (_equipData?.AuraRangePercentBonus ?? 0f));
             float auraDamageBonus = _data.AuraDamageBonusPercent;
             float auraFireRateBonus = _data.AuraFireRateBonusPercent;
-            if (_equipId == "sacred_robes")
-                auraRange *= 1.15f;
-            if (_equipId == "prayer_beads")
+            float potencyMult = _equipData?.AuraPotencyMultiplier ?? 1f;
+            if (potencyMult != 1f)
             {
-                auraDamageBonus *= 1.05f;
-                auraFireRateBonus *= 1.05f;
+                auraDamageBonus *= potencyMult;
+                auraFireRateBonus *= potencyMult;
             }
             _aura.AuraRange = auraRange;
             _aura.DamageBonusPercent = auraDamageBonus;
@@ -270,7 +271,7 @@ public partial class Tower : Node2D
     public override void _Process(double delta)
     {
         if (_data == null) return;
-        if (_auraOnly) return;
+        if (_equipData?.DisablesAttack == true) return;
 
         var target = _targeting.SelectTarget();
         if (_attack.TryAttack(target) && _equipId == "ancient_starter")

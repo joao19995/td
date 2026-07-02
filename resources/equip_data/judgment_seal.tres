@@ -12,3 +12,5 @@ Cost = 150
 TargetTowerId = "dough_exorcist"
 DamagePercentBonus = -0.15
 Icon = ExtResource("1_judgment_seal1")
+ExecuteThresholdPercent = 0.15
+ExecuteCooldownSeconds = 5

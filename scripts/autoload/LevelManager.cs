@@ -103,7 +103,7 @@ public partial class LevelManager : Node
 
         if (levelNode is BaseLevel baseLevel)
         {
-            baseLevel.ConfigureForRun(PendingRunWaves);
+            baseLevel.ConfigureForRun(PendingRunWaves, BossWaveData);
         }
 
     if (CurrentLevel != null && levelNode is not BaseLevel)

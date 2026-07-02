@@ -49,7 +49,6 @@ public partial class Projectile : Area2D
     {
         if (_returningToPool || area != Target) return;
 
-        SetDeferred("monitoring", false);
         OnHitTarget(Target);
     }
 
@@ -66,6 +65,7 @@ public partial class Projectile : Area2D
         }
         else
         {
+            SetDeferred("monitoring", false);
             Visible = false;
             ReturnToPool();
         }

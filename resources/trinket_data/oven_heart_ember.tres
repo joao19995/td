@@ -9,3 +9,4 @@ Id = "oven_heart_ember"
 Name = "Oven Heart Ember"
 Description = "+1 starting tower range (global)"
 Icon = ExtResource("1_oven_heart_ember1")
+RangeFlatBonus = 1

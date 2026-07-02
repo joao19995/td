@@ -8,7 +8,7 @@ public partial class TrinketData : Resource
     [Export] public string Description { get; set; } = "";
     [Export] public Texture2D Icon { get; set; }
     [Export] public float DamagePercentBonus { get; set; } = 0f;
-    [Export] public float FireRatePercentBonus { get; set; } = 0f;
+    [Export] public float FireRateBonusPercent { get; set; } = 0f;
     [Export] public float RangePercentBonus { get; set; } = 0f;
     [Export] public int HealAmount { get; set; } = 0;
     [Export] public int GoldAmount { get; set; } = 0;
@@ -17,4 +17,6 @@ public partial class TrinketData : Resource
     [Export] public float StatusStrengthBonusPercent { get; set; } = 0f;
     [Export] public int PassiveGoldPerInterval { get; set; } = 0;
     [Export] public float PassiveGoldInterval { get; set; } = 0f;
+    [Export] public float RangeFlatBonus { get; set; } = 0f;
+    [Export] public float BasicDamagePercentBonus { get; set; } = 0f;
 }

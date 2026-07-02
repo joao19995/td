@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://dx50wgs8gct4e"]
+[gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/Tank.tres" id="1_2vl7s"]
 [ext_resource type="Resource" uid="uid://dqjgbguvoadto" path="res://resources/enemy_data/Boss.tres" id="1_255l0"]

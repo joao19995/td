@@ -12,3 +12,4 @@ Cost = 150
 TargetTowerId = "crust_crusader"
 FireRatePercentBonus = -0.1
 Icon = ExtResource("1_blessed_crunch_seal1")
+SplashOnCritRadius = 30

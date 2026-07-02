@@ -11,3 +11,4 @@ Description = "+15% aura range"
 Cost = 100
 TargetTowerId = "bread_monk"
 Icon = ExtResource("1_sacred_robes1")
+AuraRangePercentBonus = 0.15

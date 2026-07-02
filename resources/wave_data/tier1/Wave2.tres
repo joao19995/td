@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://dhtqongdlhp7o"]
+[gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="2_817yp"]
 [ext_resource type="Resource" uid="uid://7c0xyjgyb2on" path="res://resources/enemy_data/Flying.tres" id="4_h26yb"]

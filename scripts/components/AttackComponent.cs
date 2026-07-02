@@ -5,17 +5,19 @@ using System.Collections.Generic;
 public partial class AttackComponent : Node
 {
     private TowerData _data;
+    private EquipData _equipData;
     private float _effectiveDamage;
     private float _effectiveFireRate;
     private float _effectiveCritChance;
     private float _effectiveCritMultiplier;
     private float _cooldown;
-    private string _equipId;
     private float _splashRadiusMultiplier = 1f;
     private float _slowDurationMultiplier = 1f;
     private float _poisonDurationMultiplier = 1f;
     private int _extraChainBounces;
-    private float _judgmentCooldown;
+    private float _judgmentSealCooldown;
+    private float _judgmentProtocolCooldown;
+    private Action<Enemy, Vector2> _precomputedHitEffects;
     private static readonly Random _rng = new();
 
     public override void _Ready()
@@ -44,9 +46,9 @@ public partial class AttackComponent : Node
         _effectiveCritMultiplier = multiplier;
     }
 
-    public void SetEquipId(string id)
+    public void SetEquipData(EquipData data)
     {
-        _equipId = id;
+        _equipData = data;
     }
 
     public void SetEquipModifiers(float splashRadiusMult, float slowDurationMult, float poisonDurationMult, int extraChainBounces)
@@ -57,12 +59,61 @@ public partial class AttackComponent : Node
         _extraChainBounces = extraChainBounces;
     }
 
+    public void Refresh()
+    {
+        RebuildEffects();
+    }
+
+    private void RebuildEffects()
+    {
+        var effects = new List<Action<Enemy, Vector2>>();
+
+        // Todas as structs de efeito (PoisonEffectData, SlowEffectData) são criadas com
+        // "new" dentro do closure abaixo — uma instância nova por invocação, nunca
+        // partilhada entre alvos. Os fields de duração/multiplicador (ex: _slowDurationMultiplier,
+        // _poisonDurationMultiplier, _effectiveDamage) são lidos através de this no momento da
+        // invocação, não no momento do RebuildEffects. Zero risco de referência partilhada.
+
+        if (_data != null)
+        {
+            if (_data.HasSplash)
+                effects.Add((mainEnemy, hitPosition) => TriggerSplashDamage(mainEnemy, hitPosition));
+
+            if (_data.HasPoison)
+                effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new PoisonEffectData
+                {
+                    Duration = _data.PoisonDuration * _poisonDurationMultiplier,
+                    DamagePerTick = _data.PoisonDamagePerTick,
+                }));
+
+            if (_data.HasSlow)
+                effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new SlowEffectData
+                {
+                    Duration = _data.SlowDuration * _slowDurationMultiplier,
+                    SpeedMultiplier = _data.SlowMultiplier,
+                }));
+
+            if (_data.HasChain)
+                effects.Add((mainEnemy, hitPosition) => TriggerChain(mainEnemy, _effectiveDamage * _data.ChainBounceDamageMultiplier));
+        }
+
+        _precomputedHitEffects = effects.Count > 0
+            ? (mainEnemy, hitPosition) =>
+            {
+                foreach (var e in effects)
+                    e(mainEnemy, hitPosition);
+            }
+            : null;
+    }
+
     public override void _Process(double delta)
     {
         if (_cooldown > 0f)
             _cooldown -= (float)delta;
-        if (_judgmentCooldown > 0f)
-            _judgmentCooldown -= (float)delta;
+        if (_judgmentSealCooldown > 0f)
+            _judgmentSealCooldown -= (float)delta;
+        if (_judgmentProtocolCooldown > 0f)
+            _judgmentProtocolCooldown -= (float)delta;
     }
 
     public bool TryAttack(Enemy target)
@@ -91,11 +142,10 @@ public partial class AttackComponent : Node
             damage *= _effectiveCritMultiplier;
             wasCrit = true;
 
-            bool judgmentActive = SynergyManager.Instance?.IsSynergyActive("crust_judgment_protocol") == true;
-            if (judgmentActive && _judgmentCooldown <= 0f && target.HealthPercent <= 0.5f)
+            if (_judgmentProtocolCooldown <= 0f && target.HealthPercent <= 0.5f)
             {
                 target.TakeDamage(9999f);
-                _judgmentCooldown = 10f;
+                _judgmentProtocolCooldown = 10f;
                 return;
             }
         }
@@ -106,86 +156,54 @@ public partial class AttackComponent : Node
         if (_data.HasExecute && (target.IsBoss || target.IsHeavy))
             damage *= _data.EliteBonusMultiplier;
 
-        // Judgment Seal: execute below 15% HP with 5s cooldown
-        if (_equipId == "judgment_seal" && _judgmentCooldown <= 0f && target.HealthPercent <= 0.15f)
+        float execThreshold = _equipData?.ExecuteThresholdPercent ?? 0f;
+        if (execThreshold > 0f && _judgmentSealCooldown <= 0f && target.HealthPercent <= execThreshold)
         {
             target.TakeDamage(9999f);
-            _judgmentCooldown = 5f;
+            _judgmentSealCooldown = _equipData.ExecuteCooldownSeconds > 0f ? _equipData.ExecuteCooldownSeconds : 5f;
             return;
         }
 
-        // Holy Flour Pouch: +20% vs elites/boss
-        if (_equipId == "holy_flour_pouch" && (target.IsBoss || target.IsHeavy))
-            damage *= 1.2f;
+        float eliteDmgBonus = _equipData?.EliteDamagePercentBonus ?? 0f;
+        if (eliteDmgBonus > 0f && (target.IsBoss || target.IsHeavy))
+            damage *= 1f + eliteDmgBonus;
 
-        // Shop: Golden Proof Flour — +heavy damage% vs boss/heavy
         float shopHeavyPct = RunState.Instance?.ShopHeavyDamageBonusPercent ?? 0f;
         if (shopHeavyPct > 0f && (target.IsBoss || target.IsHeavy))
             damage *= 1f + shopHeavyPct;
 
-        // Trinket: Heretic Census List — +10% vs basic (non-boss, non-heavy)
-        if (RunState.Instance?.HasHereticCensus == true && !target.IsBoss && !target.IsHeavy)
-            damage *= 1.1f;
+        float basicDmgPct = RunState.Instance?.TrinketBasicDamagePercentBonus ?? 0f;
+        if (basicDmgPct > 0f && !target.IsBoss && !target.IsHeavy)
+            damage *= 1f + basicDmgPct;
 
         var projectile = ProjectileFactory.Create(_data.ProjectileScene, damage, target, towerPos);
         projectile.WasCrit = wasCrit;
 
-        // Messenger Crate: pierce +1
-        if (_equipId == "messenger_crate")
-            projectile.PierceCount = 1;
+        projectile.PierceCount = _equipData?.PierceBonus ?? 0;
 
-        var effects = new List<Action<Enemy, Vector2>>();
+        projectile.OnHitEffect = _precomputedHitEffects;
 
-        if (_data.HasSplash)
-            effects.Add((mainEnemy, hitPosition) => TriggerSplashDamage(mainEnemy, hitPosition));
-
-        if (_data.HasPoison)
-            effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new PoisonEffectData
-            {
-                Duration = _data.PoisonDuration * _poisonDurationMultiplier,
-                DamagePerTick = _data.PoisonDamagePerTick,
-            }));
-
-        if (_data.HasSlow)
-            effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new SlowEffectData
-            {
-                Duration = _data.SlowDuration * _slowDurationMultiplier,
-                SpeedMultiplier = _data.SlowMultiplier,
-            }));
-
-        if (_data.HasChain)
+        float splashCritRadius = _equipData?.SplashOnCritRadius ?? 0f;
+        if (splashCritRadius > 0f)
         {
-            float chainDamage = _effectiveDamage * _data.ChainBounceDamageMultiplier;
-            effects.Add((mainEnemy, hitPosition) => TriggerChain(mainEnemy, chainDamage));
-        }
-
-        // Blessed Crunch Seal: crits make mini-splash (radius 30)
-        if (_equipId == "blessed_crunch_seal")
-        {
-            effects.Add((mainEnemy, hitPosition) =>
-            {
-                if (projectile.WasCrit)
-                    TriggerSplashAt(mainEnemy, hitPosition, 30f);
-            });
-        }
-
-        if (effects.Count > 0)
-        {
+            var existing = projectile.OnHitEffect;
+            float captured = splashCritRadius;
             projectile.OnHitEffect = (mainEnemy, hitPosition) =>
             {
-                foreach (var e in effects)
-                    e(mainEnemy, hitPosition);
+                existing?.Invoke(mainEnemy, hitPosition);
+                if (projectile.WasCrit)
+                    TriggerSplashAt(mainEnemy, hitPosition, captured);
             };
         }
 
         GetProjectilesContainer().CallDeferred(Node.MethodName.AddChild, projectile);
 
-        // Double Sampling: apply poison to nearest extra target within 30px
-        if (_equipId == "double_sampling" && _data.HasPoison)
+        float poisonSpreadRadius = _equipData?.PoisonSpreadRadius ?? 0f;
+        if (poisonSpreadRadius > 0f && _data.HasPoison)
         {
             var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;
             var query = new PhysicsShapeQueryParameters2D();
-            var circle = new CircleShape2D { Radius = 30f };
+            var circle = new CircleShape2D { Radius = poisonSpreadRadius };
             query.Shape = circle;
             query.Transform = new Transform2D(0, towerPos);
             query.CollideWithAreas = true;
@@ -230,7 +248,7 @@ public partial class AttackComponent : Node
     private void TriggerChain(Enemy mainEnemy, float chainDamage)
     {
         Enemy current = mainEnemy;
-        int totalBounces = 1 + _extraChainBounces;
+        int totalBounces = _data.ChainBounceCount + _extraChainBounces;
         float bounceRangeMult = SynergyManager.Instance?.IsSynergyActive("holy_fermentation_network") == true ? 1.3f : 1f;
 
         for (int b = 0; b < totalBounces; b++)

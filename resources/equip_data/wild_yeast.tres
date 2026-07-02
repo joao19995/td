@@ -12,3 +12,4 @@ Cost = 150
 TargetTowerId = "fermentation_sage"
 DamagePercentBonus = -0.1
 Icon = ExtResource("1_wild_yeast1")
+ExtraChainBounces = 1
