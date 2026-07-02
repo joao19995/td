@@ -107,11 +107,12 @@ public partial class ShopScreen : Control
             var equip = ResourceLoader.Load<EquipData>("res://resources/equip_data/" + file, "", ResourceLoader.CacheMode.Replace);
             if (equip == null) continue;
 
-            SaveManager.Instance?.MarkDiscovered($"equip_{equip.Id}");
-
             bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
             string equippedId = RunState.Instance?.GetEquippedItem(equip.TargetTowerId);
             bool alreadyEquipped = equippedId == equip.Id;
+
+            if (inLoadout)
+                SaveManager.Instance?.MarkDiscovered($"equip_{equip.Id}");
 
             var hbox = new HBoxContainer();
             var label = new Label();

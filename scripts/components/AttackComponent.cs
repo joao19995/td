@@ -83,14 +83,17 @@ public partial class AttackComponent : Node
                 effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new PoisonEffectData
                 {
                     Duration = _data.PoisonDuration * _poisonDurationMultiplier,
-                    DamagePerTick = _data.PoisonDamagePerTick,
+                    DamagePerTick = _data.PoisonDamagePerTick
+                        * (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)
+                               + (_equipData?.PoisonDamagePercentBonus ?? 0f)),
                 }));
 
             if (_data.HasSlow)
                 effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new SlowEffectData
                 {
                     Duration = _data.SlowDuration * _slowDurationMultiplier,
-                    SpeedMultiplier = _data.SlowMultiplier,
+                    SpeedMultiplier = _data.SlowMultiplier
+                        / (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)),
                 }));
 
             if (_data.HasChain)
@@ -142,7 +145,8 @@ public partial class AttackComponent : Node
             damage *= _effectiveCritMultiplier;
             wasCrit = true;
 
-            if (_judgmentProtocolCooldown <= 0f && target.HealthPercent <= 0.5f)
+            if (SynergyManager.Instance?.IsSynergyActive("crust_judgment_protocol") == true
+                && _judgmentProtocolCooldown <= 0f && target.HealthPercent <= 0.5f)
             {
                 target.TakeDamage(9999f);
                 _judgmentProtocolCooldown = 10f;

@@ -28,4 +28,9 @@ public partial class EquipData : Resource
     [Export] public float EliteDamagePercentBonus { get; set; } = 0f;
     [Export] public float SlowDurationPercentBonus { get; set; } = 0f;
     [Export] public float StatusDurationPercentBonus { get; set; } = 0f;
+    [Export] public float PoisonDamagePercentBonus { get; set; } = 0f;
+    [Export] public int AttackStackInterval { get; set; } = 0;
+    [Export] public float AttackStackDamageFlat { get; set; } = 0f;
+    [Export] public float NearbyTowerDamagePercent { get; set; } = 0f;
+    [Export] public float NearbyTowerRange { get; set; } = 0f;
 }

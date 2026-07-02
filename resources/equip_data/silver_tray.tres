@@ -10,5 +10,5 @@ Name = "Silver Tray"
 Description = "+20% poison damage"
 Cost = 80
 TargetTowerId = "taste_tester"
-DamagePercentBonus = 0.2
 Icon = ExtResource("1_silver_tray1")
+PoisonDamagePercentBonus = 0.2

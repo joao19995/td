@@ -104,8 +104,8 @@ public partial class Tower : Node2D
         _equipData = !string.IsNullOrEmpty(_equipId)
             ? GD.Load<EquipData>($"res://resources/equip_data/{_equipId}.tres")
             : null;
-        _ancientStarterStacks = (_equipId == "ancient_starter") ? (RunState.Instance?.GetAncientStarterStacks(data.Id) ?? 0) : 0;
-        _ancientStarterAttackCounter = (_equipId == "ancient_starter") ? (RunState.Instance?.GetAncientStarterAttackCounter(data.Id) ?? 0) : 0;
+        _ancientStarterStacks = (_equipData?.AttackStackInterval > 0) ? (RunState.Instance?.GetAncientStarterStacks(data.Id) ?? 0) : 0;
+        _ancientStarterAttackCounter = (_equipData?.AttackStackInterval > 0) ? (RunState.Instance?.GetAncientStarterAttackCounter(data.Id) ?? 0) : 0;
 
         if (IsInsideTree())
             ApplyData();
@@ -148,7 +148,7 @@ public partial class Tower : Node2D
 
     private float GetFirstStarterBonus()
     {
-        if (_equipId != "first_starter_relic") return 0f;
+        if (_equipData?.NearbyTowerDamagePercent <= 0f || _equipData?.NearbyTowerRange <= 0f) return 0f;
         int count = 0;
         var allTowers = GetTree().GetNodesInGroup("towers");
         foreach (var node in allTowers)
@@ -157,11 +157,11 @@ public partial class Tower : Node2D
             if (node is Tower other)
             {
                 float dist = other.GlobalPosition.DistanceTo(GlobalPosition);
-                if (dist <= 40f)
+                if (dist <= _equipData.NearbyTowerRange)
                     count++;
             }
         }
-        return _data.Damage * (0.05f * count);
+        return _data.Damage * (_equipData.NearbyTowerDamagePercent * count);
     }
 
     public float EffectiveFireRate
@@ -274,10 +274,10 @@ public partial class Tower : Node2D
         if (_equipData?.DisablesAttack == true) return;
 
         var target = _targeting.SelectTarget();
-        if (_attack.TryAttack(target) && _equipId == "ancient_starter")
+        if (_attack.TryAttack(target) && _equipData?.AttackStackInterval > 0)
         {
             _ancientStarterAttackCounter++;
-            if (_ancientStarterAttackCounter >= 10)
+            if (_ancientStarterAttackCounter >= _equipData.AttackStackInterval)
             {
                 _ancientStarterAttackCounter = 0;
                 _ancientStarterStacks++;

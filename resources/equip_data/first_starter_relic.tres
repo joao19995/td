@@ -12,3 +12,5 @@ Cost = 180
 TargetTowerId = "high_prophet"
 RangePercentBonus = -0.15
 Icon = ExtResource("1_first_starter_relic1")
+NearbyTowerDamagePercent = 0.05
+NearbyTowerRange = 40.0
