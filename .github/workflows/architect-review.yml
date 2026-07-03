@@ -51,8 +51,7 @@ jobs:
 
           echo "🤖 Enviando dados para o Copilot Nativo..."
           # Executa a chamada usando o comando embutido da CLI
-          gh copilot explain "$(cat prompt.txt)" > resultado_copilot.md
-
+          gh copilot explain --prompt "$(cat prompt.txt)" > resultado_copilot.md
           # 3. Passa o resultado para os outputs do step com delimitador de segurança
           echo "review_output<<EOF" >> $GITHUB_OUTPUT
           cat resultado_copilot.md >> $GITHUB_OUTPUT
