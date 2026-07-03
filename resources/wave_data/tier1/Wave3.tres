@@ -1,21 +1,21 @@
-[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://cfei48hjeoj3l"]
+[gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Resource" uid="uid://cugbr5b2i020m" path="res://resources/enemy_data/SlicedBreadTourist.tres" id="1_normal"]
 [ext_resource type="Resource" uid="uid://5r2uwhpwl3kp" path="res://resources/enemy_data/GroceryJogger.tres" id="2_fast"]
 [ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_script"]
 [ext_resource type="Script" path="res://scripts/resources/WaveEntry.cs" id="1_we_script"]
 
-[sub_resource type="Resource" id="entry_1"]
+[sub_resource type="Resource" id="entry_normal"]
 script = ExtResource("1_we_script")
 Enemy = ExtResource("1_normal")
-Count = 6
+Count = 4
 
-[sub_resource type="Resource" id="entry_2"]
+[sub_resource type="Resource" id="entry_fast"]
 script = ExtResource("1_we_script")
 Enemy = ExtResource("2_fast")
-Count = 6
+Count = 3
 
 [resource]
 script = ExtResource("1_script")
-Entries = Array[Object]([SubResource("entry_1"), SubResource("entry_2")])
-SpawnInterval = 1.5
+Entries = Array[Object]([SubResource("entry_normal"), SubResource("entry_fast")])
+SpawnInterval = 1.0

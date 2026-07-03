@@ -187,7 +187,12 @@ not implementation details.
 
 ## Waves
 
-- Waves are defined per level. Each wave specifies enemy type, count, spawn interval, and optional delay.
+- Waves are defined per level via `WaveData` resources. Each wave specifies:
+  - `Entries` (Array of `WaveEntry`): each entry has an `EnemyData` reference and a `Count` — enables per-type enemy counts (e.g. "3x Tourist + 2x Pigeon" instead of a single flat type/count).
+  - `SpawnInterval` (float): delay between individual enemy spawns.
+  - `Modifier` (enum): `None`, `Horde` (2× enemies, 0.5× interval), `Armored` (2× HP), `Swift` (1.5× speed), `GoldRush` (2× gold).
+- Enemy spawn order is Round-Robin across entries (interleaved).
+- **Elite enemies**: each non-boss, non-heavy enemy has a 20% chance to spawn as Elite (2× HP, 1.5× damage to player, 2× gold reward). `EnemySpawner.EliteChance` is configurable in the Inspector.
 - The player must manually click **"Next Wave"** to start each wave.
 - The HUD shows progress (`Wave X / Y`).
 - **All enemies must be killed** (not just spawned) before the game considers all waves completed.
@@ -202,7 +207,7 @@ not implementation details.
   - Fight 1 -> `tier1` (easy)
   - Fight 2 -> `tier2` (medium)
   - Fight 3+ -> `tier3` (hard)
-- Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change.
+- Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change. 5 waves per tier (15 total) for run mode variety.
 - `LevelData.Waves` is used only in classic mode (non-run) — unchanged.
 - **Boss fights** ignore the tier system and always use `BossWaveData` (set in `LevelManager` Inspector).
 - **Miniboss** `statMultiplier` (1.5x HP, gold, damage) is cumulative with tier difficulty.
@@ -350,10 +355,25 @@ not implementation details.
 | Shop | Slot machine outcome — buy run upgrades and equipment | Yes |
 | Meta Shop | Main Menu — permanent upgrades with meta-tokens | Yes |
 | Trinket Choice | Slot machine Treasure outcome — pick 1 of 3 trinkets | Yes |
-| Briefing | Before every fight in a run (map name + wave list) | No |
+| Briefing | Before every fight in a run — map preview, loadout reminder, tier, synergies | No |
 | Bestiary | Main Menu button or Pause screen — browse towers/enemies/equip/trinkets/synergies | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
+
+### Briefing Screen
+
+Shown before every fight in a run. Displays:
+
+- **Map preview**: `LevelData.PreviewTexture` thumbnail (90×54) showing the level terrain and layout.
+- **Title**: Level name (or "BOSS FIGHT!" for boss encounters).
+- **Gold / Lives**: current resources.
+- **Difficulty tier**: "Tier 1" (green), "Tier 2" (yellow), or "Tier 3" (red) based on `RunState.GetWaveTier()` — hidden during boss fights.
+- **Miniboss indicator**: red "MINIBOSS" label when `RunState.IsMiniboss` is true.
+- **Wave list**: per-wave enemy composition from `PendingRunWaves` (run mode) or `LevelData.Waves` (free play).
+- **Loadout icons**: 16×16 sprite for each selected tower (`RunState.SelectedTowerIds`) — fallback to first-letter label when sprite is missing.
+- **Synergy preview**: if the selected towers activate any synergies, shows synergy names with DMG bonus.
+- **Start animation**: brief fade-in (0.3s), then button text changes to "START!" with a yellow pulse loop.
+- Dismissible with ESC (same as other pause-capable screens).
 
 ---
 
@@ -394,6 +414,8 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Tower equipment | `EquipData` resource | Item ID, name, cost, target tower type, stat percent bonuses |
 | Trinkets | `TrinketData` resource | Item ID, name, rarity (Common/Rare), damage/fire rate/range/crit damage/status duration/status strength percent bonuses, heal/gold amount, passive gold interval |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |
-| Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted` |
+| Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted`. 5 waves per tier (15 total) |
+| Wave entries (per-type counts) | `WaveEntry` sub-resource inside each `WaveData` | Enemy type + count per entry |
+| Wave modifiers | `WaveModifier` enum on `WaveData` | `None`, `Horde` (2× enemies, 0.5× interval), `Armored` (2× HP), `Swift` (1.5× speed), `GoldRush` (2× gold) |
 | Bestiary discovery | `SaveManager` JSON | Towers/enemies/equip/trinkets/synergies auto-discovered when first encountered |
 | Meta-progression | `MetaUpgradeData` resource | Item ID, name, cost tokens, max level, IsTowerUnlock, TowerId, StatType, BonusPerLevel, Category (Unlocks/Stats/Economy) |

@@ -1,10 +1,12 @@
 using Godot;
 using Godot.Collections;
 
+public enum WaveModifier { None, Horde, Armored, Swift, GoldRush }
+
 [GlobalClass]
 public partial class WaveData : Resource
 {
-    [Export] public Array<EnemyData> Enemies;
-    [Export] public int EnemyCount = 5;
+    [Export] public Array<WaveEntry> Entries;
     [Export] public float SpawnInterval = 1f;
+    [Export] public WaveModifier Modifier = WaveModifier.None;
 }

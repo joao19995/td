@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Resource" path="res://resources/enemy_data/FrozenDoughAbomination.tres" id="1_abomination"]
+[ext_resource type="Resource" path="res://resources/enemy_data/SupermarketOverlord.tres" id="2_overlord"]
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_script"]
+[ext_resource type="Script" path="res://scripts/resources/WaveEntry.cs" id="1_we_script"]
+
+[sub_resource type="Resource" id="entry_abomination"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("1_abomination")
+Count = 4
+
+[sub_resource type="Resource" id="entry_overlord"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("2_overlord")
+Count = 4
+
+[resource]
+script = ExtResource("1_script")
+Entries = Array[Object]([SubResource("entry_abomination"), SubResource("entry_overlord")])
+SpawnInterval = 1.8

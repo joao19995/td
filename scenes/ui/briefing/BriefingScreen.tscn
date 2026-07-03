@@ -23,17 +23,36 @@ color = Color(0.1, 0.1, 0.1, 1)
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 300.0
-offset_bottom = 180.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 310.0
+offset_bottom = 185.0
 
-[node name="TitleLabel" type="Label" parent="VBox"]
+[node name="TopRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MapPreview" type="TextureRect" parent="VBox/TopRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 54)
+stretch_mode = 5
+
+[node name="InfoColumn" type="VBoxContainer" parent="VBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="VBox/TopRow/InfoColumn"]
 layout_mode = 2
 text = "MISSION"
 horizontal_alignment = 1
+size_flags_horizontal = 3
 
-[node name="GoldLabel" type="Label" parent="VBox"]
+[node name="GoldLabel" type="Label" parent="VBox/TopRow/InfoColumn"]
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+
+[node name="TierLabel" type="Label" parent="VBox/TopRow/InfoColumn"]
 layout_mode = 2
 text = ""
 horizontal_alignment = 1
@@ -42,6 +61,27 @@ horizontal_alignment = 1
 layout_mode = 2
 text = ""
 autowrap_mode = 1
+size_flags_vertical = 3
+
+[node name="LoadoutRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="LoadoutLabel" type="Label" parent="VBox/LoadoutRow"]
+layout_mode = 2
+text = "Loadout:"
+
+[node name="LoadoutIcons" type="HBoxContainer" parent="VBox/LoadoutRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SynergyLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = ""
+
+[node name="MinibossLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = ""
+modulate = Color(1, 0.3, 0.3, 1)
 
 [node name="StartButton" type="Button" parent="VBox"]
 layout_mode = 2

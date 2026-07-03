@@ -54,20 +54,10 @@ a todos os dados de recurso) e mecânicas detalhadas. Outcome documented in GAME
 
 ---
 
-### 5. Briefing — Map Preview + Loadout Reminder
+### 5. [DONE] Briefing — Map Preview + Loadout Reminder
 
-**Why**: briefing shows only text, no map preview or chosen towers.
-
-**What to build**:
-- **Map preview**: `LevelData.PreviewTexture` displayed as thumbnail
-- **Loadout reminder**: shows names/icons of the 1-4 selected towers
-- **Synergies preview**: if selected towers activate synergies, shows
-  "Active synergies: One Whiff, One Bite (+15% dmg)"
-- **Difficulty indicator**: tier label (tier1/tier2/tier3) with color (green/yellow/red)
-- **Miniboss indicator**: when fighting a miniboss, shows "MINIBOSS" with danger icon
-- **Start animation**: brief fade-in, "START!" pulse before closing
-
-**Estimate**: 1-2 days
+Map preview thumbnail, loadout icons, synergy preview, tier color label, miniboss indicator,
+fade-in animation + "START!" pulse. Outcome documented in GAME_STATUS.md.
 
 ---
 
@@ -141,28 +131,13 @@ a todos os dados de recurso) e mecânicas detalhadas. Outcome documented in GAME
 
 ---
 
-### 9. Waves — Elite Enemies + Modifiers
+### 9. [DONE] Waves — Elite Enemies + Modifiers + Per-Type Counts
 
-**Why**: waves are always the same — same enemy queues, no variation.
-
-**What to build**:
-- **Elite/champion enemies**: random enemy in wave gets 2x HP, 1.5x damage,
-  2x gold reward, golden glow, star on health bar
-- **Wave modifiers**: `WaveData` gets optional `Modifier` field (enum):
-  - `None`: normal
-  - `Horde`: 2x enemies, 0.5x spawn interval
-  - `Armored`: all enemies 2x HP
-  - `Swift`: all enemies 1.5x speed
-  - `GoldRush`: enemies grant 2x gold
-- **Elite spawn**: configurable chance on `EnemySpawner.EliteChance` (default 20%)
-- **More wave variety**: +3 waves per tier (total 5 per tier = 15 waves)
-
-**Decisions**:
-- Elite = new flag on `Enemy`, stats multiplied in `Initialize()`
-- Modifier = `WaveModifier` enum field on `WaveData`, read by `EnemySpawner`
-- New waves = `.tres` files — zero-code-change
-
-**Estimate**: 2-3 days
+WaveData refatorado: `Enemies`/`EnemyCount` substituído por `Entries` (Array de `WaveEntry`,
+cada um com Enemy + Count). `WaveModifier` enum (Horde/Armored/Swift/GoldRush). Elite enemies
+com 2× HP, 1.5× dano, 2× gold, spawn chance 20%. Enemy suporta multiplicadores separados
+(HP/damage/gold) para modifiers. +3 waves (5 por tier = 15 total). Briefing mostra
+quantidades por tipo. Outcome documented in GAME_STATUS.md.
 
 ---
 

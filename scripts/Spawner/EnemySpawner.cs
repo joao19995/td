@@ -6,6 +6,7 @@ public partial class EnemySpawner : Node2D
     [Export] public Path2D EnemyPath;
     [Export] public PackedScene GenericEnemyScene;
     [Export] public Array<WaveData> Waves;
+    [Export] public float EliteChance = 0.2f;
 
     private int _currentWaveIndex = -1;
     private bool _waveInProgress = false;
@@ -16,6 +17,7 @@ public partial class EnemySpawner : Node2D
     private bool _isMiniboss = false;
     private float _minibossMultiplier = 1.5f;
     private bool _isActive = false;
+    private WaveModifier _currentModifier = WaveModifier.None;
 
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
     public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
@@ -61,20 +63,45 @@ public partial class EnemySpawner : Node2D
         _waveInProgress = true;
         var wave = Waves[_currentWaveIndex];
 
-        if (wave.Enemies == null || wave.Enemies.Count == 0)
+        if (wave.Entries == null || wave.Entries.Count == 0)
         {
-            GD.PrintErr($"EnemySpawner: Wave {_currentWaveIndex} has no enemies defined.");
+            GD.PrintErr($"EnemySpawner: Wave {_currentWaveIndex} has no entries.");
             _waveInProgress = false;
             return;
         }
 
-        for (int i = 0; i < wave.EnemyCount; i++)
+        _currentModifier = wave.Modifier;
+        float spawnInterval = wave.SpawnInterval;
+        if (_currentModifier == WaveModifier.Horde)
+            spawnInterval *= 0.5f;
+
+        var spawnList = new System.Collections.Generic.List<(EnemyData data, int remaining)>();
+        int totalCount = 0;
+        foreach (var entry in wave.Entries)
         {
-            if (!_isActive) return;
-            _activeEnemyCount++;
-            SpawnEnemy(wave.Enemies[i % wave.Enemies.Count]);
-            await ToSignal(GetTree().CreateTimer(wave.SpawnInterval), Timer.SignalName.Timeout);
-            if (!_isActive || !IsInstanceValid(this)) return;
+            if (entry?.Enemy == null || entry.Count <= 0) continue;
+            int count = _currentModifier == WaveModifier.Horde ? entry.Count * 2 : entry.Count;
+            spawnList.Add((entry.Enemy, count));
+            totalCount += count;
+        }
+
+        int totalSpawned = 0;
+        while (totalSpawned < totalCount)
+        {
+            for (int i = 0; i < spawnList.Count; i++)
+            {
+                var item = spawnList[i];
+                if (item.remaining <= 0) continue;
+
+                if (!_isActive) return;
+                _activeEnemyCount++;
+                SpawnEnemy(item.data);
+                spawnList[i] = (item.data, item.remaining - 1);
+                totalSpawned++;
+
+                await ToSignal(GetTree().CreateTimer(spawnInterval), Timer.SignalName.Timeout);
+                if (!_isActive || !IsInstanceValid(this)) return;
+            }
         }
 
         _waveInProgress = false;
@@ -123,7 +150,23 @@ public partial class EnemySpawner : Node2D
         SaveManager.Instance?.MarkDiscovered($"enemy_{enemyData.Id}");
 
         float mult = _isMiniboss ? _minibossMultiplier : 1f;
-        var enemy = EnemyFactory.Create(GenericEnemyScene, enemyData, EnemyPath.Curve, mult);
+        bool isElite = !_isMiniboss && !enemyData.IsBoss && !enemyData.IsHeavy && GD.Randf() < EliteChance;
+
+        var enemy = EnemyFactory.Create(GenericEnemyScene, enemyData, EnemyPath.Curve, mult, isElite);
+
+        switch (_currentModifier)
+        {
+            case WaveModifier.Armored:
+                enemy.SetModifierMultipliers(2f, 1f, 1f);
+                break;
+            case WaveModifier.Swift:
+                enemy.SetSpeedMultiplier(1.5f);
+                break;
+            case WaveModifier.GoldRush:
+                enemy.SetModifierMultipliers(1f, 1f, 2f);
+                break;
+        }
+
         GetEnemiesContainer().CallDeferred(Node.MethodName.AddChild, enemy);
     }
 }

@@ -302,7 +302,18 @@ public partial class RunState : Node
 
         if (waves.Count == 0) return null;
 
-        int idx = (int)(GD.Randi() % waves.Count);
-        return new Array<WaveData> { waves[idx] };
+        int count = Mathf.Min(2, waves.Count);
+        var selected = new Array<WaveData>();
+        var picked = new System.Collections.Generic.HashSet<int>();
+        for (int i = 0; i < count; i++)
+        {
+            int idx;
+            do {
+                idx = (int)(GD.Randi() % waves.Count);
+            } while (picked.Contains(idx));
+            picked.Add(idx);
+            selected.Add(waves[idx]);
+        }
+        return selected;
     }
 }

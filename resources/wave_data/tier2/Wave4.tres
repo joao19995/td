@@ -1,11 +1,21 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
-[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/Tank.tres" id="1_2vl7s"]
-[ext_resource type="Resource" uid="uid://dqjgbguvoadto" path="res://resources/enemy_data/Boss.tres" id="1_255l0"]
-[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="3_bodrk"]
+[ext_resource type="Resource" uid="uid://dqjgbguvoadto" path="res://resources/enemy_data/BreadDragon.tres" id="1_boss"]
+[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/AlleyCat.tres" id="2_tank"]
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_script"]
+[ext_resource type="Script" path="res://scripts/resources/WaveEntry.cs" id="1_we_script"]
+
+[sub_resource type="Resource" id="entry_boss"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("1_boss")
+Count = 2
+
+[sub_resource type="Resource" id="entry_tank"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("2_tank")
+Count = 4
 
 [resource]
-script = ExtResource("3_bodrk")
-Enemies = Array[Object]([ExtResource("1_255l0"), ExtResource("1_2vl7s")])
-EnemyCount = 6
+script = ExtResource("1_script")
+Entries = Array[Object]([SubResource("entry_boss"), SubResource("entry_tank")])
 SpawnInterval = 2.5

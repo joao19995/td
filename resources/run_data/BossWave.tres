@@ -1,13 +1,33 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_sc"]
-[ext_resource type="Resource" uid="uid://cugbr5b2i020m" path="res://resources/enemy_data/SlicedBreadTourist.tres" id="2_etjb1"]
-[ext_resource type="Resource" uid="uid://7c0xyjgyb2on" path="res://resources/enemy_data/BaguettePigeon.tres" id="3_h26yb"]
-[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/AlleyCat.tres" id="4_tank"]
-[ext_resource type="Resource" uid="uid://dqjgbguvoadto" path="res://resources/enemy_data/BreadDragon.tres" id="5_boss"]
+[ext_resource type="Resource" uid="uid://cugbr5b2i020m" path="res://resources/enemy_data/SlicedBreadTourist.tres" id="1_normal"]
+[ext_resource type="Resource" uid="uid://7c0xyjgyb2on" path="res://resources/enemy_data/BaguettePigeon.tres" id="2_flying"]
+[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/AlleyCat.tres" id="3_tank"]
+[ext_resource type="Resource" uid="uid://dqjgbguvoadto" path="res://resources/enemy_data/BreadDragon.tres" id="4_boss"]
+[ext_resource type="Script" path="res://scripts/resources/WaveEntry.cs" id="1_we_script"]
+
+[sub_resource type="Resource" id="entry_tourist"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("1_normal")
+Count = 8
+
+[sub_resource type="Resource" id="entry_pigeon"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("2_flying")
+Count = 4
+
+[sub_resource type="Resource" id="entry_cat"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("3_tank")
+Count = 3
+
+[sub_resource type="Resource" id="entry_dragon"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("4_boss")
+Count = 2
 
 [resource]
 script = ExtResource("1_sc")
-Enemies = Array[Object]([ExtResource("2_etjb1"), ExtResource("4_tank"), ExtResource("3_h26yb"), ExtResource("5_boss")])
-EnemyCount = 6
+Entries = Array[Object]([SubResource("entry_tourist"), SubResource("entry_pigeon"), SubResource("entry_cat"), SubResource("entry_dragon")])
 SpawnInterval = 0.5

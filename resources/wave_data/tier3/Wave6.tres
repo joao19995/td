@@ -1,11 +1,21 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
-[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_wd"]
-[ext_resource type="Resource" uid="uid://7c0xyjgyb2on" path="res://resources/enemy_data/Flying.tres" id="2_flying"]
-[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/Tank.tres" id="3_tank"]
+[ext_resource type="Resource" uid="uid://7c0xyjgyb2on" path="res://resources/enemy_data/BaguettePigeon.tres" id="1_flying"]
+[ext_resource type="Resource" uid="uid://c7sk17164impj" path="res://resources/enemy_data/AlleyCat.tres" id="2_tank"]
+[ext_resource type="Script" uid="uid://dnscrg8hie2j3" path="res://scripts/resources/WaveData.cs" id="1_script"]
+[ext_resource type="Script" path="res://scripts/resources/WaveEntry.cs" id="1_we_script"]
+
+[sub_resource type="Resource" id="entry_flying"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("1_flying")
+Count = 6
+
+[sub_resource type="Resource" id="entry_tank"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("2_tank")
+Count = 6
 
 [resource]
-script = ExtResource("1_wd")
-Enemies = Array[Object]([ExtResource("2_flying"), ExtResource("3_tank")])
-EnemyCount = 12
+script = ExtResource("1_script")
+Entries = Array[Object]([SubResource("entry_flying"), SubResource("entry_tank")])
 SpawnInterval = 1.5

@@ -11,12 +11,17 @@ public partial class Enemy : Area2D
     private Curve2D _pendingCurve;
     private bool _signalsConnected;
     private bool _returningToPool;
-    private float _statMultiplier = 1f;
+    private float _hpMultiplier = 1f;
+    private float _dmgMultiplier = 1f;
+    private float _goldMultiplier = 1f;
+    private float _speedMultiplier = 1f;
+    private bool _isElite;
     private float _antiBuffScanTimer;
     private readonly HashSet<Tower> _affectedTowers = new();
     public bool IsDead { get; private set; }
     public bool IsBoss => _data?.IsBoss ?? false;
     public bool IsHeavy => _data?.IsHeavy ?? false;
+    public bool IsElite => _isElite;
 
     public override void _Ready()
     {
@@ -30,6 +35,9 @@ public partial class Enemy : Area2D
 
         if (_data != null)
             ApplyData();
+
+        if (_speedMultiplier != 1f)
+            _movement?.SetSpeedMultiplier(_speedMultiplier);
     }
 
     private void ConnectSignals()
@@ -53,12 +61,15 @@ public partial class Enemy : Area2D
         _signalsConnected = false;
     }
 
-    public void Initialize(EnemyData data, Curve2D curve, float statMultiplier = 1f)
+    public void Initialize(EnemyData data, Curve2D curve, float statMultiplier = 1f, bool isElite = false)
     {
         _returningToPool = false;
         IsDead = false;
         _data = data;
-        _statMultiplier = statMultiplier;
+        _hpMultiplier = statMultiplier;
+        _dmgMultiplier = statMultiplier;
+        _goldMultiplier = statMultiplier;
+        _isElite = isElite;
         ConnectSignals();
 
         if (_movement != null)
@@ -70,9 +81,22 @@ public partial class Enemy : Area2D
             ApplyData();
     }
 
+    public void SetModifierMultipliers(float hpMult = 1f, float dmgMult = 1f, float goldMult = 1f)
+    {
+        _hpMultiplier *= hpMult;
+        _dmgMultiplier *= dmgMult;
+        _goldMultiplier *= goldMult;
+    }
+
+    public void SetSpeedMultiplier(float mult)
+    {
+        _speedMultiplier = mult;
+    }
+
     private void ApplyData()
     {
-        _health.Setup(_data.MaxHealth * _statMultiplier);
+        float eliteHpMult = _isElite ? 2f : 1f;
+        _health.Setup(_data.MaxHealth * _hpMultiplier * eliteHpMult);
         _healthBar.SetHealth(_health.GetCurrentHealth(), _health.MaxHealth);
 
         if (_pendingCurve != null)
@@ -176,7 +200,8 @@ public partial class Enemy : Area2D
     {
         IsDead = true;
         RemoveAllAntiBuffEffects();
-        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, Mathf.RoundToInt(_data.DamageToPlayer * _statMultiplier));
+        float eliteDmgMult = _isElite ? 1.5f : 1f;
+        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, Mathf.RoundToInt(_data.DamageToPlayer * _dmgMultiplier * eliteDmgMult));
         ReturnToPool();
     }
 
@@ -184,7 +209,8 @@ public partial class Enemy : Area2D
     {
         IsDead = true;
         RemoveAllAntiBuffEffects();
-        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, Mathf.RoundToInt(_data.RewardGold * _statMultiplier));
+        float eliteGoldMult = _isElite ? 2f : 1f;
+        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, Mathf.RoundToInt(_data.RewardGold * _goldMultiplier * eliteGoldMult));
         ReturnToPool();
     }
 

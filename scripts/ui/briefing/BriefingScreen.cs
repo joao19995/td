@@ -1,67 +1,259 @@
 using Godot;
+using System.Collections.Generic;
 using System.Text;
 
 public partial class BriefingScreen : Control
 {
+    private TextureRect _mapPreview;
+    private Label _titleLabel;
+    private Label _goldLabel;
+    private Label _tierLabel;
+    private Label _waveListLabel;
+    private HBoxContainer _loadoutIcons;
+    private Label _synergyLabel;
+    private Label _minibossLabel;
+    private Button _startButton;
+
+    private Dictionary<string, TowerData> _towerDataCache;
+
     public override void _Ready()
     {
+        _mapPreview = GetNode<TextureRect>("VBox/TopRow/MapPreview");
+        _titleLabel = GetNode<Label>("VBox/TopRow/InfoColumn/TitleLabel");
+        _goldLabel = GetNode<Label>("VBox/TopRow/InfoColumn/GoldLabel");
+        _tierLabel = GetNode<Label>("VBox/TopRow/InfoColumn/TierLabel");
+        _waveListLabel = GetNode<Label>("VBox/WaveListLabel");
+        _loadoutIcons = GetNode<HBoxContainer>("VBox/LoadoutRow/LoadoutIcons");
+        _synergyLabel = GetNode<Label>("VBox/SynergyLabel");
+        _minibossLabel = GetNode<Label>("VBox/MinibossLabel");
+        _startButton = GetNode<Button>("VBox/StartButton");
+
         var levelData = LevelManager.Instance.PendingLevelData;
-        if (levelData == null)
-        {
-            GetNode<Label>("VBox/TitleLabel").Text = "MISSION";
-            GetNode<Label>("VBox/GoldLabel").Text = $"Gold: {EconomyManager.Instance.CurrentMoney}  Lives: {GameManager.Instance.CurrentLives}";
-            GetNode<Button>("VBox/StartButton").Pressed += () =>
-            {
-                UIManager.Instance.PopScreen();
-                LevelManager.Instance.LoadPendingLevel();
-            };
-            return;
-        }
+        bool hasLevelData = levelData != null;
+
+        if (hasLevelData && levelData.PreviewTexture != null)
+            _mapPreview.Texture = levelData.PreviewTexture;
+        else
+            _mapPreview.Visible = false;
 
         string title = RunState.Instance.IsBossFight
             ? "BOSS FIGHT!"
-            : levelData.LevelName.ToUpper();
-        GetNode<Label>("VBox/TitleLabel").Text = title;
-        GetNode<Label>("VBox/GoldLabel").Text = $"Gold: {EconomyManager.Instance.CurrentMoney}  Lives: {GameManager.Instance.CurrentLives}";
+            : hasLevelData ? levelData.LevelName.ToUpper() : "MISSION";
+        _titleLabel.Text = title;
 
+        _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}  Lives: {GameManager.Instance.CurrentLives}";
+
+        PopulateTierLabel();
+        PopulateMinibossLabel();
+        PopulateWaveList(hasLevelData ? levelData : null);
+        PopulateLoadout();
+        PopulateSynergies();
+
+        _startButton.Pressed += () =>
+        {
+            UIManager.Instance.PopScreen();
+            LevelManager.Instance.LoadPendingLevel();
+        };
+
+        Modulate = new Color(1, 1, 1, 0);
+        var tween = CreateTween();
+        tween.TweenProperty(this, "modulate", Colors.White, 0.3f);
+        tween.TweenCallback(Callable.From(() =>
+        {
+            _startButton.Text = "START!";
+            var pulse = CreateTween().SetLoops();
+            pulse.TweenProperty(_startButton, "modulate", new Color(1, 1, 0.5f), 0.3f);
+            pulse.TweenProperty(_startButton, "modulate", Colors.White, 0.3f);
+        }));
+    }
+
+    private void PopulateTierLabel()
+    {
+        if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
+        {
+            string tier = RunState.Instance.GetWaveTier();
+            string tierName = tier switch
+            {
+                "tier1" => "Tier 1",
+                "tier2" => "Tier 2",
+                "tier3" => "Tier 3",
+                _ => tier
+            };
+            Color tierColor = tier switch
+            {
+                "tier1" => Colors.Green,
+                "tier2" => Colors.Yellow,
+                "tier3" => Colors.Red,
+                _ => Colors.White
+            };
+            _tierLabel.Text = tierName;
+            _tierLabel.Modulate = tierColor;
+        }
+        else
+        {
+            _tierLabel.Visible = false;
+        }
+    }
+
+    private void PopulateMinibossLabel()
+    {
+        _minibossLabel.Visible = RunState.Instance.IsMiniboss;
+        if (RunState.Instance.IsMiniboss)
+            _minibossLabel.Text = "MINIBOSS";
+    }
+
+    private void PopulateWaveList(LevelData levelData)
+    {
         var sb = new StringBuilder();
 
         if (RunState.Instance.IsBossFight)
         {
             var bossWave = LevelManager.Instance.BossWaveData;
-            if (bossWave?.Enemies != null && bossWave.Enemies.Count > 0)
+            if (bossWave?.Entries != null && bossWave.Entries.Count > 0)
             {
-                var names = new StringBuilder();
-                foreach (var e in bossWave.Enemies)
-                    names.Append(e?.EnemyName ?? "?").Append(" ");
-                sb.AppendLine($"Boss Wave: {bossWave.EnemyCount}x {names.ToString().Trim()}");
+                var parts = new List<string>();
+                foreach (var entry in bossWave.Entries)
+                {
+                    if (entry?.Enemy == null) continue;
+                    string name = entry.Enemy.EnemyName ?? "?";
+                    parts.Add($"{entry.Count}x {name}");
+                }
+                sb.AppendLine(string.Join(", ", parts));
             }
             else
             {
-                sb.AppendLine("BOSS WAVE - Defeat the boss to win!");
+                sb.AppendLine("Defeat the boss to win!");
             }
         }
         else
         {
-            var waves = LevelManager.Instance.PendingRunWaves ?? levelData.Waves;
-            int waveNum = 1;
-            foreach (var wave in waves)
+            var waves = LevelManager.Instance.PendingRunWaves ?? levelData?.Waves;
+            if (waves != null)
             {
-                if (wave?.Enemies == null || wave.Enemies.Count == 0) continue;
-                var enemyNames = new StringBuilder();
-                foreach (var enemy in wave.Enemies)
-                    enemyNames.Append(enemy?.EnemyName ?? "?").Append(" ");
-                sb.AppendLine($"Wave {waveNum}: {wave.EnemyCount}x {enemyNames.ToString().Trim()}");
-                waveNum++;
+                int waveNum = 1;
+                foreach (var wave in waves)
+                {
+                    if (wave?.Entries == null || wave.Entries.Count == 0) continue;
+                    var parts = new List<string>();
+                    foreach (var entry in wave.Entries)
+                    {
+                        if (entry?.Enemy == null) continue;
+                        string name = entry.Enemy.EnemyName ?? "?";
+                        parts.Add($"{entry.Count}x {name}");
+                    }
+                    sb.AppendLine($"Wave {waveNum}: {string.Join(", ", parts)}");
+                    waveNum++;
+                }
             }
         }
 
-        GetNode<Label>("VBox/WaveListLabel").Text = sb.ToString().TrimEnd();
+        _waveListLabel.Text = sb.ToString().TrimEnd();
+    }
 
-        GetNode<Button>("VBox/StartButton").Pressed += () =>
+    private void PopulateLoadout()
+    {
+        var selectedIds = RunState.Instance.SelectedTowerIds;
+        if (selectedIds == null || selectedIds.Count == 0)
         {
-            UIManager.Instance.PopScreen();
-            LevelManager.Instance.LoadPendingLevel();
-        };
+            GetNode<HBoxContainer>("VBox/LoadoutRow").Visible = false;
+            return;
+        }
+
+        LoadTowerCache();
+
+        foreach (var id in selectedIds)
+        {
+            if (_towerDataCache.TryGetValue(id, out var data) && data.Sprite != null)
+            {
+                var icon = new TextureRect();
+                icon.Texture = data.Sprite;
+                icon.CustomMinimumSize = new Vector2(16, 16);
+                icon.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+                _loadoutIcons.AddChild(icon);
+            }
+            else
+            {
+                var label = new Label();
+                label.Text = id.Length > 0 ? id[0].ToString().ToUpper() : "?";
+                _loadoutIcons.AddChild(label);
+            }
+        }
+    }
+
+    private void PopulateSynergies()
+    {
+        var selectedIds = RunState.Instance.SelectedTowerIds;
+        if (selectedIds == null || selectedIds.Count == 0)
+        {
+            _synergyLabel.Visible = false;
+            return;
+        }
+
+        var active = GetPreviewSynergies(new List<string>(selectedIds));
+        if (active.Count == 0)
+        {
+            _synergyLabel.Visible = false;
+            return;
+        }
+
+        var names = new List<string>();
+        foreach (var s in active)
+            names.Add($"{s.DisplayName} (+{s.DamageBonusPercent * 100f:F0}% DMG)");
+        _synergyLabel.Text = "Synergies: " + string.Join(", ", names);
+    }
+
+    private static List<SynergyData> GetPreviewSynergies(List<string> towerIds)
+    {
+        var synergies = new List<SynergyData>();
+        var dir = DirAccess.Open("res://resources/synergy_data/");
+        if (dir == null) return synergies;
+
+        foreach (var file in dir.GetFiles())
+        {
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res")) continue;
+            var synergy = ResourceLoader.Load<SynergyData>("res://resources/synergy_data/" + file, "", ResourceLoader.CacheMode.Replace);
+            if (synergy == null) continue;
+
+            bool allRequired = true;
+            foreach (var reqId in synergy.RequiredTowerIds)
+            {
+                if (!towerIds.Contains(reqId))
+                {
+                    allRequired = false;
+                    break;
+                }
+            }
+
+            if (allRequired && towerIds.Count >= synergy.MinTowerCount)
+                synergies.Add(synergy);
+        }
+
+        return synergies;
+    }
+
+    private void LoadTowerCache()
+    {
+        if (_towerDataCache != null) return;
+        _towerDataCache = new Dictionary<string, TowerData>();
+
+        var dir = DirAccess.Open("res://resources/tower_data/");
+        if (dir == null) return;
+
+        foreach (var file in dir.GetFiles())
+        {
+            if (!file.EndsWith(".tres") && !file.EndsWith(".res")) continue;
+            var data = ResourceLoader.Load<TowerData>("res://resources/tower_data/" + file, "", ResourceLoader.CacheMode.Replace);
+            if (data != null && !string.IsNullOrEmpty(data.Id))
+                _towerDataCache[data.Id] = data;
+        }
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("pause_game"))
+        {
+            GetViewport().SetInputAsHandled();
+            UIManager.Instance?.PopScreen();
+        }
     }
 }
