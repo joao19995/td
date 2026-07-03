@@ -5,38 +5,37 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  issues: write
+  copilot-requests: write
+
 jobs:
   architect-review:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: read
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # Pega o commit atual e o anterior para fazer o diff
+          fetch-depth: 2
 
       - name: Install GitHub Copilot CLI
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh extension install github/gh-copilot
+          npm install -g @github/copilot
+          echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
 
-      - name: Run Godot Architect Agent Review
-        id: review
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate diff
         run: |
-          # 1. Captura o diff das mudanças introduzidas neste push
-          git diff HEAD~1 HEAD > mudancas.diff
+          git diff HEAD~1 HEAD > changes.diff
 
-          # 2. Monta o prompt estruturado enviando o diff para o Copilot
-          # Usamos o EOF (Heredoc) para mandar o prompt longo sem quebrar aspas no bash
-          cat << 'EOF' > prompt.txt
+      - name: Create prompt
+        run: |
+          cat > prompt.txt <<'EOF'
           Review the code changes introduced by this diff.
 
           Focus on:
+
           - Architecture violations (hardcoded gameplay values, deep node paths, logic in autoloads, missing composition, etc.)
           - C# implementation guardrails (naming, struct mutation, missing [GlobalClass], etc.)
           - Data-driven design (values that should be in .tres Resources but are hardcoded in .cs files)
@@ -44,56 +43,84 @@ jobs:
           - Coupling concerns (wrong use of EventBus vs direct calls, or vice-versa)
           - Anything that will cause scaling problems with 20 towers, 30 enemies, 100 upgrades
 
-          If you find real, concrete problems (not "cleaner in abstract" suggestions), produce a structured report with:
-          - **Summary**: one-line description of the overall finding
-          - **Issues**: a numbered list, each with file path, line number (if known), and a clear description of the problem and why it matters
-          - **Verdict**: ISSUES_FOUND
+          If you find real, concrete problems (not abstract "cleaner code" suggestions), produce:
 
-          If no real problems are found, output exactly and only: Verdict: NO_ISSUES
+          ## Summary
 
-          Here are the code changes:
+          One-line summary.
+
+          ## Issues
+
+          Numbered list with:
+
+          - File
+          - Line
+          - Description
+          - Why it matters
+
+          ## Verdict
+
+          ISSUES_FOUND
+
+          If there are no significant architectural issues output EXACTLY:
+
+          Verdict: NO_ISSUES
+
+          Here is the diff:
+
           EOF
-          
-          cat mudancas.diff >> prompt.txt
 
-          echo "🤖 Enviando dados para o Copilot..."
-          # Executa a chamada do Copilot salvando o resultado
-          gh copilot explain "$(cat prompt.txt)" > resultado_copilot.md
+          cat changes.diff >> prompt.txt
 
-          # 3. Passa o resultado para os outputs do step de forma segura contra quebras de linha (multiline output)
-          echo "review_output<<EOF" >> $GITHUB_OUTPUT
-          cat resultado_copilot.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Run Copilot Review
+        id: review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
 
-      - name: Open issue if problems found
-        # Verifica se o output contém o veredito de erro configurado no seu prompt
-        if: contains(steps.review.outputs.review_output, 'ISSUES_FOUND')
+          copilot \
+            -p "$(cat prompt.txt)" \
+            -s \
+            --no-ask-user \
+            > review.md
+
+          {
+            echo "review<<EOF"
+            cat review.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Issue
+        if: contains(steps.review.outputs.review, 'ISSUES_FOUND')
         uses: actions/github-script@v7
+        env:
+          REVIEW: ${{ steps.review.outputs.review }}
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const sha = context.sha;
-            const actor = context.actor;
-            const commit = context.payload.head_commit || {};
-            const commitMsg = commit.message || '(no message)';
-            const commitUrl = commit.url || '';
-            const reviewOutput = process.env.REVIEW_OUTPUT || '';
+            const body = `
+            ## 🏗️ Godot Architect Review
 
-            const body = `## 🏗️ Godot Architect Review — \`${sha.slice(0,7)}\`
+            **Commit:** ${context.sha}
 
-            **Triggered by:** @${actor} — [${commitMsg}](${commitUrl})
-
-            ${reviewOutput}
+            **Author:** @${context.actor}
 
             ---
-            *Auto-generated by the Godot Architect Agent on push to \`main\`.*`;
+
+            ${process.env.REVIEW}
+
+            ---
+            Generated automatically by GitHub Copilot.
+            `;
 
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🏗️ Architect Review: issues found in ${context.sha.slice(0,7)}`,
+              title: `🏗️ Architect Review ${context.sha.substring(0,7)}`,
               body,
-              labels: ['architecture', 'needs-review'],
+              labels: [
+                "architecture",
+                "needs-review"
+              ]
             });
-        env:
-          REVIEW_OUTPUT: ${{ steps.review.outputs.review_output }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
