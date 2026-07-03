@@ -34,6 +34,7 @@ public partial class Tower : Node2D
     public TowerData Data => _data;
     public int CurrentUpgradeLevel => _currentUpgradeLevel;
     public int MaxUpgradeLevel => _data?.UpgradePath?.Count ?? 0;
+    public TargetingComponent Targeting => _targeting;
 
     private string _equipId;
     private EquipData _equipData;

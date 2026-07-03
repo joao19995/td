@@ -214,6 +214,9 @@ public partial class BriefingScreen : Control
             var synergy = ResourceLoader.Load<SynergyData>("res://resources/synergy_data/" + file, "", ResourceLoader.CacheMode.Replace);
             if (synergy == null) continue;
 
+            if (SaveManager.Instance != null && !SaveManager.Instance.IsDiscovered("synergy_" + synergy.Id))
+                continue;
+
             bool allRequired = true;
             foreach (var reqId in synergy.RequiredTowerIds)
             {

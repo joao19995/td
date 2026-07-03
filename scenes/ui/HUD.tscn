@@ -60,6 +60,10 @@ text = "Tower"
 layout_mode = 2
 text = ""
 
+[node name="TargetingLabel" type="Label" parent="TowerActionPanel"]
+layout_mode = 2
+text = ""
+
 [node name="EquipLabel" type="Label" parent="TowerActionPanel"]
 layout_mode = 2
 text = ""

@@ -13,6 +13,7 @@ public partial class SaveManager : Node
     private Array<string> _unlockedTowerIds = new();
     private Dictionary<string, int> _metaUpgradeLevels = new();
     private Dictionary<string, bool> _discovered = new();
+    private Array<string>[] _loadoutSlots = new Array<string>[3];
 
     public int MetaTokens => _metaTokens;
     public Array<string> UnlockedTowerIds => _unlockedTowerIds;
@@ -90,6 +91,20 @@ public partial class SaveManager : Node
                 _discovered[key.AsString()] = true;
         }
 
+        if (dict.ContainsKey("loadout_slots") && dict["loadout_slots"].VariantType == Variant.Type.Array)
+        {
+            var raw = dict["loadout_slots"].AsGodotArray();
+            for (int s = 0; s < 3 && s < raw.Count; s++)
+            {
+                if (raw[s].VariantType == Variant.Type.Array)
+                {
+                    _loadoutSlots[s] = new Array<string>();
+                    foreach (var id in raw[s].AsGodotArray())
+                        _loadoutSlots[s].Add(id.AsString());
+                }
+            }
+        }
+
         EnsureDefaultUnlocks();
     }
 
@@ -103,12 +118,23 @@ public partial class SaveManager : Node
         foreach (var kv in _discovered)
             discoveredDict[kv.Key] = kv.Value;
 
+        var loadoutSlotsArray = new Array();
+        for (int s = 0; s < 3; s++)
+        {
+            var slot = new Array();
+            if (_loadoutSlots[s] != null)
+                foreach (var id in _loadoutSlots[s])
+                    slot.Add(id);
+            loadoutSlotsArray.Add(slot);
+        }
+
         var dict = new Dictionary
         {
             { "meta_tokens", _metaTokens },
             { "unlocked_tower_ids", _unlockedTowerIds },
             { "meta_upgrade_levels", upgradeLevelsDict },
-            { "discovered", discoveredDict }
+            { "discovered", discoveredDict },
+            { "loadout_slots", loadoutSlotsArray }
         };
 
         string json = Json.Stringify(dict);
@@ -170,6 +196,22 @@ public partial class SaveManager : Node
         if (_discovered.ContainsKey(key)) return;
         _discovered[key] = true;
         SaveGame();
+    }
+
+    public Array<string> GetLoadoutSlot(int slot)
+    {
+        if (slot >= 0 && slot < 3 && _loadoutSlots[slot] != null)
+            return _loadoutSlots[slot];
+        return null;
+    }
+
+    public void SetLoadoutSlot(int slot, Array<string> ids)
+    {
+        if (slot >= 0 && slot < 3)
+        {
+            _loadoutSlots[slot] = new Array<string>(ids);
+            SaveGame();
+        }
     }
 
     private void SetDefaults()

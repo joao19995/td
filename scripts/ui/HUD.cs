@@ -25,8 +25,10 @@ public partial class HUD : CanvasLayer
     private VBoxContainer _towerActionPanel;
     private Label _towerNameLabel;
     private Label _statsLabel;
+    private Label _targetingLabel;
     private Label _equipLabel;
     private Button _upgradeButton;
+    private Tower _selectedTower;
 
     private Label _synergyLabel;
     private HBoxContainer _buffIconsContainer;
@@ -94,6 +96,7 @@ public partial class HUD : CanvasLayer
         _towerActionPanel = GetNode<VBoxContainer>("TowerActionPanel");
         _towerNameLabel = GetNode<Label>("TowerActionPanel/TowerNameLabel");
         _statsLabel = GetNode<Label>("TowerActionPanel/StatsLabel");
+        _targetingLabel = GetNode<Label>("TowerActionPanel/TargetingLabel");
         _equipLabel = GetNode<Label>("TowerActionPanel/EquipLabel");
 
         _equipIcon = new TextureRect();
@@ -114,6 +117,18 @@ public partial class HUD : CanvasLayer
         TowerSelectionManager.Instance.TowerSelected += OnTowerSelected;
         TowerSelectionManager.Instance.TowerDeselected += OnTowerDeselected;
         _upgradeButton.Pressed += OnUpgradePressed;
+
+        _targetingLabel.GuiInput += (@event) =>
+        {
+            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && mb.Pressed && _selectedTower?.Targeting != null)
+            {
+                var strategies = new[] { TargetingStrategy.First, TargetingStrategy.Closest, TargetingStrategy.Strongest, TargetingStrategy.Last };
+                int currentIdx = System.Array.IndexOf(strategies, _selectedTower.Targeting.Strategy);
+                int next = (currentIdx + 1) % strategies.Length;
+                _selectedTower.Targeting.Strategy = strategies[next];
+                _targetingLabel.Text = $"Target: {_selectedTower.Targeting.Strategy}";
+            }
+        };
 
         _synergyLabel = GetNode<Label>("SynergyLabel");
         _synergyLabel.MouseEntered += OnSynergyLabelMouseEntered;
@@ -422,8 +437,21 @@ public partial class HUD : CanvasLayer
 
     private void OnTowerSelected(Tower tower)
     {
+        _selectedTower = tower;
         _towerNameLabel.Text = $"{tower.Data.TowerName} (Lv.{tower.CurrentUpgradeLevel + 1})";
         _statsLabel.Text = $"DMG:{tower.EffectiveDamage:F1} SPD:{tower.EffectiveFireRate:F1} RNG:{tower.EffectiveRange:F0}";
+
+        if (tower.Targeting != null)
+        {
+            _targetingLabel.Text = $"Target: {tower.Targeting.Strategy}";
+            _targetingLabel.Modulate = new Color(0.7f, 0.7f, 1.0f);
+            _targetingLabel.MouseFilter = Control.MouseFilterEnum.Stop;
+        }
+        else
+        {
+            _targetingLabel.Text = "";
+            _targetingLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
+        }
 
         string equipId = RunState.Instance?.GetEquippedItem(tower.Data.Id);
         if (!string.IsNullOrEmpty(equipId))
@@ -471,6 +499,7 @@ public partial class HUD : CanvasLayer
 
     private void OnTowerDeselected()
     {
+        _selectedTower = null;
         _towerActionPanel.Hide();
         HideTooltip();
         _equipIcon.Visible = false;
