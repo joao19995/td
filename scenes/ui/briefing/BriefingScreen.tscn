@@ -57,11 +57,17 @@ layout_mode = 2
 text = ""
 horizontal_alignment = 1
 
-[node name="WaveListLabel" type="Label" parent="VBox"]
+[node name="WaveScroll" type="ScrollContainer" parent="VBox"]
 layout_mode = 2
+size_flags_vertical = 3
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
+
+[node name="WaveListLabel" type="Label" parent="VBox/WaveScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = ""
 autowrap_mode = 1
-size_flags_vertical = 3
 
 [node name="LoadoutRow" type="HBoxContainer" parent="VBox"]
 layout_mode = 2

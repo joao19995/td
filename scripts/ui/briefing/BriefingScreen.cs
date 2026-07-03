@@ -22,7 +22,7 @@ public partial class BriefingScreen : Control
         _titleLabel = GetNode<Label>("VBox/TopRow/InfoColumn/TitleLabel");
         _goldLabel = GetNode<Label>("VBox/TopRow/InfoColumn/GoldLabel");
         _tierLabel = GetNode<Label>("VBox/TopRow/InfoColumn/TierLabel");
-        _waveListLabel = GetNode<Label>("VBox/WaveListLabel");
+        _waveListLabel = GetNode<Label>("VBox/WaveScroll/WaveListLabel");
         _loadoutIcons = GetNode<HBoxContainer>("VBox/LoadoutRow/LoadoutIcons");
         _synergyLabel = GetNode<Label>("VBox/SynergyLabel");
         _minibossLabel = GetNode<Label>("VBox/MinibossLabel");
@@ -115,7 +115,9 @@ public partial class BriefingScreen : Control
                 foreach (var entry in bossWave.Entries)
                 {
                     if (entry?.Enemy == null) continue;
-                    string name = entry.Enemy.EnemyName ?? "?";
+                    string name = entry.Enemy.EnemyName;
+                    if (string.IsNullOrEmpty(name) || name == "Enemy")
+                        name = entry.Enemy.Id.Replace("_", " ").ToUpper();
                     parts.Add($"{entry.Count}x {name}");
                 }
                 sb.AppendLine(string.Join(", ", parts));
@@ -130,18 +132,27 @@ public partial class BriefingScreen : Control
             var waves = LevelManager.Instance.PendingRunWaves ?? levelData?.Waves;
             if (waves != null)
             {
+                sb.AppendLine($"{waves.Count} waves");
+
                 int waveNum = 1;
                 foreach (var wave in waves)
                 {
                     if (wave?.Entries == null || wave.Entries.Count == 0) continue;
+
                     var parts = new List<string>();
                     foreach (var entry in wave.Entries)
                     {
                         if (entry?.Enemy == null) continue;
-                        string name = entry.Enemy.EnemyName ?? "?";
+                        string name = entry.Enemy.EnemyName;
+                        if (string.IsNullOrEmpty(name) || name == "Enemy")
+                            name = entry.Enemy.Id.Replace("_", " ").ToUpper();
                         parts.Add($"{entry.Count}x {name}");
                     }
-                    sb.AppendLine($"Wave {waveNum}: {string.Join(", ", parts)}");
+
+                    string modTag = wave.Modifier != WaveModifier.None
+                        ? $" · {wave.Modifier}"
+                        : "";
+                    sb.AppendLine($"W{waveNum}{modTag}: {string.Join(" ", parts)}");
                     waveNum++;
                 }
             }

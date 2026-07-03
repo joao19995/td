@@ -18,6 +18,7 @@ public partial class EnemySpawner : Node2D
     private float _minibossMultiplier = 1.5f;
     private bool _isActive = false;
     private WaveModifier _currentModifier = WaveModifier.None;
+    private float _currentDifficultyMult = 1f;
 
     public bool CanStartNextWave => !_waveInProgress && _currentWaveIndex + 1 < Waves.Count;
     public string CurrentWaveDisplay => $"{_currentWaveIndex + 1} / {Waves.Count}";
@@ -71,7 +72,9 @@ public partial class EnemySpawner : Node2D
         }
 
         _currentModifier = wave.Modifier;
-        float spawnInterval = wave.SpawnInterval;
+        _currentDifficultyMult = wave.DifficultyMultiplier;
+
+        float spawnInterval = wave.SpawnInterval / Mathf.Sqrt(_currentDifficultyMult);
         if (_currentModifier == WaveModifier.Horde)
             spawnInterval *= 0.5f;
 
@@ -81,6 +84,8 @@ public partial class EnemySpawner : Node2D
         {
             if (entry?.Enemy == null || entry.Count <= 0) continue;
             int count = _currentModifier == WaveModifier.Horde ? entry.Count * 2 : entry.Count;
+            if (wave.IsFinalStretch)
+                count = Mathf.RoundToInt(count * 1.5f);
             spawnList.Add((entry.Enemy, count));
             totalCount += count;
         }
@@ -166,6 +171,9 @@ public partial class EnemySpawner : Node2D
                 enemy.SetModifierMultipliers(1f, 1f, 2f);
                 break;
         }
+
+        if (_currentDifficultyMult > 1f || _currentDifficultyMult < 1f)
+            enemy.SetModifierMultipliers(_currentDifficultyMult, 1f, 1f);
 
         GetEnemiesContainer().CallDeferred(Node.MethodName.AddChild, enemy);
     }

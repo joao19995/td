@@ -32,6 +32,10 @@ not implementation details.
 
 - **RunState** tracks the active run: gold, lives, per-tower upgrade levels, selected tower IDs, and per-equipment state.
 - **Loadout**: before each run the player chooses up to 4 tower types from all unlocked towers. Only chosen towers appear in the HUD during fights.
+  - **Stat preview**: hovering a tower shows name, sprite, DMG/SPD/RNG, and special tags (SPLASH/POISON/SLOW/AURA/CHAIN/CRIT/EXECUTE/GLOBAL) in a side panel.
+  - **Synergy hints**: if the selected towers activate a synergy that has already been discovered in a previous run, the synergy name is shown.
+  - **Random button**: "RND" selects `MaxTowers` random unlocked towers.
+  - **Save slots**: 3 numbered buttons. Left-click loads if slot has data (or saves if empty). Right-click overwrites. Persisted in SaveManager JSON (`loadout_slots`). Tooltip shows slot contents on hover.
 - **Gold and lives persist** across fights within a run (no reset between fights). They are the single source of truth in EconomyManager/GameManager — RunState does not duplicate them.
 - **Tower upgrades persist** by tower type across fights. If a Bread Baker tower is upgraded to level 2 and sold, the next Bread Baker placed starts at level 2.
 - **1-per-type** enforcement: only one tower of each type can be on the map at once. The HUD grays out the button and shows "(Placed)" for types already placed.
@@ -203,7 +207,7 @@ not implementation details.
 
 ### Wave Decoupling (Run Mode)
 
-- Waves are **decoupled from map layout** during runs. Each fight picks a wave from a **difficulty tier** based on `FightsCompleted`:
+- Waves are **decoupled from map layout** during runs. Each fight picks waves from a **difficulty tier** based on `FightsCompleted`:
   - Fight 1 -> `tier1` (easy)
   - Fight 2 -> `tier2` (medium)
   - Fight 3+ -> `tier3` (hard)
@@ -211,6 +215,17 @@ not implementation details.
 - `LevelData.Waves` is used only in classic mode (non-run) — unchanged.
 - **Boss fights** ignore the tier system and always use `BossWaveData` (set in `LevelManager` Inspector).
 - **Miniboss** `statMultiplier` (1.5x HP, gold, damage) is cumulative with tier difficulty.
+
+### Wave Generation (5-10 Waves Per Fight)
+
+- `RunState.PickRunWaves()` generates **5-10 random waves** per fight, drawn with repetition from the current tier pool.
+- **Difficulty scaling** applies to each wave within the fight:
+  - `DifficultyMultiplier` ranges from **0.6x** (first wave) to **1.4x** (last wave)
+  - Affects: **enemy HP** (×multiplier), **spawn interval** (÷√multiplier → faster at high difficulty)
+- **Final stretch**: the last 3 waves get **1.5× enemy count**.
+- **Modifier assignment**: waves 1-2 have no modifier (use wave's base). Waves 3+ get random modifiers from the pool. Last 2 waves draw from a harder pool (Horde, Armored). Consecutive same-modifier is avoided.
+- **Wave data is cloned at generation** — templates `.tres` are never mutated. Runtime fields (`DifficultyMultiplier`, `IsFinalStretch`) are set on the clone.
+- Briefing screen shows each wave as `W1 [0.6x]: 5 enemies`, with modifier tags for non-`None` modifiers.
 
 ---
 
@@ -338,7 +353,7 @@ not implementation details.
 - Buttons are disabled when the player cannot afford the tower, when that type is already placed, or during Game Over.
 - Buttons update reactively when money changes, towers are placed, or towers are deselected.
 - **"Next Wave"** button to start each wave. **"Next Level"** button after all waves are cleared.
-- When a tower is selected: shows its **name**, **upgrade level**, **upgrade cost** (or "MAX" if fully upgraded), and **equipped item**.
+- When a tower is selected: shows its **name**, **upgrade level**, **upgrade cost** (or "MAX" if fully upgraded), **targeting priority** (click to cycle First → Closest → Strongest → Last), and **equipped item**.
 
 ---
 
@@ -369,7 +384,7 @@ Shown before every fight in a run. Displays:
 - **Gold / Lives**: current resources.
 - **Difficulty tier**: "Tier 1" (green), "Tier 2" (yellow), or "Tier 3" (red) based on `RunState.GetWaveTier()` — hidden during boss fights.
 - **Miniboss indicator**: red "MINIBOSS" label when `RunState.IsMiniboss` is true.
-- **Wave list**: per-wave enemy composition from `PendingRunWaves` (run mode) or `LevelData.Waves` (free play).
+- **Wave list**: per-wave enemy composition from `PendingRunWaves` (run mode) or `LevelData.Waves` (free play). Shows total wave count, then per-wave format: `W1: 3x Sliced Bread Tourist 2x Pigeon · Horde` — modifier tag appears when `WaveModifier != None`. Scrollable if waves exceed visible area.
 - **Loadout icons**: 16×16 sprite for each selected tower (`RunState.SelectedTowerIds`) — fallback to first-letter label when sprite is missing.
 - **Synergy preview**: if the selected towers activate any synergies, shows synergy names with DMG bonus.
 - **Start animation**: brief fade-in (0.3s), then button text changes to "START!" with a yellow pulse loop.
@@ -417,5 +432,7 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted`. 5 waves per tier (15 total) |
 | Wave entries (per-type counts) | `WaveEntry` sub-resource inside each `WaveData` | Enemy type + count per entry |
 | Wave modifiers | `WaveModifier` enum on `WaveData` | `None`, `Horde` (2× enemies, 0.5× interval), `Armored` (2× HP), `Swift` (1.5× speed), `GoldRush` (2× gold) |
+| Wave generation (run mode) | `RunState.PickRunWaves()` | 5-10 waves per fight, `DifficultyMultiplier` 0.6x-1.4x scaling, final stretch (last 3 waves ×1.5 count), random modifiers on waves 3+ |
+| Difficulty scaling (runtime) | `WaveData.DifficultyMultiplier` / `WaveData.IsFinalStretch` | Non-exported fields set on clone per fight. HP × mult, spawn ÷√mult, count ×1.5 on final stretch |
 | Bestiary discovery | `SaveManager` JSON | Towers/enemies/equip/trinkets/synergies auto-discovered when first encountered |
 | Meta-progression | `MetaUpgradeData` resource | Item ID, name, cost tokens, max level, IsTowerUnlock, TowerId, StatType, BonusPerLevel, Category (Unlocks/Stats/Economy) |

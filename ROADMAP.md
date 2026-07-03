@@ -164,39 +164,22 @@ quantidades por tipo. Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 11. Targeting Priority UI + Strategy Change
+### 11. [DONE] Targeting Priority UI + Strategy Change
 
-**Why**: targeting strategy is only configurable in the Inspector — inaccessible in-game.
-
-**What to build**:
-- "Target" button on the selected tower panel
-- Click cycles between: First, Closest, Strongest, Last
-- Visual indicator on the panel (e.g. "First → Closest" text changes)
-- `TargetingComponent.Strategy` set at runtime, not just in `_Ready`
-- Tooltip explains each strategy
-
-**Decisions**:
-- Strategy persists only for that instance (not per-type)
-- Reset to default when tower is sold and re-placed
-
-**Estimate**: 1 day
+"Target" label on tower panel, click to cycle First→Closest→Strongest→Last.
+`TargetingComponent.Strategy` set at runtime via `_selectedTower` field + `GuiInput` handler.
+Strategy persists per-instance, resets when tower is sold/re-placed.
+Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 12. Loadout — Stat Preview + Synergy Hints
+### 12. [DONE] Loadout — Stat Preview + Synergy Hints
 
-**Why**: loadout shows only names and costs — no stats, no synergy hints.
-
-**What to build**:
-- **Stat preview**: clicking a tower in the loadout shows damage, fire rate, range,
-  special ability (slow/poison/splash/aura/chain/crit/execute/global-aura)
-- **Synergy hints**: when 2+ towers that activate a synergy are selected, shows
-  "Synergy: One Whiff, One Bite (+15% to both)"
-- **Tower sprite**: shows the tower sprite next to the name
-- **Random loadout button**: "Random" selects 4 random towers
-- **Loadout save**: 3 loadout slots saved in SaveManager JSON
-
-**Estimate**: 2-3 days
+Hover shows stat preview panel (name, sprite, DMG/SPD/RNG, special tags).
+Synergy hints only for discovered synergies with unlocked required towers.
+Random "RND" button (Fisher-Yates shuffle + `_isBatchUpdating` guard).
+3 save slots in SaveManager JSON (left-click = load/save, right-click = overwrite).
+Outcome documented in GAME_STATUS.md.
 
 ---
 

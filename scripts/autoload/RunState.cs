@@ -279,6 +279,14 @@ public partial class RunState : Node
         return baseCost;
     }
 
+    private static readonly WaveModifier[] AllModifiers = new[] {
+        WaveModifier.None, WaveModifier.Horde, WaveModifier.Armored,
+        WaveModifier.Swift, WaveModifier.GoldRush
+    };
+    private static readonly WaveModifier[] HardModifiers = new[] {
+        WaveModifier.Horde, WaveModifier.Armored
+    };
+
     public Array<WaveData> PickRunWaves()
     {
         string tier = GetWaveTier();
@@ -290,30 +298,50 @@ public partial class RunState : Node
             return null;
         }
 
-        var waves = new System.Collections.Generic.List<WaveData>();
+        var pool = new System.Collections.Generic.List<WaveData>();
         foreach (var file in dir.GetFiles())
         {
             if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
                 continue;
             var res = ResourceLoader.Load<Resource>(dirPath + file, "", ResourceLoader.CacheMode.Replace);
             if (res is WaveData w)
-                waves.Add(w);
+                pool.Add(w);
         }
 
-        if (waves.Count == 0) return null;
+        if (pool.Count == 0) return null;
 
-        int count = Mathf.Min(2, waves.Count);
-        var selected = new Array<WaveData>();
-        var picked = new System.Collections.Generic.HashSet<int>();
-        for (int i = 0; i < count; i++)
+        int totalWaves = (int)(GD.Randi() % 6) + 5; // 5-10
+        var result = new Array<WaveData>();
+
+        WaveModifier? prevModifier = null;
+
+        for (int i = 0; i < totalWaves; i++)
         {
-            int idx;
-            do {
-                idx = (int)(GD.Randi() % waves.Count);
-            } while (picked.Contains(idx));
-            picked.Add(idx);
-            selected.Add(waves[idx]);
+            var wave = pool[(int)(GD.Randi() % pool.Count)];
+            var clone = new WaveData
+            {
+                Entries = wave.Entries,
+                SpawnInterval = wave.SpawnInterval,
+                Modifier = wave.Modifier,
+            };
+
+            clone.IsFinalStretch = i >= totalWaves - 3;
+            clone.DifficultyMultiplier = 0.6f + 0.8f * (float)i / Mathf.Max(1, totalWaves - 1);
+
+            if (i >= 2)
+            {
+                var mods = i >= totalWaves - 2 ? HardModifiers : AllModifiers;
+                int attempts = 0;
+                do {
+                    clone.Modifier = mods[(int)(GD.Randi() % mods.Length)];
+                    attempts++;
+                } while (prevModifier.HasValue && clone.Modifier == prevModifier.Value && attempts < 10);
+            }
+            prevModifier = clone.Modifier;
+
+            result.Add(clone);
         }
-        return selected;
+
+        return result;
     }
 }
