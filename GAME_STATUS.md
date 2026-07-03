@@ -317,7 +317,18 @@ not implementation details.
 
 ## HUD (User Interface during gameplay)
 
-- Displays current **lives**, **money**, and **wave number**.
+- Displays current **lives** (hearts + count), **money**, and **wave number**.
+- **Life counter**: red `ColorRect` hearts (4×4px each) in the InfoBar, rebuilt on `LivesChanged`. Followed by the numeric lives count.
+- **Tooltip panel**: `Label` with `StyleBoxFlat` background (dark + border), positioned near the mouse cursor. Appears below cursor in top half, above cursor in bottom half. Used for:
+  - **Tower bar buttons**: tooltip shows tower name, cost, damage, fire rate, range (on hover)
+  - **Synergy label**: tooltip shows active synergy names (on hover)
+  - **Buff icons**: tooltip shows purchased shop item, trinket, or synergy description
+  - **Equip label**: tooltip shows equipment name + description (on hover)
+- **Buff icons area**: `HBoxContainer` at top-left (y=42) displaying 16×16 icons for:
+  - **Purchased shop items** (from `RunState.PurchasedItemIcons`)
+  - **Active trinket** (from `TrinketData.Icon`)
+  - **Active synergies** (from `SynergyData.Icon`)
+  - Each icon shows a tooltip on hover with name and description.
 - Shows a button for each available tower type (determined by loadout during runs). Towers are loaded dynamically from `resources/tower_data/` directory — no scene changes needed when adding new towers.
 - Buttons are disabled when the player cannot afford the tower, when that type is already placed, or during Game Over.
 - Buttons update reactively when money changes, towers are placed, or towers are deselected.
@@ -349,6 +360,12 @@ not implementation details.
 ## Bestiary / Discovery
 
 - **Bestiary screen**: accessible from Main Menu (button) and Pause screen (`PauseGame=true` overlay). Shows 5 categories: Towers, Enemies, Equipment, Trinkets, Synergies.
+- **Visual Polish & Detail Views**: Each category has been upgraded with immersive visual elements and a collapsible accordion details view:
+  - **Category Progress Tracking**: Displays discovery progress at the top of the screen (e.g., "Found: 3 / 5") for the active category.
+  - **Sprites & Icons**: Shows high-quality sprites (towers and enemies) or icons (equipment, trinkets, synergies) next to each discovered entry. Locked/undiscovered entries show dimmed silhouettes or "???" placeholding text.
+  - **Interactive Accordions**: Clicking any discovered entry smoothly expands or collapses a detailed submenu with full description, specialized mechanics, and lore.
+  - **Normalized Stat Bars**: Detail views for Towers and Enemies feature visual attribute bars (Damage, Fire Rate, Range, HP, Speed, Reward Gold) normalized automatically using the maximum value in that class across all loaded resource data.
+  - **Lore / Flavor Text**: Features optional immersive narrative text (`FlavorText` property on all resources) giving depth to towers, enemies, equipment, trinkets, and synergies.
 - **All data is scanned from directories** — zero-code-change to add entries.
 - **Discovery tracking**: items are hidden (grayed out with `???`) until first encountered:
   - Enemies: discovered when they spawn in a fight

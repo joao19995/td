@@ -38,48 +38,19 @@ Token reward scaling with victory bonus. UI tabs (All/Unlocks/Stats/Economy). Ou
 
 ---
 
-### 3. HUD — Tooltips + Run Buff Icons
+### 3. [DONE] HUD — Tooltips + Run Buff Icons
 
-**Why**: HUD shows raw text without tooltips or visual representation of active bonuses.
-
-**What to build**:
-- **Universal tooltips**: `Control.tooltip_text` or custom popup on:
-  - Tower bar buttons (shows cost, damage, fire rate, range)
-  - Tower action panel (shows detailed stats + equip description)
-  - Synergy label (shows which towers trigger each synergy)
-  - Run buff icons (shows shop/trinket item description)
-- **Run buff icons area**: HUD area showing icons of:
-  - Purchased shop items (with tooltip)
-  - Active trinket (with tooltip)
-  - Active synergies (separate from label text)
-- **Life counter**: show lives as hearts instead of "Lives: 5" text
-
-**Decisions**:
-- Tooltips = `Panel` child of HUD, show/hide on mouse enter/exit
-- Buff icons = `TextureRect` with `mouse_filter = Ignore` + tooltip control
-- Hearts = `TextureRect` array, updated on `LivesChanged`
-
-**Estimate**: 2-3 days
+Tooltip panel (segue o rato), tooltips em tower buttons e synergy label, life counter com
+corações (ColorRect 4×4), buff icons expandidos (shop + trinket + synergy icons). 
+Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 4. Bestiary — Sprites + Stats + Lore
+### 4. [DONE] Bestiary — Sprites + Stats + Lore
 
-**Why**: bestiary currently shows only text, no sprites, no lore.
-
-**What to build**:
-- **Sprite display**: each entry shows the tower/enemy/equip/trinket sprite
-- **Stat bars**: visual bars for main stats (damage, speed, range, HP)
-- **Lore/flavor text**: `FlavorText` field on Resources, displayed in bestiary
-- **Progress tracking**: "3/5 Towers", "4/5 Enemies" at the top
-- **Detail view**: clicking an entry expands to a detailed view with all stats
-
-**Decisions**:
-- `FlavorText` added to `TowerData`, `EnemyData`, `EquipData`, `TrinketData`,
-  `SynergyData` — optional field, no save-breaking changes
-- Stat bars = `ColorRect` with width proportional to value / max in category
-
-**Estimate**: 2-3 days
+Sprites e ícones nos entries, barras de stats normalizadas por categoria, progresso das
+categorias no topo, accordion detail views expansíveis/colapsáveis com lore (`FlavorText` adicionado
+a todos os dados de recurso) e mecânicas detalhadas. Outcome documented in GAME_STATUS.md.
 
 ---
 

@@ -9,6 +9,7 @@ public partial class TowerData : Resource
     [Export] public float Damage { get; set; } = 5f;
     [Export] public float FireRate { get; set; } = 1f;
     [Export] public float Range { get; set; } = 100f;
+    [Export] public string FlavorText { get; set; } = "";
     [Export] public int Cost { get; set; } = 50;
     [Export] public PackedScene ProjectileScene { get; set; }
     [Export] public Texture2D Sprite { get; set; }

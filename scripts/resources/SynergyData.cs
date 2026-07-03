@@ -6,6 +6,7 @@ public partial class SynergyData : Resource
 {
     [Export] public string Id { get; set; } = "";
     [Export] public string DisplayName { get; set; } = "";
+    [Export] public string FlavorText { get; set; } = "";
     [Export] public string Description { get; set; } = "";
     [Export] public Array<string> RequiredTowerIds { get; set; } = new();
     [Export] public int MinTowerCount { get; set; }
