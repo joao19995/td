@@ -61,7 +61,7 @@ wall it fixes. "Cleaner in the abstract" is not a justification.
 ### Autoloads Are Infrastructure, Not Gameplay
 Autoloads (singletons) exist for: EventBus, LevelManager, SceneManager, UIManager,
 PoolManager, CameraManager, EconomyManager, GameManager, TowerSelectionManager,
-TowerPlacementManager. They coordinate systems. They do NOT contain gameplay logic.
+TowerPlacementManager, GameBalance, SaveManager. They coordinate systems. They do NOT contain gameplay logic.
 If you're tempted to put game logic in an autoload, stop — put it in a component
 on the relevant entity.
 
@@ -104,13 +104,14 @@ reuse/testability problem that actually exists.
 ```
 scripts/
 ├── autoload/        # Singletons (infrastructure only)
-├── components/      # Reusable behaviors (Health, Movement, Attack, StatusEffect, Targeting)
+├── components/      # Reusable behaviors (Health, Movement, Attack, StatusEffectComponent, Targeting, Aura, GlobalAura)
 ├── effects/         # Visual one-shots (SplashEffect, RangeIndicator, HealthBar, DamagePopup)
 ├── enemies/         # Enemy entity
 ├── towers/          # Tower entity
 ├── projectiles/     # Projectile entity
-├── factories/       # ProjectileFactory, EnemyFactory
-├── resources/       # Data classes (TowerData, EnemyData, WaveData, UpgradeData, etc.)
+├── factories/       # ProjectileFactory, EnemyFactory, TowerFactory
+├── helpers/         # Utility helpers (ResourceLoaderHelper)
+├── resources/       # Data classes (TowerData, EnemyData, WaveData, WaveEntry, UpgradeData, GameBalanceData, PoisonEffectData, SlowEffectData, StatusEffectData, etc.)
 ├── levels/          # BaseLevel, Map1, Map2
 ├── ui/              # HUD, screens
 │   ├── screens/     # MainMenu, Loadout, FightComplete
@@ -120,7 +121,8 @@ scripts/
 │   ├── trinket/     # TrinketChoiceScreen
 │   └── bestiary/    # BestiaryScreen
 ├── main/            # Main entry point
-├── systems/         # PoolManager, SynergyManager, SlotManager
+├── Spawner/         # EnemySpawner
+├── systems/         # PoolManager, SynergyManager, SlotManager, SlotOutcome, WaveGenerator
 ├── autoload/        # Singletons (infrastructure only)
 scenes/
 ├── levels/          # Map1.tscn, Map2.tscn
@@ -130,8 +132,8 @@ scenes/
 ├── ui/              # HUD.tscn, screens/
 ├── system/          # Autoload scenes
 resources/
-├── tower_data/      # CornerBaker.tres, BikeCourier.tres, Aroma.tres, TasteTester.tres, BakeryTruck.tres
-├── enemy_data/      # SlicedBreadTourist, GroceryJogger, AlleyCat, BaguettePigeon, BreadDragon
+├── tower_data/      # BreadBaker, BreadCourier, AromaKeeper, TasteTester, BakeryTruck, BreadMonk, FermentationSage, CrustCrusader, DoughExorcist, HighProphet
+├── enemy_data/      # SlicedBreadTourist, GroceryJogger, AlleyCat, BaguettePigeon, BreadDragon, MicrowaveMealPreacher, PlasticWrappedSandwichMan, GlutenNullBishop, FrozenDoughAbomination, SupermarketOverlord
 ├── wave_data/       # Wave1-4 + tier1/ tier2/ tier3/ (tiered for run mode)
 ├── upgrade_data/    # 10 upgrade files (2 per tower)
 ├── level_data/      # level1.tres, level2.tres
@@ -150,8 +152,8 @@ resources/
 See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP plan.
 
 ### Works
-- 5 tower types with unique behaviors (Corner Baker, Bike Courier, Aroma, Taste Tester, Bakery Truck)
-- 5 enemy types with configurable stats
+- 10 tower types with unique behaviors (Bread Baker, Bread Courier, Aroma Keeper, Taste Tester, Bakery Truck, Bread Monk, Fermentation Sage, Crust Crusader, Dough Exorcist, High Prophet of Sourdough)
+- 10 enemy types with configurable stats
 - 2 maps with wave-based spawning
 - Tower placement, selection, upgrade (2 tiers each)
 - Object pooling for projectiles and enemies
@@ -164,7 +166,7 @@ See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP
 - Slot machine post-fight outcomes (Fight, Shop, Heal, Miniboss, Treasure, Boss)
 - Reroll mechanic with cost scaling and outcome skew reduction
 - Shop with run-wide bonuses and tower-specific equipment
-- Meta-progression shop (5 items, token-based permanent unlocks/upgrades)
+- Meta-progression shop (16 items, token-based permanent unlocks/upgrades)
 - Trinkets (Treasure outcome: choose 1 of 3)
 - Pre-fight briefing screen showing wave composition
 - Bestiary (accessible from Main Menu and Pause screen) with discovery tracking — locked towers/enemies/equip/trinkets/synergies hidden until encountered

@@ -120,20 +120,7 @@ public partial class BestiaryScreen : Control
 
     private static List<T> LoadFromDir<T>(string dirPath) where T : Resource
     {
-        var items = new List<T>();
-        var dir = DirAccess.Open(dirPath);
-        if (dir == null) return items;
-
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var item = ResourceLoader.Load<T>(dirPath + file, "", ResourceLoader.CacheMode.Replace);
-            if (item != null)
-                items.Add(item);
-        }
-
-        return items;
+        return ResourceLoaderHelper.LoadFromDir<T>(dirPath);
     }
 
     private void SelectCategory(Category cat)

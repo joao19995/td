@@ -17,11 +17,11 @@ public partial class SlotManager : Node
     [Export] public int RerollBaseCost = 50;
     [Export] public float SkewReductionFactor = 0.5f;
 
-    private Dictionary<string, float> _weightMultipliers = new();
+    private Dictionary<SlotOutcome, float> _weightMultipliers = new();
 
     public int CurrentRerollCount { get; private set; } = 0;
 
-    private static readonly string[] AllOutcomes = { "Fight", "Shop", "Heal", "Miniboss", "Treasure" };
+    private static readonly SlotOutcome[] AllOutcomes = { SlotOutcome.Fight, SlotOutcome.Shop, SlotOutcome.Heal, SlotOutcome.Miniboss, SlotOutcome.Treasure };
 
     public override void _EnterTree()
     {
@@ -38,39 +38,39 @@ public partial class SlotManager : Node
     public void ResetRerolls()
     {
         CurrentRerollCount = 0;
-        _weightMultipliers = new Dictionary<string, float>();
+        _weightMultipliers = new Dictionary<SlotOutcome, float>();
         foreach (var o in AllOutcomes)
             _weightMultipliers[o] = 1f;
     }
 
-    public string Spin()
+    public SlotOutcome Spin()
     {
-        float wFight = WeightFight * _weightMultipliers.GetValueOrDefault("Fight", 1f);
-        float wShop = WeightShop * _weightMultipliers.GetValueOrDefault("Shop", 1f);
-        float wHeal = WeightHeal * _weightMultipliers.GetValueOrDefault("Heal", 1f);
-        float wMiniboss = WeightMiniboss * _weightMultipliers.GetValueOrDefault("Miniboss", 1f);
-        float wTreasure = WeightTreasure * _weightMultipliers.GetValueOrDefault("Treasure", 1f);
+        float wFight = WeightFight * _weightMultipliers.GetValueOrDefault(SlotOutcome.Fight, 1f);
+        float wShop = WeightShop * _weightMultipliers.GetValueOrDefault(SlotOutcome.Shop, 1f);
+        float wHeal = WeightHeal * _weightMultipliers.GetValueOrDefault(SlotOutcome.Heal, 1f);
+        float wMiniboss = WeightMiniboss * _weightMultipliers.GetValueOrDefault(SlotOutcome.Miniboss, 1f);
+        float wTreasure = WeightTreasure * _weightMultipliers.GetValueOrDefault(SlotOutcome.Treasure, 1f);
 
         float total = wFight + wShop + wHeal + wMiniboss + wTreasure;
         float roll = (float)GD.RandRange(0.0, total);
 
-        if (roll < wFight) return "Fight";
+        if (roll < wFight) return SlotOutcome.Fight;
         roll -= wFight;
-        if (roll < wShop) return "Shop";
+        if (roll < wShop) return SlotOutcome.Shop;
         roll -= wShop;
-        if (roll < wHeal) return "Heal";
+        if (roll < wHeal) return SlotOutcome.Heal;
         roll -= wHeal;
-        if (roll < wMiniboss) return "Miniboss";
-        return "Treasure";
+        if (roll < wMiniboss) return SlotOutcome.Miniboss;
+        return SlotOutcome.Treasure;
     }
 
-    public string Reroll()
+    public SlotOutcome Reroll()
     {
         CurrentRerollCount++;
         return Spin();
     }
 
-    public void ApplySkew(string outcome)
+    public void ApplySkew(SlotOutcome outcome)
     {
         _weightMultipliers[outcome] = _weightMultipliers.GetValueOrDefault(outcome, 1f) * SkewReductionFactor;
     }

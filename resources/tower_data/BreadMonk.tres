@@ -22,3 +22,4 @@ AuraRange = 60.0
 AuraDamageBonusPercent = 0.1
 AuraFireRateBonusPercent = 0.1
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])
+FlavorText = "TODO: lore text"

@@ -20,3 +20,4 @@ Sprite = ExtResource("1_high_prophet1")
 HasGlobalAura = true
 GlobalAuraDamagePerTower = 0.02
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])
+FlavorText = "TODO: lore text"

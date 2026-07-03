@@ -13,3 +13,4 @@ TargetTowerId = "fermentation_sage"
 DamagePercentBonus = -0.1
 Icon = ExtResource("1_wild_yeast1")
 ExtraChainBounces = 1
+FlavorText = "TODO: lore text"

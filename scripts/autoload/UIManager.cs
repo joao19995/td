@@ -93,6 +93,14 @@ public partial class UIManager : Node
             PopScreen();
     }
 
+    public static void NavigateToMainMenu(bool victory = false)
+    {
+        RunState.Instance.EndRun(victory);
+        Instance.PopAll();
+        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/MainMenu.tscn",
+            LevelManager.Instance.LevelContainer);
+    }
+
     private void OnGameOver() => PushScreen(GameOverData);
 
     private void OnAllWavesCompleted()

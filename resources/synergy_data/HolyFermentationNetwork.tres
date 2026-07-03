@@ -11,3 +11,4 @@ Description = "Aroma Keeper + Fermentation Sage: slow/chain spread +30% further"
 RequiredTowerIds = Array[String](["aroma_keeper", "fermentation_sage"])
 AppliesToTowerIds = Array[String](["aroma_keeper", "fermentation_sage"])
 Icon = ExtResource("1_holy_fermentation_network1")
+FlavorText = "TODO: lore text"

@@ -16,3 +16,4 @@ IsBoss = true
 IsHeavy = true
 HasAntiBuffAura = true
 AntiBuffAuraRadius = 60.0
+FlavorText = "TODO: lore text"

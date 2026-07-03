@@ -13,3 +13,4 @@ RewardGold = 80
 DamageToPlayer = 4
 Sprite = ExtResource("1_sprite")
 IsHeavy = true
+FlavorText = "TODO: lore text"

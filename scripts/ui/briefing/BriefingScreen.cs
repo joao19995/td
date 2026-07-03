@@ -228,34 +228,7 @@ public partial class BriefingScreen : Control
 
     private static List<SynergyData> GetPreviewSynergies(List<string> towerIds)
     {
-        var synergies = new List<SynergyData>();
-        var dir = DirAccess.Open("res://resources/synergy_data/");
-        if (dir == null) return synergies;
-
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res")) continue;
-            var synergy = ResourceLoader.Load<SynergyData>("res://resources/synergy_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (synergy == null) continue;
-
-            if (SaveManager.Instance != null && !SaveManager.Instance.IsDiscovered("synergy_" + synergy.Id))
-                continue;
-
-            bool allRequired = true;
-            foreach (var reqId in synergy.RequiredTowerIds)
-            {
-                if (!towerIds.Contains(reqId))
-                {
-                    allRequired = false;
-                    break;
-                }
-            }
-
-            if (allRequired && towerIds.Count >= synergy.MinTowerCount)
-                synergies.Add(synergy);
-        }
-
-        return synergies;
+        return SynergyPreviewHelper.GetPreviewSynergies(towerIds);
     }
 
     private void LoadTowerCache()
@@ -263,14 +236,10 @@ public partial class BriefingScreen : Control
         if (_towerDataCache != null) return;
         _towerDataCache = new Dictionary<string, TowerData>();
 
-        var dir = DirAccess.Open("res://resources/tower_data/");
-        if (dir == null) return;
-
-        foreach (var file in dir.GetFiles())
+        var all = ResourceLoaderHelper.LoadFromDir<TowerData>("res://resources/tower_data/");
+        foreach (var data in all)
         {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res")) continue;
-            var data = ResourceLoader.Load<TowerData>("res://resources/tower_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (data != null && !string.IsNullOrEmpty(data.Id))
+            if (!string.IsNullOrEmpty(data.Id))
                 _towerDataCache[data.Id] = data;
         }
     }

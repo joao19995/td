@@ -3,6 +3,6 @@ using Godot;
 [GlobalClass]
 public partial class WaveEntry : Resource
 {
-    [Export] public EnemyData Enemy;
-    [Export] public int Count = 1;
+    [Export] public EnemyData Enemy { get; set; }
+    [Export] public int Count { get; set; } = 1;
 }

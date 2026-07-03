@@ -147,19 +147,7 @@ public partial class MetaShopScreen : Control
 
     private static List<MetaUpgradeData> LoadItems()
     {
-        var items = new List<MetaUpgradeData>();
-        var dir = DirAccess.Open("res://resources/meta_upgrade_data/");
-        if (dir == null) return items;
-
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var item = ResourceLoader.Load<MetaUpgradeData>("res://resources/meta_upgrade_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (item != null)
-                items.Add(item);
-        }
-
+        var items = ResourceLoaderHelper.LoadFromDir<MetaUpgradeData>("res://resources/meta_upgrade_data/");
         items.Sort((a, b) => string.Compare(a.Id, b.Id, System.StringComparison.Ordinal));
         return items;
     }

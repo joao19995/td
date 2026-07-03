@@ -11,3 +11,4 @@ Description = "Each 30s gains +5 gold passive"
 PassiveGoldPerInterval = 5
 PassiveGoldInterval = 30.0
 Icon = ExtResource("1_first_starter_vessel1")
+FlavorText = "TODO: lore text"

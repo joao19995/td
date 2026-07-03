@@ -19,4 +19,5 @@ ProjectileScene = ExtResource("1_o66bj")
 Sprite = ExtResource("1_aroma_keeper1")
 HasSlow = true
 UpgradePath = Array[ExtResource("2_od6i1")]([ExtResource("3_ice1"), ExtResource("4_ice2")])
+FlavorText = "TODO: lore text"
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

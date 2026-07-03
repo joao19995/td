@@ -12,3 +12,4 @@ RequiredTowerIds = Array[String](["crust_crusader", "dough_exorcist"])
 AppliesToTowerIds = Array[String](["crust_crusader", "dough_exorcist"])
 FireRateBonusPercent = 0.0
 Icon = ExtResource("1_crust_judgment_protocol1")
+FlavorText = "TODO: lore text"

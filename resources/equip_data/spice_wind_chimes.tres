@@ -13,3 +13,4 @@ TargetTowerId = "aroma_keeper"
 DamagePercentBonus = -0.1
 Icon = ExtResource("1_spice_wind_chimes1")
 SlowDurationPercentBonus = 0.3
+FlavorText = "TODO: lore text"

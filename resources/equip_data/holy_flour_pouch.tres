@@ -12,3 +12,4 @@ Cost = 100
 TargetTowerId = "dough_exorcist"
 Icon = ExtResource("1_holy_flour_pouch1")
 EliteDamagePercentBonus = 0.2
+FlavorText = "TODO: lore text"

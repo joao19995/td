@@ -12,3 +12,4 @@ DamagePercentBonus = 0.0
 HealAmount = 5
 GoldAmount = 0
 Icon = ExtResource("1_starters_blessing1")
+FlavorText = "TODO: lore text"

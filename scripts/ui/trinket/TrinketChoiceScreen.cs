@@ -138,46 +138,32 @@ public partial class TrinketChoiceScreen : Control
 
     private static List<TrinketData> LoadAllTrinkets()
     {
-        var list = new List<TrinketData>();
-        var dir = DirAccess.Open("res://resources/trinket_data/");
-        if (dir == null) return list;
-
         var alreadyApplied = RunState.Instance?.AppliedTrinketIds;
+        var all = ResourceLoaderHelper.LoadFromDir<TrinketData>("res://resources/trinket_data/");
+        all.RemoveAll(t => alreadyApplied != null && alreadyApplied.Contains(t.Id));
+        return all;
+    }
 
-        foreach (var file in dir.GetFiles())
+    private void FadeOutThenNavigate(System.Action preNavigate = null)
+    {
+        var tween = CreateTween();
+        tween.TweenProperty(this, "modulate", new Color(1, 1, 1, 0), 0.2f);
+        tween.TweenCallback(Callable.From(() =>
         {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var t = ResourceLoader.Load<TrinketData>("res://resources/trinket_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (t != null && (alreadyApplied == null || !alreadyApplied.Contains(t.Id)))
-                list.Add(t);
-        }
-
-        return list;
+            preNavigate?.Invoke();
+            LevelManager.Instance.PickRandomLevel();
+            UIManager.Instance.PopScreen();
+            UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
+        }));
     }
 
     private void OnTakeTrinket(TrinketData trinket)
     {
-        var tween = CreateTween();
-        tween.TweenProperty(this, "modulate", new Color(1, 1, 1, 0), 0.2f);
-        tween.TweenCallback(Callable.From(() =>
-        {
-            RunState.Instance.ApplyTrinket(trinket);
-            LevelManager.Instance.PickRandomLevel();
-            UIManager.Instance.PopScreen();
-            UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
-        }));
+        FadeOutThenNavigate(() => RunState.Instance.ApplyTrinket(trinket));
     }
 
     private void OnSkip()
     {
-        var tween = CreateTween();
-        tween.TweenProperty(this, "modulate", new Color(1, 1, 1, 0), 0.2f);
-        tween.TweenCallback(Callable.From(() =>
-        {
-            LevelManager.Instance.PickRandomLevel();
-            UIManager.Instance.PopScreen();
-            UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
-        }));
+        FadeOutThenNavigate();
     }
 }

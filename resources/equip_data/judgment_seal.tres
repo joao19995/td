@@ -14,3 +14,4 @@ DamagePercentBonus = -0.15
 Icon = ExtResource("1_judgment_seal1")
 ExecuteThresholdPercent = 0.15
 ExecuteCooldownSeconds = 5
+FlavorText = "TODO: lore text"

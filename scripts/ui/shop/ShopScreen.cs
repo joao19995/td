@@ -33,20 +33,7 @@ public partial class ShopScreen : Control
 
     private static List<ShopItemData> LoadItems()
     {
-        var items = new List<ShopItemData>();
-        var dir = DirAccess.Open("res://resources/run_data/");
-        if (dir == null) return items;
-
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var res = ResourceLoader.Load<Resource>("res://resources/run_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (res is ShopItemData item)
-                items.Add(item);
-        }
-
-        return items;
+        return ResourceLoaderHelper.LoadFromDir<ShopItemData>("res://resources/run_data/");
     }
 
     private void BuildItemList()
@@ -132,16 +119,10 @@ public partial class ShopScreen : Control
 
     private void BuildEquipList()
     {
-        var dir = DirAccess.Open("res://resources/equip_data/");
-        if (dir == null) return;
+        var allEquips = ResourceLoaderHelper.LoadFromDir<EquipData>("res://resources/equip_data/");
 
-        foreach (var file in dir.GetFiles())
+        foreach (var equip in allEquips)
         {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-
-            var equip = ResourceLoader.Load<EquipData>("res://resources/equip_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (equip == null) continue;
 
             bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
             if (!inLoadout) continue;

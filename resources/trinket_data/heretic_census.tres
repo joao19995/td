@@ -10,3 +10,4 @@ Name = "Heretic Census List"
 Description = "+10% damage vs basic enemies"
 Icon = ExtResource("1_heretic_census1")
 BasicDamagePercentBonus = 0.1
+FlavorText = "TODO: lore text"

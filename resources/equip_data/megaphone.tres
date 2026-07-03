@@ -14,3 +14,4 @@ DamagePercentBonus = 0.0
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.2
 Icon = ExtResource("1_megaphone1")
+FlavorText = "TODO: lore text"

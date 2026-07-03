@@ -13,3 +13,4 @@ TargetTowerId = "bakery_truck"
 DamagePercentBonus = 0.3
 RangePercentBonus = -0.2
 Icon = ExtResource("1_street_parade1")
+FlavorText = "TODO: lore text"

@@ -17,4 +17,5 @@ Cost = 100
 ProjectileScene = ExtResource("1_iejku")
 Sprite = ExtResource("1_bread_baker1")
 UpgradePath = Array[ExtResource("2_y6wqu")]([ExtResource("4_base1"), ExtResource("5_base2")])
+FlavorText = "TODO: lore text"
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

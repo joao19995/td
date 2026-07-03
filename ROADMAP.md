@@ -126,7 +126,7 @@ diretamente a diretriz "No deep node paths — use [Export] NodePath".
 
 ---
 
-### 4. [ALTO] ResourceLoaderHelper + Eliminar Duplicação de Carga
+### 4. [DONE] ResourceLoaderHelper + Eliminar Duplicação de Carga
 
 **Why**: 6 screens implementam o mesmo padrão `DirAccess.Open("res://...")`
 \+ foreach \+ `ResourceLoader.Load<T>()`. `BestiaryScreen.cs` já tem um genérico
@@ -163,7 +163,7 @@ está quadruplicado. Tower tags checks duplicados entre LoadoutScreen e Bestiary
 
 ---
 
-### 5. [ALTO] Popular FlavorText nos Recursos
+### 5. [DONE] Popular FlavorText nos Recursos
 
 **Why**: Todas as 5 classes Resource (TowerData, EnemyData, EquipData, TrinketData,
 SynergyData) declaram `FlavorText`, mas **zero** dos ~55 arquivos .tres o preenchem.
@@ -187,7 +187,7 @@ de profundidade narrativa está completamente invisível.
 
 ---
 
-### 6. [ALTO] Converter String Routing para Enum no FightCompleteScreen
+### 6. [IN PROGRESS] Converter String Routing para Enum no FightCompleteScreen
 
 **Why**: `_pendingOutcome` é string com switch/case em 3 lugares no
 FightCompleteScreen. Comparações com `"Fight"`, `"Shop"`, `"Boss"` — frágeis,
@@ -203,7 +203,7 @@ sem type safety, erro só aparece em runtime se um outcome for renomeado.
 
 ---
 
-### 7. [MÉDIO] Remover Dead Code + Inconsistências de Estilo
+### 7. [IN PROGRESS] Remover Dead Code + Inconsistências de Estilo
 
 **Why**: HUD.cs:283 tem código morto (variável `trinketId` que retorna null
 e nunca é lida). WaveEntry.cs e WaveData.cs usam fields (`[Export] public T X;`)
@@ -220,7 +220,7 @@ Inconsistências que acumulam dívida técnica.
 
 ---
 
-### 8. [MÉDIO] Mover StatusEffectData para Diretório Correto
+### 8. [DONE] Mover StatusEffectData para Diretório Correto
 
 **Why**: `PoisonEffectData.cs`, `SlowEffectData.cs`, `StatusEffectData.cs`
 são `[GlobalClass] Resource` mas estão em `scripts/components/`. O diretório
@@ -235,7 +235,7 @@ documentado para data classes é `scripts/resources/`. Causa confusão.
 
 ---
 
-### 9. [MÉDIO] Atualizar CLAUDE.md para Estado Real
+### 9. [DONE] Atualizar CLAUDE.md para Estado Real
 
 **Why**: CLAUDE.md lista torres como `CornerBaker.tres` e `BikeCourier.tres`
 que não existem — os nomes reais são `BreadBaker.tres` e `BreadCourier.tres`.
@@ -250,7 +250,7 @@ que não existem — os nomes reais são `BreadBaker.tres` e `BreadCourier.tres`
 
 ---
 
-### 10. [BAIXO] Adicionar uids aos .tres Faltantes
+### 10. [DONE] Adicionar uids aos .tres Faltantes — 83 files flagged, pending Godot editor pass
 
 **Why**: ~60% dos .tres (wave_data, synergy_data, meta_upgrade_data, trinket_data,
 ui_screens) não têm `uid` no cabeçalho. Sem uid, o Godot não tem referência
@@ -265,7 +265,7 @@ estável se o arquivo for movido ou renomeado.
 
 ---
 
-### 11. [BAIXO] Extrair SynergyPreviewHelper
+### 11. [DONE] Extrair SynergyPreviewHelper
 
 **Why**: `GetPreviewSynergies()` existe em LoadoutScreen e BriefingScreen com
 lógica similar mas não idêntica. Extrair para helper comum evita divergência.

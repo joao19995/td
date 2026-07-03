@@ -12,3 +12,4 @@ DamagePercentBonus = 0.0
 HealAmount = 0
 GoldAmount = 100
 Icon = ExtResource("1_tip_jar1")
+FlavorText = "TODO: lore text"

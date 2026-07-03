@@ -22,3 +22,4 @@ ExecuteThresholdHPPercent = 0.2
 ExecuteMultiplier = 2.0
 EliteBonusMultiplier = 1.5
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])
+FlavorText = "TODO: lore text"

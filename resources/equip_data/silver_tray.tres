@@ -12,3 +12,4 @@ Cost = 80
 TargetTowerId = "taste_tester"
 Icon = ExtResource("1_silver_tray1")
 PoisonDamagePercentBonus = 0.2
+FlavorText = "TODO: lore text"

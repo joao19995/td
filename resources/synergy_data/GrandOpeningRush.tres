@@ -13,3 +13,4 @@ DamageBonusPercent = 0.0
 FireRateBonusPercent = 0.1
 RangeBonusPercent = 0.0
 Icon = ExtResource("1_grand_opening_rush1")
+FlavorText = "TODO: lore text"

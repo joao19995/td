@@ -14,3 +14,4 @@ DamagePercentBonus = 0.15
 FireRatePercentBonus = 0.0
 RangePercentBonus = 0.0
 Icon = ExtResource("1_stone_oven1")
+FlavorText = "TODO: lore text"

@@ -125,34 +125,12 @@ public partial class LoadoutScreen : CanvasLayer
 
     private static List<TowerData> LoadAllTowers()
     {
-        var list = new List<TowerData>();
-        var dir = DirAccess.Open("res://resources/tower_data/");
-        if (dir == null) return list;
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var res = ResourceLoader.Load<Resource>("res://resources/tower_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (res is TowerData t)
-                list.Add(t);
-        }
-        return list;
+        return ResourceLoaderHelper.LoadFromDir<TowerData>("res://resources/tower_data/");
     }
 
     private static List<SynergyData> LoadAllSynergies()
     {
-        var list = new List<SynergyData>();
-        var dir = DirAccess.Open("res://resources/synergy_data/");
-        if (dir == null) return list;
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var res = ResourceLoader.Load<Resource>("res://resources/synergy_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (res is SynergyData s)
-                list.Add(s);
-        }
-        return list;
+        return ResourceLoaderHelper.LoadFromDir<SynergyData>("res://resources/synergy_data/");
     }
 
     private void OnTowerToggled(int index, bool toggledOn)
@@ -180,17 +158,8 @@ public partial class LoadoutScreen : CanvasLayer
         _previewName.Text = data.TowerName;
         _previewStats.Text = $"DMG:{data.Damage}  SPD:{data.FireRate:F1}  RNG:{data.Range:F0}";
 
-        var specials = new List<string>();
-        if (data.HasSplash) specials.Add("SPLASH");
-        if (data.HasPoison) specials.Add("POISON");
-        if (data.HasSlow) specials.Add("SLOW");
-        if (data.HasAura) specials.Add("AURA");
-        if (data.HasChain) specials.Add("CHAIN");
-        if (data.HasCrit) specials.Add("CRIT");
-        if (data.HasExecute) specials.Add("EXECUTE");
-        if (data.HasGlobalAura) specials.Add("GLOBAL");
-
-        _previewSpecial.Text = specials.Count > 0 ? string.Join(" ", specials) : "";
+        var tags = data.GetTags();
+        _previewSpecial.Text = tags.Count > 0 ? string.Join(" ", tags) : "";
         _previewPanel.Modulate = new Color(1, 1, 1, 1);
         _previewPanel.MouseFilter = Control.MouseFilterEnum.Pass;
     }
@@ -232,41 +201,19 @@ public partial class LoadoutScreen : CanvasLayer
             _synergyLabel.Visible = false;
         }
     }
-
     private List<SynergyData> GetPreviewSynergies(List<string> selectedIds)
     {
-        var active = new List<SynergyData>();
-        foreach (var synergy in _allSynergies)
-        {
-            if (synergy == null) continue;
-
-            if (!SaveManager.Instance.IsDiscovered("synergy_" + synergy.Id))
-                continue;
-
-            bool allRequiredUnlocked = true;
-            foreach (var reqId in synergy.RequiredTowerIds)
-            {
-                if (!SaveManager.Instance.IsTowerUnlocked(reqId))
-                {
-                    allRequiredUnlocked = false;
-                    break;
-                }
-            }
-            if (!allRequiredUnlocked) continue;
-
-            bool allRequired = true;
-            foreach (var reqId in synergy.RequiredTowerIds)
-            {
-                if (!selectedIds.Contains(reqId))
-                {
-                    allRequired = false;
-                    break;
-                }
-            }
-            if (allRequired && selectedIds.Count >= synergy.MinTowerCount)
-                active.Add(synergy);
-        }
+        var active = SynergyPreviewHelper.GetPreviewSynergies(selectedIds);
+        active.RemoveAll(s => s == null || !AllTowersUnlocked(s));
         return active;
+    }
+
+    private static bool AllTowersUnlocked(SynergyData synergy)
+    {
+        foreach (var reqId in synergy.RequiredTowerIds)
+            if (!SaveManager.Instance.IsTowerUnlocked(reqId))
+                return false;
+        return true;
     }
 
     private void OnRandomPressed()

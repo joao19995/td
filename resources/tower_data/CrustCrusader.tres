@@ -21,3 +21,4 @@ HasCrit = true
 CritChance = 0.15
 CritMultiplier = 2.0
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])
+FlavorText = "TODO: lore text"

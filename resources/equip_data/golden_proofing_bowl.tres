@@ -12,3 +12,4 @@ Cost = 100
 TargetTowerId = "fermentation_sage"
 Icon = ExtResource("1_golden_proofing_bowl1")
 StatusDurationPercentBonus = 0.15
+FlavorText = "TODO: lore text"

@@ -13,3 +13,4 @@ TargetTowerId = "bread_courier"
 FireRatePercentBonus = -0.1
 Icon = ExtResource("1_messenger_crate1")
 PierceBonus = 1
+FlavorText = "TODO: lore text"

@@ -200,18 +200,7 @@ public partial class HUD : CanvasLayer
 
     private static List<TowerData> LoadAllTowers()
     {
-        var list = new List<TowerData>();
-        var dir = DirAccess.Open("res://resources/tower_data/");
-        if (dir == null) return list;
-        foreach (var file in dir.GetFiles())
-        {
-            if (!file.EndsWith(".tres") && !file.EndsWith(".res"))
-                continue;
-            var res = ResourceLoader.Load<Resource>("res://resources/tower_data/" + file, "", ResourceLoader.CacheMode.Replace);
-            if (res is TowerData t)
-                list.Add(t);
-        }
-        return list;
+        return ResourceLoaderHelper.LoadFromDir<TowerData>("res://resources/tower_data/");
     }
 
     private void BuildTowerButtons()

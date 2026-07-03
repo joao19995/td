@@ -44,4 +44,18 @@ public partial class TowerData : Resource
 
     [Export] public bool HasGlobalAura { get; set; } = false;
     [Export] public float GlobalAuraDamagePerTower { get; set; } = 0.02f;
+
+    public System.Collections.Generic.List<string> GetTags()
+    {
+        var tags = new System.Collections.Generic.List<string>();
+        if (HasSplash) tags.Add("SPLASH");
+        if (HasPoison) tags.Add("POISON");
+        if (HasSlow) tags.Add("SLOW");
+        if (HasAura) tags.Add("AURA");
+        if (HasChain) tags.Add("CHAIN");
+        if (HasCrit) tags.Add("CRIT");
+        if (HasExecute) tags.Add("EXECUTE");
+        if (HasGlobalAura) tags.Add("GLOBAL");
+        return tags;
+    }
 }

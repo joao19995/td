@@ -12,3 +12,4 @@ Cost = 80
 TargetTowerId = "bakery_truck"
 Icon = ExtResource("1_reinforced_suspension1")
 SplashRadiusPercentBonus = 0.15
+FlavorText = "TODO: lore text"

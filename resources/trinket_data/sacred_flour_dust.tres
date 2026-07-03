@@ -10,3 +10,4 @@ Name = "Sacred Flour Dust"
 Description = "+10% slow/poison strength"
 StatusStrengthBonusPercent = 0.1
 Icon = ExtResource("1_sacred_flour_dust1")
+FlavorText = "TODO: lore text"

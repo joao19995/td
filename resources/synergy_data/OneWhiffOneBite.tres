@@ -12,3 +12,4 @@ RequiredTowerIds = Array[String](["aroma_keeper", "taste_tester"])
 AppliesToTowerIds = Array[String](["aroma_keeper", "taste_tester"])
 DamageBonusPercent = 0.15
 Icon = ExtResource("1_one_whiff_one_bite1")
+FlavorText = "TODO: lore text"

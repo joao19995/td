@@ -10,3 +10,4 @@ Name = "Crust Fragment Relic"
 Description = "+12% crit damage"
 CritDamageBonusPercent = 0.12
 Icon = ExtResource("1_crust_fragment_relic1")
+FlavorText = "TODO: lore text"

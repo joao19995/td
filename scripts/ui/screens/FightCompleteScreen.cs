@@ -18,7 +18,7 @@ public partial class FightCompleteScreen : Control
 
     private enum State { Spin, Resolve }
     private State _state = State.Spin;
-    private string _pendingOutcome;
+    private SlotOutcome _pendingOutcome;
 
     public override void _Ready()
     {
@@ -59,7 +59,7 @@ public partial class FightCompleteScreen : Control
             _spinButton.Text = "Continue";
             _spinButton.Disabled = false;
             RunState.Instance.SetBossFight(true);
-            _pendingOutcome = "Boss";
+            _pendingOutcome = SlotOutcome.Boss;
             return;
         }
 
@@ -72,19 +72,19 @@ public partial class FightCompleteScreen : Control
 
         switch (_pendingOutcome)
         {
-            case "Fight":
+            case SlotOutcome.Fight:
                 ShowOutcome("Next: FIGHT");
                 break;
 
-            case "Shop":
+            case SlotOutcome.Shop:
                 ShowOutcome("Next: SHOP");
                 break;
 
-            case "Treasure":
+            case SlotOutcome.Treasure:
                 ShowOutcome("TREASURE!");
                 break;
 
-            case "Heal":
+            case SlotOutcome.Heal:
                 GameManager.Instance.Heal(SlotManager.Instance.HealAmount);
                 _livesLabel.Text = $"Lives: {GameManager.Instance.CurrentLives}";
                 ShowOutcome($"Healed! +{SlotManager.Instance.HealAmount} HP");
@@ -92,7 +92,7 @@ public partial class FightCompleteScreen : Control
                 _spinButton.Disabled = false;
                 return;
 
-            case "Miniboss":
+            case SlotOutcome.Miniboss:
                 ShowOutcome("MINIBOSS!");
                 RunState.Instance.SetMiniboss(true);
                 break;
@@ -118,7 +118,7 @@ public partial class FightCompleteScreen : Control
 
     private void UpdateRerollButton()
     {
-        if (_pendingOutcome == "Boss" || _pendingOutcome == "Heal")
+        if (_pendingOutcome == SlotOutcome.Boss || _pendingOutcome == SlotOutcome.Heal)
         {
             _rerollButton.Visible = false;
             return;
@@ -136,11 +136,11 @@ public partial class FightCompleteScreen : Control
 
         switch (_pendingOutcome)
         {
-            case "Shop":
+            case SlotOutcome.Shop:
                 UIManager.Instance.PushScreen(UIManager.Instance.ShopData);
                 break;
 
-            case "Treasure":
+            case SlotOutcome.Treasure:
                 UIManager.Instance.PushScreen(UIManager.Instance.TrinketChoiceData);
                 break;
 
@@ -159,10 +159,6 @@ public partial class FightCompleteScreen : Control
 
     private static void OnEndRunPressed()
     {
-        RunState.Instance.EndRun();
-        UIManager.Instance.PopScreen();
-        UIManager.Instance.PopAll();
-        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/MainMenu.tscn",
-            LevelManager.Instance.LevelContainer);
+        UIManager.NavigateToMainMenu();
     }
 }

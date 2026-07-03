@@ -21,9 +21,6 @@ public partial class GameOverScreen : Control
 
     private static void OnMenuPressed()
     {
-        RunState.Instance.EndRun();
-        UIManager.Instance.PopAll();
-        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/MainMenu.tscn",
-            LevelManager.Instance.LevelContainer);
+        UIManager.NavigateToMainMenu();
     }
 }

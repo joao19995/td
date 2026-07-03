@@ -20,4 +20,5 @@ Sprite = ExtResource("1_taste_tester1")
 HasPoison = true
 PoisonDamagePerTick = 20.0
 UpgradePath = Array[ExtResource("2_5trav")]([ExtResource("3_psn1"), ExtResource("4_psn2")])
+FlavorText = "TODO: lore text"
 metadata/_custom_type_script = "uid://c7g3mvd74xsfd"

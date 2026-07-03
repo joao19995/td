@@ -10,3 +10,4 @@ Name = "Fermentation Diary"
 Description = "+15% status effect duration"
 StatusDurationBonusPercent = 0.15
 Icon = ExtResource("1_fermentation_diary1")
+FlavorText = "TODO: lore text"
