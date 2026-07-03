@@ -14,140 +14,6 @@ finished have been removed — their outcomes are described in GAME_STATUS.md.
 
 ---
 
-## Content Completion — Missing Items
-
-### 1. Game Assets (16x16 Sprites)
-
-**Why**: 5 new towers and 5 new enemies use placeholder sprites. Equipment (20), trinkets (10), shop items (5), synergies (4), and projectile variants all have no unique icons. The game has no visual identity — every tower looks the same, no item has an icon.
-
-**Folder structure** (16x16 PNG, pixel art):
-
-```
-assets/sprites/
-├── towers/        (10 sprites — one per tower type)
-│   ├── bread_baker.png
-│   ├── bread_courier.png
-│   ├── aroma_keeper.png
-│   ├── taste_tester.png
-│   ├── bakery_truck.png
-│   ├── bread_monk.png
-│   ├── fermentation_sage.png
-│   ├── crust_crusader.png
-│   ├── dough_exorcist.png
-│   └── high_prophet.png
-├── enemies/        (10 sprites — one per enemy type)
-│   ├── sliced_bread_tourist.png
-│   ├── grocery_jogger.png
-│   ├── alley_cat.png
-│   ├── baguette_pigeon.png
-│   ├── bread_dragon.png
-│   ├── microwave_preacher.png
-│   ├── sandwich_man.png
-│   ├── frozen_dough_abomination.png
-│   ├── gluten_null_bishop.png
-│   └── supermarket_overlord.png
-├── projectiles/    (10 sprites — one per tower type)
-│   ├── proj_bread_baker.png
-│   ├── proj_bread_courier.png
-│   ├── proj_aroma_keeper.png
-│   ├── proj_taste_tester.png
-│   ├── proj_bakery_truck.png
-│   ├── proj_bread_monk.png
-│   ├── proj_fermentation_sage.png
-│   ├── proj_crust_crusader.png
-│   ├── proj_dough_exorcist.png
-│   └── proj_high_prophet.png
-├── equipment/      (20 icons — one per equip item)
-│   ├── stone_oven.png
-│   ├── ancient_starter.png
-│   ├── electric_bike.png
-│   ├── messenger_crate.png
-│   ├── megaphone.png
-│   ├── spice_wind_chimes.png
-│   ├── silver_tray.png
-│   ├── double_sampling.png
-│   ├── reinforced_suspension.png
-│   ├── street_parade.png
-│   ├── sacred_robes.png
-│   ├── prayer_beads.png
-│   ├── golden_proofing_bowl.png
-│   ├── wild_yeast.png
-│   ├── tempered_crust_blade.png
-│   ├── blessed_crunch_seal.png
-│   ├── holy_flour_pouch.png
-│   ├── judgment_seal.png
-│   ├── golden_staff.png
-│   └── first_starter_relic.png
-├── trinkets/       (10 icons — one per trinket)
-│   ├── secret_recipe_scroll.png
-│   ├── starters_blessing.png
-│   ├── tip_jar.png
-│   ├── proofing_time_candle.png
-│   ├── crust_fragment_relic.png
-│   ├── fermentation_diary.png
-│   ├── sacred_flour_dust.png
-│   ├── heretic_census.png
-│   ├── oven_heart_ember.png
-│   └── first_starter_vessel.png
-├── shop_items/     (5 icons — one per shop item)
-│   ├── secret_ingredient.png
-│   ├── fresh_batch.png
-│   ├── golden_proof_flour.png
-│   ├── rapid_oven_upgrade.png
-│   └── discounted_starter_yeast.png
-├── synergies/      (4 icons — one per synergy)
-│   ├── one_whiff_one_bite.png
-│   ├── grand_opening_rush.png
-│   ├── holy_fermentation_network.png
-│   └── crust_judgment_protocol.png
-├── ui/             (UI elements — hearts, coin, crosshair, etc.)
-│   ├── heart_full.png
-│   ├── heart_empty.png
-│   ├── coin.png
-│   ├── crosshair.png
-│   ├── arrow.png
-│   ├── star.png
-│   └── sword.png
-└── environment/    (tiles, ground)
-    ├── grass_01.png
-    ├── tile_ground.png
-    └── tile_stone.png
-```
-
-**What to do**:
-- Create all missing sprites at 16x16 resolution (pixel art style)
-- Add `Icon` (16x16) and `Sprite` (16x16) fields to each `.tres` resource pointing to the new files
-- Existing 5 tower sprites can be kept or replaced for consistency
-- Existing 5 enemy sprites can be kept or replaced for consistency
-- Existing 5 projectile sprites can be kept or replaced for consistency
-
-**Estimate**: 5-8 days with an artist
-
----
-
-### 2. Golden Proof Flour (Shop Item #3) — Damage Not Applied
-
-**Why**: `ShopHeavyDamageBonusPercent` is stored on purchase but never read in the damage formula. The item costs 90g and does nothing.
-
-**Status**: Fixed — `AttackComponent.Fire()` now applies `damage *= 1f + shopHeavyPct` when target is boss or heavy.
-
----
-
-### 3. Heretic Census List (Trinket #8) — Wrong Damage Application
-
-**Why**: The trinket applied flat +10% damage to all enemies instead of only basic (non-boss, non-heavy) enemies. `DamagePercentBonus` has been removed from the `.tres`; `IsBasicEnemy` flag replaced by `!IsBoss && !IsHeavy` check.
-
-**Status**: Fixed — `AttackComponent.Fire()` applies 1.1x multiplier when `HasHereticCensus` is true and target is neither boss nor heavy.
-
----
-
-### 4. Oven Heart Ember (Trinket #9) — Wrong Range Bonus
-
-**Why**: The trinket applied +2% range instead of +1 flat range. `RangePercentBonus` removed from `.tres`; `TrinketRangeFlatBonus = 1f` stored in RunState.
-
-**Status**: Fixed — `Tower.EffectiveRange` adds `flatBonus` to base range.
-
----
 
 ## Camada de Polimento — Improvements to Existing Features
 
@@ -158,77 +24,11 @@ Suggested execution order (lowest dependencies, maximum impact per effort).
 
 ---
 
-### 1. Sound System
-
-**Why**: the game has no sound at all — the most noticeable gap. Without audio,
-the game feels dead regardless of visual polish.
-
-**What to build**:
-- `SoundManager` autoload with SFX and Music buses, `PlaySFX()` and `PlayMusic()`
-  categorized, persistent volume in SaveManager JSON
-- Pool of `AudioStreamPlayer` for overlapping SFX
-- Sound events: button click, purchase, slot machine, projectile hit, enemy death,
-  tower place/upgrade, wave complete, game over, victory
-
-**Decisions**:
-- Placeholder audio assets go to `assets/audio/sfx/` and `assets/audio/music/`
-- Use `.ogg` streams for short SFX
-- `SoundManager.Instance.PlaySFX("res://assets/audio/sfx/click.ogg")` — direct path,
-  no resource wrapper
-
-**Estimate**: 2-3 days with placeholder assets
-
----
-
-### 2. Shop — Expansion + Visual Feedback
-
-**Why**: current shop has basic text items, no visible descriptions, no icons,
-no purchase feedback.
-
-**What to build**:
-- **Icons on items**: `ShopItemData.Icon` exported and displayed in UI
-- **Visible description**: `Description` field shown below the name
-- **In-level buff icon**: when buying an item, a persistent icon appears in the
-  HUD corner for the rest of the run (e.g. golden bread roll for damage boost)
-- **Tooltip on icon**: hovering the icon shows "Secret Ingredient: +5% damage (run-wide)"
-- **1-per-item enforcement**: already exists (button becomes "Owned"), but with
-  clearer visual feedback (checkmark, dimming, different color)
-- **Purchase feedback**: brief animation/pulse on the icon when bought
-
-**Decisions**:
-- Run-wide item icons are 2D sprites in the HUD, added by `HUD.AddRunBuffIcon()`
-- Tooltips use `Control` with `mouse_entered`/`mouse_exited` + `Control.show()`/`hide()`
-- New items are `.tres` files — zero-code-change to add
-
-**Estimate**: 2-3 days
-
----
-
-### 3. Tower Equipment — Visual Feedback
-
-**Why**: 20 equipment items exist but no visible icons, no indicator on the tower.
-
-**What to build**:
-- **Icon in TowerData**: `EquipData.Icon` already exists, show it in the shop and
-  on the selected tower panel
-- **Visual indicator on tower**: when equipped, the tower shows a small icon/glow
-  over its sprite
-- **Tooltip in HUD**: hovering the equip label shows stats
-- **Swap equipment**: button in the shop to swap existing equipment (costs gold,
-  loses the previous one)
-- **Description in shop**: `Description` field displayed
-
-**Decisions**:
-- Tower visual indicator = `Sprite2D` child added in `Tower.SetEquippedItem()`
-- Swap destroys the previous equip (no refund for simplicity)
-
-**Estimate**: 2-3 days
-
----
 
 
 
-### 4. Trinkets — UI Card + Visual Polish
+
+### 1. Trinkets — UI Card + Visual Polish
 
 **Why**: 10 trinkets exist but the UI is basic with no icons or card presentation.
 
@@ -249,7 +49,7 @@ no purchase feedback.
 
 ---
 
-### 5. Meta-Progression — Expansion
+### 2. Meta-Progression — Expansion
 
 **Why**: 10 upgrades (5 base + 5 tower unlocks) is still slim for long-term progression.
 
@@ -277,7 +77,7 @@ no purchase feedback.
 
 ---
 
-### 6. HUD — Tooltips + Run Buff Icons
+### 3. HUD — Tooltips + Run Buff Icons
 
 **Why**: HUD shows raw text without tooltips or visual representation of active bonuses.
 
@@ -302,7 +102,7 @@ no purchase feedback.
 
 ---
 
-### 7. Bestiary — Sprites + Stats + Lore
+### 4. Bestiary — Sprites + Stats + Lore
 
 **Why**: bestiary currently shows only text, no sprites, no lore.
 
@@ -322,7 +122,7 @@ no purchase feedback.
 
 ---
 
-### 8. Briefing — Map Preview + Loadout Reminder
+### 5. Briefing — Map Preview + Loadout Reminder
 
 **Why**: briefing shows only text, no map preview or chosen towers.
 
@@ -339,7 +139,7 @@ no purchase feedback.
 
 ---
 
-### 9. Enemy/Projectile VFX
+### 6. Enemy/Projectile VFX
 
 **Why**: enemies spawn and die instantly with no visual feedback.
 
@@ -361,7 +161,7 @@ no purchase feedback.
 
 ---
 
-### 10. Slot Machine — Animation + State-Aware Weights
+### 7. Slot Machine — Animation + State-Aware Weights
 
 **Why**: current slot is text "Next: FIGHT" — no emotion, no visual feedback.
 
@@ -387,7 +187,7 @@ no purchase feedback.
 
 ---
 
-### 11. UI Transitions + Loading Screen
+### 8. UI Transitions + Loading Screen
 
 **Why**: all screen transitions are instant — no fade, no slide.
 
@@ -409,7 +209,7 @@ no purchase feedback.
 
 ---
 
-### 12. Waves — Elite Enemies + Modifiers
+### 9. Waves — Elite Enemies + Modifiers
 
 **Why**: waves are always the same — same enemy queues, no variation.
 
@@ -434,7 +234,7 @@ no purchase feedback.
 
 ---
 
-### 13. Tutorial / Onboarding
+### 10. Tutorial / Onboarding
 
 **Why**: new player has no guidance at all.
 
@@ -457,7 +257,7 @@ no purchase feedback.
 
 ---
 
-### 14. Targeting Priority UI + Strategy Change
+### 11. Targeting Priority UI + Strategy Change
 
 **Why**: targeting strategy is only configurable in the Inspector — inaccessible in-game.
 
@@ -476,7 +276,7 @@ no purchase feedback.
 
 ---
 
-### 15. Loadout — Stat Preview + Synergy Hints
+### 12. Loadout — Stat Preview + Synergy Hints
 
 **Why**: loadout shows only names and costs — no stats, no synergy hints.
 
@@ -493,23 +293,56 @@ no purchase feedback.
 
 ---
 
+### 13. Game Assets (16x16 Sprites)
+
+**Why**: 5 new towers and 5 new enemies use placeholder sprites. Equipment (20), trinkets (10), shop items (5), synergies (4), and projectile variants all have no unique icons. The game has no visual identity — every tower looks the same, no item has an icon.
+
+**What to do**:
+- Create all missing sprites at 16x16 resolution (pixel art style)
+- Add `Icon` (16x16) and `Sprite` (16x16) fields to each `.tres` resource pointing to the new files
+- Existing sprites can be kept or replaced for consistency
+
+**Estimate**: 5-8 days with an artist
+
+---
+
+### 14. Sound System (deferred — requires audio assets)
+
+**Why**: the game has no sound at all — the most noticeable gap. Without audio,
+the game feels dead regardless of visual polish.
+
+**What to build**:
+- `SoundManager` autoload with SFX and Music buses, `PlaySFX()` and `PlayMusic()`
+  categorized, persistent volume in SaveManager JSON
+- Pool of `AudioStreamPlayer` for overlapping SFX
+- Sound events: button click, purchase, slot machine, projectile hit, enemy death,
+  tower place/upgrade, wave complete, game over, victory
+
+**Decisions**:
+- Placeholder audio assets go to `assets/audio/sfx/` and `assets/audio/music/`
+- Use `.ogg` streams for short SFX
+- `SoundManager.Instance.PlaySFX("res://assets/audio/sfx/click.ogg")` — direct path,
+  no resource wrapper
+
+**Estimate**: 2-3 days with placeholder assets
+
+---
+
 ## Recommended Priority
 
 | # | Item | Impact | Effort | Dependencies |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | 1 | Custom Sprites (towers + enemies) | Critical | 3-5d | None |
-| 2 | Sound System | Critical | 2-3d | None |
-| 3 | Shop + Level Icons | High | 2-3d | None |
-| 4 | HUD Tooltips + Buff Icons | High | 2-3d | Shop (#3) |
-| 5 | Enemy/Projectile VFX | High | 3-5d | None |
-| 6 | Tower Equipment Visuals | Medium | 2-3d | Shop (#3) |
-| 7 | Trinkets Cards | Medium | 2-3d | None |
-| 8 | UI Transitions | Medium | 2-3d | None |
-| 9 | Meta-Progression Expansion | Medium | 2-3d | None |
-| 10 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#8) |
-| 11 | Briefing + Preview | Medium | 1-2d | None |
-| 12 | Bestiary Sprites + Lore | Medium | 2-3d | None |
-| 13 | Waves + Elites | Low | 2-3d | None |
-| 14 | Targeted Priority UI | Low | 1d | None |
-| 15 | Loadout Preview | Low | 2-3d | None |
-| 16 | Tutorial/Onboarding | Low | 1-2d | None |
+| 2 | HUD Tooltips + Buff Icons | High | 2-3d | None |
+| 3 | Enemy/Projectile VFX | High | 3-5d | None |
+| 4 | Trinkets Cards | Medium | 2-3d | None |
+| 5 | Meta-Progression Expansion | Medium | 2-3d | None |
+| 6 | UI Transitions | Medium | 2-3d | None |
+| 7 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#6) |
+| 8 | Briefing + Preview | Medium | 1-2d | None |
+| 9 | Bestiary Sprites + Lore | Medium | 2-3d | None |
+| 10 | Waves + Elites | Low | 2-3d | None |
+| 11 | Targeted Priority UI | Low | 1d | None |
+| 12 | Loadout Preview | Low | 2-3d | None |
+| 13 | Tutorial/Onboarding | Low | 1-2d | None |
+| 14 | Sound System | Critical | 2-3d | None |

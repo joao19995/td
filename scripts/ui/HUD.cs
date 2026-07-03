@@ -29,6 +29,12 @@ public partial class HUD : CanvasLayer
     private Button _upgradeButton;
 
     private Label _synergyLabel;
+    private HBoxContainer _buffIconsContainer;
+    private Label _buffTooltip;
+    private EquipData _hoveredEquipData;
+    private bool _equipSignalConnected;
+    private TextureRect _equipIcon;
+    private Label _equipDesc;
 
     public override void _Ready()
     {
@@ -38,6 +44,18 @@ public partial class HUD : CanvasLayer
         _waveLabel = GetNode<Label>("InfoBar/WaveLabel");
         _waveBar = GetNode<HBoxContainer>("WaveBar");
         _towerBar = GetNode<HBoxContainer>("TowerBar");
+
+        _buffIconsContainer = new HBoxContainer();
+        _buffIconsContainer.Name = "BuffIconsContainer";
+        _buffIconsContainer.OffsetLeft = 2;
+        _buffIconsContainer.OffsetTop = 42;
+        AddChild(_buffIconsContainer);
+
+        _buffTooltip = new Label();
+        _buffTooltip.Name = "BuffTooltip";
+        _buffTooltip.Visible = false;
+        _buffTooltip.Modulate = new Color(0.9f, 0.9f, 0.8f);
+        AddChild(_buffTooltip);
 
         PositionTowerBar();
         _availableTowers = LoadAllTowers();
@@ -54,6 +72,20 @@ public partial class HUD : CanvasLayer
         _towerNameLabel = GetNode<Label>("TowerActionPanel/TowerNameLabel");
         _statsLabel = GetNode<Label>("TowerActionPanel/StatsLabel");
         _equipLabel = GetNode<Label>("TowerActionPanel/EquipLabel");
+
+        _equipIcon = new TextureRect();
+        _equipIcon.Name = "EquipIcon";
+        _equipIcon.CustomMinimumSize = new Vector2(16, 16);
+        _equipIcon.StretchMode = TextureRect.StretchModeEnum.Keep;
+        _towerActionPanel.AddChild(_equipIcon);
+
+        _equipDesc = new Label();
+        _equipDesc.Name = "EquipDesc";
+        _towerActionPanel.AddChild(_equipDesc);
+
+        _towerActionPanel.MoveChild(_equipIcon, 3);
+        _towerActionPanel.MoveChild(_equipDesc, 4);
+
         _upgradeButton = GetNode<Button>("TowerActionPanel/UpgradeButton");
 
         TowerSelectionManager.Instance.TowerSelected += OnTowerSelected;
@@ -153,6 +185,39 @@ public partial class HUD : CanvasLayer
         OnTowerDeselected();
         ApplyTowerFilter();
         UpdateWaveLabel();
+        PopulateBuffIcons();
+    }
+
+    private void PopulateBuffIcons()
+    {
+        foreach (var child in _buffIconsContainer.GetChildren())
+        {
+            _buffIconsContainer.RemoveChild(child);
+            child.QueueFree();
+        }
+
+        if (RunState.Instance == null) return;
+
+        for (int i = 0; i < RunState.Instance.PurchasedItemIcons.Count; i++)
+        {
+            int captured = i;
+            var iconRect = new TextureRect();
+            iconRect.Texture = RunState.Instance.PurchasedItemIcons[captured];
+            iconRect.CustomMinimumSize = new Vector2(16, 16);
+            iconRect.StretchMode = TextureRect.StretchModeEnum.Keep;
+            iconRect.MouseEntered += () => ShowBuffTooltip(captured);
+            iconRect.MouseExited += () => _buffTooltip.Visible = false;
+            _buffIconsContainer.AddChild(iconRect);
+        }
+    }
+
+    private void ShowBuffTooltip(int index)
+    {
+        if (RunState.Instance == null || index >= RunState.Instance.PurchasedItemNames.Count) return;
+        _buffTooltip.Text = $"{RunState.Instance.PurchasedItemNames[index]}: {RunState.Instance.PurchasedItemDescriptions[index]}";
+        _buffTooltip.Visible = true;
+        _buffTooltip.OffsetLeft = 2;
+        _buffTooltip.OffsetTop = 58;
     }
 
     private void ApplyTowerFilter()
@@ -248,9 +313,33 @@ public partial class HUD : CanvasLayer
         _statsLabel.Text = $"DMG:{tower.EffectiveDamage:F1} SPD:{tower.EffectiveFireRate:F1} RNG:{tower.EffectiveRange:F0}";
 
         string equipId = RunState.Instance?.GetEquippedItem(tower.Data.Id);
-        _equipLabel.Text = !string.IsNullOrEmpty(equipId)
-            ? $"Equip: {equipId.Replace("_", " ").ToUpper()}"
-            : "";
+        if (!string.IsNullOrEmpty(equipId))
+        {
+            var equipData = GD.Load<EquipData>($"res://resources/equip_data/{equipId}.tres");
+            _equipLabel.Text = equipData?.Name ?? equipId.Replace("_", " ").ToUpper();
+            _equipIcon.Texture = equipData?.Icon;
+            _equipIcon.Visible = equipData?.Icon != null;
+
+            _equipDesc.Text = BuildEquipStatsText(equipData);
+            _equipDesc.Visible = true;
+
+            if (!_equipSignalConnected)
+            {
+                _equipLabel.MouseEntered += OnEquipLabelMouseEntered;
+                _equipLabel.MouseExited += OnEquipLabelMouseExited;
+                _equipSignalConnected = true;
+            }
+            _hoveredEquipData = equipData;
+        }
+        else
+        {
+            _equipLabel.Text = "";
+            _equipIcon.Texture = null;
+            _equipIcon.Visible = false;
+            _equipDesc.Text = "";
+            _equipDesc.Visible = false;
+            _hoveredEquipData = null;
+        }
 
         if (tower.CurrentUpgradeLevel >= tower.MaxUpgradeLevel)
         {
@@ -270,7 +359,63 @@ public partial class HUD : CanvasLayer
     private void OnTowerDeselected()
     {
         _towerActionPanel.Hide();
+        _buffTooltip.Visible = false;
+        _equipIcon.Visible = false;
+        _equipDesc.Visible = false;
+        if (_equipSignalConnected)
+        {
+            _equipLabel.MouseEntered -= OnEquipLabelMouseEntered;
+            _equipLabel.MouseExited -= OnEquipLabelMouseExited;
+            _equipSignalConnected = false;
+        }
+        _hoveredEquipData = null;
         RefreshTowerButtons();
+    }
+
+    private static string BuildEquipStatsText(EquipData equip)
+    {
+        if (equip == null) return "";
+        var parts = new System.Collections.Generic.List<string>();
+        if (equip.DamagePercentBonus != 0f)
+            parts.Add($"{(equip.DamagePercentBonus > 0f ? "+" : "")}{equip.DamagePercentBonus * 100f:F0}% DMG");
+        if (equip.FireRatePercentBonus != 0f)
+            parts.Add($"{(equip.FireRatePercentBonus > 0f ? "+" : "")}{equip.FireRatePercentBonus * 100f:F0}% FR");
+        if (equip.RangePercentBonus != 0f)
+            parts.Add($"{(equip.RangePercentBonus > 0f ? "+" : "")}{equip.RangePercentBonus * 100f:F0}% RNG");
+        if (equip.SplashRadiusPercentBonus != 0f)
+            parts.Add($"{(equip.SplashRadiusPercentBonus > 0f ? "+" : "")}{equip.SplashRadiusPercentBonus * 100f:F0}% SPLASH");
+        if (equip.CritChanceBonus != 0f)
+            parts.Add($"+{equip.CritChanceBonus * 100f:F0}% CRIT");
+        if (equip.SlowDurationPercentBonus != 0f)
+            parts.Add($"{(equip.SlowDurationPercentBonus > 0f ? "+" : "")}{equip.SlowDurationPercentBonus * 100f:F0}% SLOW DUR");
+        if (equip.StatusDurationPercentBonus != 0f)
+            parts.Add($"{(equip.StatusDurationPercentBonus > 0f ? "+" : "")}{equip.StatusDurationPercentBonus * 100f:F0}% STATUS DUR");
+        if (equip.PoisonDamagePercentBonus != 0f)
+            parts.Add($"+{equip.PoisonDamagePercentBonus * 100f:F0}% POISON");
+        if (equip.EliteDamagePercentBonus != 0f)
+            parts.Add($"+{equip.EliteDamagePercentBonus * 100f:F0}% VS ELITE");
+        if (equip.PierceBonus > 0)
+            parts.Add($"+{equip.PierceBonus} PIERCE");
+        if (equip.ExtraChainBounces > 0)
+            parts.Add($"+{equip.ExtraChainBounces} BOUNCE");
+        if (equip.AuraPotencyMultiplier != 1f)
+            parts.Add($"AURA x{equip.AuraPotencyMultiplier:F1}");
+        string stats = parts.Count > 0 ? string.Join(" | ", parts) : equip.Description;
+        return stats;
+    }
+
+    private void OnEquipLabelMouseEntered()
+    {
+        if (_hoveredEquipData == null) return;
+        _buffTooltip.Text = $"{_hoveredEquipData.Name}: {_hoveredEquipData.Description}";
+        _buffTooltip.Visible = true;
+        _buffTooltip.OffsetLeft = 220;
+        _buffTooltip.OffsetTop = 68;
+    }
+
+    private void OnEquipLabelMouseExited()
+    {
+        _buffTooltip.Visible = false;
     }
 
     private void OnUpgradePressed()

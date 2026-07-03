@@ -56,6 +56,9 @@ not implementation details.
 
 - Each tower type has **1 equipment slot**. Equipment is bought in the run Shop and persists across fights within the run.
 - **Type-restricted**: equipment items target specific tower types (e.g. Stone Oven only works on Bread Baker). Only shown in the Shop if that tower is in the loadout.
+- **Shop UI**: each equipment shows its **icon** (16x16 TextureRect), **name + cost + target tower**, and **description**. The buy button shows "Buy & Equip" if the slot is empty, "Replace (cost)" if another equip is already equipped for that tower, or "✓ Equipped" if already owned.
+- **Swap**: buying a new equipment for a tower that already has one replaces it (no refund). The entire equip list is rebuilt after purchase.
+- **Tower panel**: when selecting a tower during gameplay, the action panel shows the equipped item's **name**, **icon**, and **stat bonuses** (e.g. `+15% DMG | +20% POISON`) derived from the `EquipData` fields. Hovering the name shows a tooltip with description.
 - **Stat bonuses** are multiplicative-percent and stack additively with synergy bonuses in the EffectiveDamage formula.
 - **20 equipment items shipped** (2 per tower type), each with unique mechanics:
 
@@ -112,6 +115,10 @@ not implementation details.
   | 5 | Discounted Starter Yeast | first shop purchase costs -30% gold | 120 |
 
 - Shop items are loaded dynamically from `resources/run_data/` — no code changes needed.
+- Each item shows its **icon** (16x16 TextureRect), **name + cost**, and **description**.
+- Purchase feedback: button flashes green via Tween, text changes to "✓ Owned".
+- **1-per-item enforcement**: once bought, the button is disabled and shows "✓ Owned". Purchased item IDs are tracked in `RunState.PurchasedShopItemIds` — persists across re-entering the shop within the same run.
+- **In-level buff icons**: purchased items appear as small 16x16 icons in the HUD (`BuffIconsContainer`) during fights. Hovering shows a tooltip with item name and description.
 - `HeavyDamageBonusPercent` and `FirstPurchaseDiscountPercent` are applied at purchase time via RunState.
 - Multiplicative in the EffectiveDamage formula.
 

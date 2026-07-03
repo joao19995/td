@@ -49,16 +49,33 @@ public partial class ShopScreen : Control
         var items = LoadItems();
         foreach (var item in items)
         {
+            bool alreadyOwned = RunState.Instance?.PurchasedShopItemIds.Contains(item.ItemId) == true;
+
+            var vbox = new VBoxContainer();
             var hbox = new HBoxContainer();
+            var iconRect = new TextureRect();
+            iconRect.Texture = item.Icon;
+            iconRect.CustomMinimumSize = new Vector2(16, 16);
+            iconRect.StretchMode = TextureRect.StretchModeEnum.Keep;
             var label = new Label();
             label.Text = $"{item.ItemName} ({item.Cost}g)";
+            var desc = new Label();
+            desc.Text = item.Description;
+            desc.Modulate = new Color(0.7f, 0.7f, 0.7f);
             var buyBtn = new Button();
-            buyBtn.Text = "Buy";
-            buyBtn.Disabled = !EconomyManager.Instance.CanAfford(item.Cost);
-            buyBtn.Pressed += () => OnBuyItem(item, buyBtn);
+            buyBtn.Text = alreadyOwned ? "✓ Owned" : "Buy";
+            buyBtn.Disabled = alreadyOwned || !EconomyManager.Instance.CanAfford(item.Cost);
+            if (!alreadyOwned)
+            {
+                var captured = item;
+                buyBtn.Pressed += () => OnBuyItem(captured, buyBtn);
+            }
+            hbox.AddChild(iconRect);
             hbox.AddChild(label);
             hbox.AddChild(buyBtn);
-            _itemsContainer.AddChild(hbox);
+            vbox.AddChild(hbox);
+            vbox.AddChild(desc);
+            _itemsContainer.AddChild(vbox);
         }
     }
 
@@ -77,10 +94,21 @@ public partial class ShopScreen : Control
         EconomyManager.Instance.SpendMoney(cost);
         if (hasPendingDiscount)
             RunState.Instance.FirstPurchaseDiscountPercent = 0f;
+        RunState.Instance?.PurchasedShopItemIds.Add(item.ItemId);
+        if (item.Icon != null)
+        {
+            RunState.Instance?.PurchasedItemIcons.Add(item.Icon);
+            RunState.Instance?.PurchasedItemNames.Add(item.ItemName);
+            RunState.Instance?.PurchasedItemDescriptions.Add(item.Description);
+        }
         ApplyItemEffect(item);
         UpdateMoney();
         btn.Disabled = true;
-        btn.Text = "Owned";
+        btn.Text = "✓ Owned";
+
+        var tween = CreateTween();
+        tween.TweenProperty(btn, "modulate", new Color(0.5f, 1, 0.5f), 0.15f);
+        tween.TweenProperty(btn, "modulate", Colors.White, 0.3f);
     }
 
     private static void ApplyItemEffect(ShopItemData item)
@@ -108,40 +136,54 @@ public partial class ShopScreen : Control
             if (equip == null) continue;
 
             bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
+            if (!inLoadout) continue;
+
             string equippedId = RunState.Instance?.GetEquippedItem(equip.TargetTowerId);
             bool alreadyEquipped = equippedId == equip.Id;
 
-            if (inLoadout)
-                SaveManager.Instance?.MarkDiscovered($"equip_{equip.Id}");
+            SaveManager.Instance?.MarkDiscovered($"equip_{equip.Id}");
 
+            var vbox = new VBoxContainer();
             var hbox = new HBoxContainer();
+            var iconRect = new TextureRect();
+            iconRect.Texture = equip.Icon;
+            iconRect.CustomMinimumSize = new Vector2(16, 16);
+            iconRect.StretchMode = TextureRect.StretchModeEnum.Keep;
+
             var label = new Label();
-            label.Text = inLoadout
-                ? $"{equip.Name} ({equip.Cost}g) [{equip.TargetTowerId.ToUpper()}]"
-                : $"{equip.Name} (LOCKED - {equip.TargetTowerId} not in loadout)";
+            label.Text = $"{equip.Name} ({equip.Cost}g) [{equip.TargetTowerId.ToUpper()}]";
+
+            var desc = new Label();
+            desc.Text = equip.Description;
+            desc.Modulate = new Color(0.7f, 0.7f, 0.7f);
 
             var buyBtn = new Button();
-            if (!inLoadout)
+            if (alreadyEquipped)
             {
-                buyBtn.Text = "-";
+                buyBtn.Text = "✓ Equipped";
                 buyBtn.Disabled = true;
             }
-            else if (alreadyEquipped)
+            else if (!string.IsNullOrEmpty(equippedId))
             {
-                buyBtn.Text = "Equipped";
-                buyBtn.Disabled = true;
+                buyBtn.Text = $"Replace ({equip.Cost}g)";
+                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equip.Cost);
+                var captured = equip;
+                buyBtn.Pressed += () => OnBuyEquip(captured, buyBtn);
             }
             else
             {
                 buyBtn.Text = "Buy & Equip";
                 buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equip.Cost);
-                var capturedEquip = equip;
-                buyBtn.Pressed += () => OnBuyEquip(capturedEquip, buyBtn);
+                var captured = equip;
+                buyBtn.Pressed += () => OnBuyEquip(captured, buyBtn);
             }
 
+            hbox.AddChild(iconRect);
             hbox.AddChild(label);
             hbox.AddChild(buyBtn);
-            _equipContainer.AddChild(hbox);
+            vbox.AddChild(hbox);
+            vbox.AddChild(desc);
+            _equipContainer.AddChild(vbox);
         }
     }
 
@@ -152,8 +194,12 @@ public partial class ShopScreen : Control
         EconomyManager.Instance.SpendMoney(equip.Cost);
         RunState.Instance.SetEquippedItem(equip.TargetTowerId, equip.Id);
         UpdateMoney();
-        btn.Text = "Equipped";
-        btn.Disabled = true;
+
+        foreach (var child in _equipContainer.GetChildren())
+        {
+            child.QueueFree();
+        }
+        BuildEquipList();
     }
 
     private void OnLeavePressed()

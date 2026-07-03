@@ -138,35 +138,53 @@ public partial class AttackComponent : Node
 
         var towerPos = GetParent<Node2D>().GlobalPosition;
         float damage = _effectiveDamage;
-        bool wasCrit = false;
+        bool wasCrit = RollCrit(ref damage);
 
-        if (_data.HasCrit && _rng.NextDouble() < _effectiveCritChance)
+        if (TryInstaKill(target, wasCrit)) return;
+
+        ApplyDamageModifiers(target, ref damage);
+
+        SpawnProjectile(target, towerPos, damage, wasCrit);
+        TrySpreadPoison(target, towerPos);
+    }
+
+    private bool RollCrit(ref float damage)
+    {
+        if (!_data.HasCrit || !(_rng.NextDouble() < _effectiveCritChance))
+            return false;
+        damage *= _effectiveCritMultiplier;
+        return true;
+    }
+
+    private bool TryInstaKill(Enemy target, bool wasCrit)
+    {
+        if (wasCrit && _judgmentProtocolCooldown <= 0f
+            && SynergyManager.Instance?.IsSynergyActive("crust_judgment_protocol") == true
+            && target.HealthPercent <= 0.5f)
         {
-            damage *= _effectiveCritMultiplier;
-            wasCrit = true;
-
-            if (SynergyManager.Instance?.IsSynergyActive("crust_judgment_protocol") == true
-                && _judgmentProtocolCooldown <= 0f && target.HealthPercent <= 0.5f)
-            {
-                target.TakeDamage(9999f);
-                _judgmentProtocolCooldown = 10f;
-                return;
-            }
+            target.TakeDamage(9999f);
+            _judgmentProtocolCooldown = 10f;
+            return true;
         }
-
-        if (_data.HasExecute && target.HealthPercent <= _data.ExecuteThresholdHPPercent)
-            damage *= _data.ExecuteMultiplier;
-
-        if (_data.HasExecute && (target.IsBoss || target.IsHeavy))
-            damage *= _data.EliteBonusMultiplier;
 
         float execThreshold = _equipData?.ExecuteThresholdPercent ?? 0f;
         if (execThreshold > 0f && _judgmentSealCooldown <= 0f && target.HealthPercent <= execThreshold)
         {
             target.TakeDamage(9999f);
             _judgmentSealCooldown = _equipData.ExecuteCooldownSeconds > 0f ? _equipData.ExecuteCooldownSeconds : 5f;
-            return;
+            return true;
         }
+
+        return false;
+    }
+
+    private void ApplyDamageModifiers(Enemy target, ref float damage)
+    {
+        if (_data.HasExecute && target.HealthPercent <= _data.ExecuteThresholdHPPercent)
+            damage *= _data.ExecuteMultiplier;
+
+        if (_data.HasExecute && (target.IsBoss || target.IsHeavy))
+            damage *= _data.EliteBonusMultiplier;
 
         float eliteDmgBonus = _equipData?.EliteDamagePercentBonus ?? 0f;
         if (eliteDmgBonus > 0f && (target.IsBoss || target.IsHeavy))
@@ -179,12 +197,13 @@ public partial class AttackComponent : Node
         float basicDmgPct = RunState.Instance?.TrinketBasicDamagePercentBonus ?? 0f;
         if (basicDmgPct > 0f && !target.IsBoss && !target.IsHeavy)
             damage *= 1f + basicDmgPct;
+    }
 
+    private void SpawnProjectile(Enemy target, Vector2 towerPos, float damage, bool wasCrit)
+    {
         var projectile = ProjectileFactory.Create(_data.ProjectileScene, damage, target, towerPos);
         projectile.WasCrit = wasCrit;
-
         projectile.PierceCount = _equipData?.PierceBonus ?? 0;
-
         projectile.OnHitEffect = _precomputedHitEffects;
 
         float splashCritRadius = _equipData?.SplashOnCritRadius ?? 0f;
@@ -201,42 +220,45 @@ public partial class AttackComponent : Node
         }
 
         GetProjectilesContainer().CallDeferred(Node.MethodName.AddChild, projectile);
+    }
 
+    private void TrySpreadPoison(Enemy target, Vector2 towerPos)
+    {
         float poisonSpreadRadius = _equipData?.PoisonSpreadRadius ?? 0f;
-        if (poisonSpreadRadius > 0f && _data.HasPoison)
+        if (poisonSpreadRadius <= 0f || !_data.HasPoison) return;
+
+        var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;
+        var query = new PhysicsShapeQueryParameters2D();
+        var circle = new CircleShape2D { Radius = poisonSpreadRadius };
+        query.Shape = circle;
+        query.Transform = new Transform2D(0, towerPos);
+        query.CollideWithAreas = true;
+        query.CollideWithBodies = false;
+        query.CollisionMask = 1;
+        var results = spaceState.IntersectShape(query);
+        Enemy spreadTarget = null;
+        float nearestDist = float.MaxValue;
+        foreach (var result in results)
         {
-            var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;
-            var query = new PhysicsShapeQueryParameters2D();
-            var circle = new CircleShape2D { Radius = poisonSpreadRadius };
-            query.Shape = circle;
-            query.Transform = new Transform2D(0, towerPos);
-            query.CollideWithAreas = true;
-            query.CollideWithBodies = false;
-            query.CollisionMask = 1;
-            var results = spaceState.IntersectShape(query);
-            Enemy spreadTarget = null;
-            float nearestDist = float.MaxValue;
-            foreach (var result in results)
+            if (result["collider"].AsGodotObject() is Enemy enemy && enemy != target && !enemy.IsDead)
             {
-                if (result["collider"].AsGodotObject() is Enemy enemy && enemy != target && !enemy.IsDead)
+                float dist = enemy.GlobalPosition.DistanceTo(towerPos);
+                if (dist < nearestDist)
                 {
-                    float dist = enemy.GlobalPosition.DistanceTo(towerPos);
-                    if (dist < nearestDist)
-                    {
-                        nearestDist = dist;
-                        spreadTarget = enemy;
-                    }
+                    nearestDist = dist;
+                    spreadTarget = enemy;
                 }
             }
-            if (spreadTarget != null)
-            {
-                ApplyEffect(spreadTarget, new PoisonEffectData
-                {
-                    Duration = _data.PoisonDuration * _poisonDurationMultiplier,
-                    DamagePerTick = _data.PoisonDamagePerTick,
-                });
-            }
         }
+        if (spreadTarget == null) return;
+
+        float strengthMult = 1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)
+                               + (_equipData?.PoisonDamagePercentBonus ?? 0f);
+        ApplyEffect(spreadTarget, new PoisonEffectData
+        {
+            Duration = _data.PoisonDuration * _poisonDurationMultiplier,
+            DamagePerTick = _data.PoisonDamagePerTick * strengthMult,
+        });
     }
 
     private static void ApplyEffect(Enemy enemy, object effectData)

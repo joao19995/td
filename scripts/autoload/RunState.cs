@@ -7,6 +7,10 @@ public partial class RunState : Node
 
     public bool IsRunActive { get; private set; }
     public System.Collections.Generic.HashSet<string> AppliedTrinketIds { get; } = new();
+    public System.Collections.Generic.HashSet<string> PurchasedShopItemIds { get; } = new();
+    public Godot.Collections.Array<Texture2D> PurchasedItemIcons { get; } = new();
+    public Godot.Collections.Array<string> PurchasedItemNames { get; } = new();
+    public Godot.Collections.Array<string> PurchasedItemDescriptions { get; } = new();
 
     public Array<string> SelectedTowerIds { get; private set; } = new();
 
@@ -54,6 +58,10 @@ public partial class RunState : Node
         IsRunActive = true;
         FightsCompleted = 0;
         AppliedTrinketIds.Clear();
+        PurchasedShopItemIds.Clear();
+        PurchasedItemIcons.Clear();
+        PurchasedItemNames.Clear();
+        PurchasedItemDescriptions.Clear();
         IsBossFight = false;
         IsMiniboss = false;
         ShopDamageBonusPercent = 0f;
@@ -108,6 +116,10 @@ public partial class RunState : Node
         SelectedTowerIds.Clear();
         FightsCompleted = 0;
         AppliedTrinketIds.Clear();
+        PurchasedShopItemIds.Clear();
+        PurchasedItemIcons.Clear();
+        PurchasedItemNames.Clear();
+        PurchasedItemDescriptions.Clear();
         IsBossFight = false;
         IsMiniboss = false;
         MetaDamageBonusPercent = 0f;

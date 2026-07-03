@@ -148,7 +148,7 @@ public partial class Tower : Node2D
 
     private float GetFirstStarterBonus()
     {
-        if (_equipData?.NearbyTowerDamagePercent <= 0f || _equipData?.NearbyTowerRange <= 0f) return 0f;
+        if (_equipData == null || _equipData.NearbyTowerDamagePercent <= 0f || _equipData.NearbyTowerRange <= 0f) return 0f;
         int count = 0;
         var allTowers = GetTree().GetNodesInGroup("towers");
         foreach (var node in allTowers)
