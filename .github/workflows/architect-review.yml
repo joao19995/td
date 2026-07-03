@@ -20,15 +20,14 @@ jobs:
       - name: Run Godot Architect Agent Review
         id: review
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COPILOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # 1. Captura o diff das mudanças introduzidas neste push
           git diff HEAD~1 HEAD > mudancas.diff
 
-          # 2. Monta o prompt estruturado enviando o diff para o Copilot
+          # 2. Monta o prompt estruturado
           cat << 'EOF' > prompt.txt
           Review the code changes introduced by this diff.
-
           Focus on:
           - Architecture violations (hardcoded gameplay values, deep node paths, logic in autoloads, missing composition, etc.)
           - C# implementation guardrails (naming, struct mutation, missing [GlobalClass], etc.)
@@ -36,25 +35,21 @@ jobs:
           - Pooling issues (high-frequency objects not going through PoolManager)
           - Coupling concerns (wrong use of EventBus vs direct calls, or vice-versa)
           - Anything that will cause scaling problems with 20 towers, 30 enemies, 100 upgrades
-
           If you find real, concrete problems (not "cleaner in abstract" suggestions), produce a structured report with:
           - **Summary**: one-line description of the overall finding
           - **Issues**: a numbered list, each with file path, line number (if known), and a clear description of the problem and why it matters
           - **Verdict**: ISSUES_FOUND
-
           If no real problems are found, output exactly and only: Verdict: NO_ISSUES
-
           Here are the code changes:
           EOF
-          
+
           cat mudancas.diff >> prompt.txt
+          echo "🤖 Enviando dados para o Copilot CLI..."
 
-          echo "🤖 Enviando dados para o Copilot Nativo..."
-          
-          # A CLI do gh copilot muitas vezes exige a flag antes do argumento 'explain' ou direto no escopo global do comando
-          gh copilot explain -p "$(cat prompt.txt)" > resultado_copilot.md
+          # 3. Chama o binário `copilot` diretamente, não via `gh copilot`
+          copilot -p "$(cat prompt.txt)" -s --no-ask-user > resultado_copilot.md
 
-          # 3. Passa o resultado para os outputs do step com delimitador de segurança
+          # 4. Passa o resultado para os outputs do step
           echo "review_output<<EOF" >> $GITHUB_OUTPUT
           cat resultado_copilot.md >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
