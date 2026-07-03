@@ -62,6 +62,9 @@ public partial class Projectile : Area2D
         {
             PierceCount--;
             FindNextTarget(mainEnemy);
+
+            if (Target != null && !_returningToPool && IsOverlappingTarget())
+                OnHitTarget(Target);
         }
         else
         {
@@ -109,6 +112,28 @@ public partial class Projectile : Area2D
             Visible = false;
             ReturnToPool();
         }
+    }
+
+    private bool IsOverlappingTarget()
+    {
+        var collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
+        if (collisionShape?.Shape is not CircleShape2D circle) return false;
+
+        var spaceState = GetWorld2D().DirectSpaceState;
+        var query = new PhysicsShapeQueryParameters2D();
+        query.Shape = circle;
+        query.Transform = new Transform2D(0, GlobalPosition);
+        query.CollideWithAreas = true;
+        query.CollideWithBodies = false;
+        query.CollisionMask = 1;
+
+        var results = spaceState.IntersectShape(query);
+        foreach (var result in results)
+        {
+            if (result["collider"].AsGodotObject() is Enemy enemy && enemy == Target)
+                return true;
+        }
+        return false;
     }
 
     private void ReturnToPool()

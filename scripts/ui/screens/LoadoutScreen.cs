@@ -203,7 +203,7 @@ public partial class LoadoutScreen : CanvasLayer
     }
     private List<SynergyData> GetPreviewSynergies(List<string> selectedIds)
     {
-        var active = SynergyPreviewHelper.GetPreviewSynergies(selectedIds);
+        var active = SynergyPreviewHelper.GetPreviewSynergies(selectedIds, _allSynergies);
         active.RemoveAll(s => s == null || !AllTowersUnlocked(s));
         return active;
     }
