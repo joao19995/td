@@ -22,7 +22,7 @@ jobs:
         with:
           agent: my-agent
           prompt: |
-            Review the code changes introduced by the latest commit (${{ github.sha }}) on the `main` branch.
+            Review the code changes introduced by this push (from ${{ github.event.before }} to ${{ github.sha }}) on the `main` branch.
 
             Focus on:
             - Architecture violations (hardcoded gameplay values, deep node paths, logic in autoloads, missing composition, etc.)
