@@ -25,7 +25,7 @@ jobs:
       - name: Run Godot Architect Agent Review
         id: review
         env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
         run: |
           # 1. Captura o diff das mudanças introduzidas neste push
           git diff HEAD~1 HEAD > mudancas.diff
