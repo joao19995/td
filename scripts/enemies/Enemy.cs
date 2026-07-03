@@ -95,7 +95,7 @@ public partial class Enemy : Area2D
 
     private void ApplyData()
     {
-        float eliteHpMult = _isElite ? 2f : 1f;
+        float eliteHpMult = _isElite ? GameBalance.EliteHpMultiplier : 1f;
         _health.Setup(_data.MaxHealth * _hpMultiplier * eliteHpMult);
         _healthBar.SetHealth(_health.GetCurrentHealth(), _health.MaxHealth);
 
@@ -144,7 +144,7 @@ public partial class Enemy : Area2D
 
         _antiBuffScanTimer -= (float)delta;
         if (_antiBuffScanTimer > 0f) return;
-        _antiBuffScanTimer = 0.5f;
+        _antiBuffScanTimer = GameBalance.AuraScanInterval;
 
         var myPos = GlobalPosition;
         var allTowers = GetTree().GetNodesInGroup("towers");
@@ -200,7 +200,7 @@ public partial class Enemy : Area2D
     {
         IsDead = true;
         RemoveAllAntiBuffEffects();
-        float eliteDmgMult = _isElite ? 1.5f : 1f;
+        float eliteDmgMult = _isElite ? GameBalance.EliteDamageMultiplier : 1f;
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, Mathf.RoundToInt(_data.DamageToPlayer * _dmgMultiplier * eliteDmgMult));
         ReturnToPool();
     }
@@ -209,7 +209,7 @@ public partial class Enemy : Area2D
     {
         IsDead = true;
         RemoveAllAntiBuffEffects();
-        float eliteGoldMult = _isElite ? 2f : 1f;
+        float eliteGoldMult = _isElite ? GameBalance.EliteGoldMultiplier : 1f;
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, Mathf.RoundToInt(_data.RewardGold * _goldMultiplier * eliteGoldMult));
         ReturnToPool();
     }

@@ -14,6 +14,270 @@ finished have been removed — their outcomes are described in GAME_STATUS.md.
 
 ---
 
+## Camada de Refatoração — Arquitetura, Higiene e Dívida Técnica
+
+Antes de expandir conteúdo, é necessário sanear violações das guidelines do projeto
+que comprometem escalabilidade e manutenibilidade. Cada item foi identificado numa
+auditoria arquitetural extensiva.
+
+---
+
+### 1. [DONE] Centralizar GameBalance em Resource Data-Driven
+
+**Why**: ~40 valores de gameplay estão hardcoded em 7+ arquivos .cs, violando o
+princípio "all gameplay values come from .tres Resources". Multiplicadores de elite,
+modifiers de wave, cooldowns, penalidade anti-buff, fórmulas de meta-upgrade —
+nenhum destes é editável sem recompilação.
+
+**What to build**:
+- Criar `resources/game_balance.tres` com campos para:
+  - Elite HP/Damage/Gold multipliers
+  - Wave modifier values (Horde interval/count multiplier, Armored/Swift/GoldRush multipliers,
+    FinalStretch count mult)
+  - Anti-buff penalty (0.5f)
+  - Synergy cooldown (10s), Judgment Seal cooldown (5s)
+  - Meta-upgrade per-level values (damage %/level, gold/level, lives/level, etc.)
+  - Passive gold amount/interval, tier thresholds (0.33, 0.66)
+  - Token reward formula constants (base, victory multiplier)
+  - Wave generation constants (min/max waves, difficulty curve params, final stretch offset)
+  - Wave modifier pools (AllModifiers, HardModifiers)
+- Criar `scripts/resources/GameBalanceData.cs` com `[GlobalClass]` e todos os exports
+- Criar `scripts/autoload/GameBalance.cs` singleton que carrega o Resource e expõe
+  os valores estaticamente
+- Substituir todas as constantes literais nos .cs por `GameBalance.Instance.X`
+
+**Files to change**:
+- `scripts/resources/GameBalanceData.cs` — novo
+- `resources/game_balance.tres` — novo
+- `scripts/autoload/GameBalance.cs` — novo
+- `scripts/enemies/Enemy.cs` — linhas 98, 203, 212
+- `scripts/Spawner/EnemySpawner.cs` — linhas 18, 79, 86, 88, 165-171
+- `scripts/towers/Tower.cs` — linhas 145, 183, 203
+- `scripts/autoload/RunState.cs` — linhas 90-100, 163, 165, 260, 270-271, 282-287, 313, 328-329
+- `scripts/components/AttackComponent.cs` — linhas 166, 174
+- `scripts/components/AuraComponent.cs` — linha 56
+
+**Decisions**:
+- GameBalance é carregado uma vez no `_EnterTree` do autoload e nunca recarregado
+- Valores que variam por tower/enemy permanecem nos respectivos Resources;
+  este Resource contém apenas constantes globais de sistema
+- O arquivo `.tres` fica em `resources/` (raiz) por ser global, não específico
+  de uma categoria
+
+**Estimate**: 3-4 days
+
+---
+
+### 2. [CRÍTICO] Extrair WaveGenerator de RunState
+
+**Why**: RunState.cs acumula ~115 linhas de lógica de gameplay (geração de waves,
+tier determination, passive gold timer, aplicação de trinkets) — viola a diretriz
+"autoloads são infraestrutura, não gameplay". Dificulta testar e reusar a lógica
+de waves independentemente do estado da run.
+
+**What to build**:
+- Criar `scripts/systems/WaveGenerator.cs` com método estático
+  `PickRunWaves(int fightsCompleted, int fightsPerRun, string baseDir)`
+- Mover `GetWaveTier()`, arrays `AllModifiers`/`HardModifiers`, e toda a lógica
+  de difficulty curve / final stretch / modifier assignment
+- RunState passa a chamar `WaveGenerator.PickRunWaves(FightsCompleted,
+  SlotManager.Instance.FightsPerRun)`
+- Manter em RunState apenas estado puro (tower levels, equips, trinkets, shop items)
+  e delegação para sistemas especializados
+
+**Files to change**:
+- `scripts/systems/WaveGenerator.cs` — novo
+- `scripts/autoload/RunState.cs` — remover linhas 265-346, substituir por delegação
+- Atualizar referências em BriefingScreen, EnemySpawner se acessam diretamente
+
+**Estimate**: 1-2 days
+
+---
+
+### 3. [CRÍTICO] Converter GetNode<>() para [Export] NodePath nas Screens
+
+**Why**: 63 chamadas `GetNode<>()` com strings hardcoded em 12 arquivos de UI.
+Paths de até 5 níveis (`VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewSprite`).
+Qualquer renomeação de node no .tscn quebra silenciosamente em runtime. Viola
+diretamente a diretriz "No deep node paths — use [Export] NodePath".
+
+**What to build**:
+- Em cada screen, substituir cada `GetNode<T>("path/string")` por:
+  ```csharp
+  [Export] private NodePath _nomeField;
+  private Tipo _nome;
+  // em _Ready: _nome = GetNode<Tipo>(_nomeField);
+  ```
+- Configurar os NodePaths nos .tscn correspondentes via Inspector
+- Screens a modificar (por ordem de profundidade dos paths):
+  1. `LoadoutScreen.cs` — ~16 paths, 5 deles com profundidade 4-5
+  2. `BriefingScreen.cs` — ~11 paths, 4 com profundidade 4
+  3. `HUD.cs` — ~12 paths
+  4. `FightCompleteScreen.cs` — ~6 paths
+  5. `ShopScreen.cs`, `MetaShopScreen.cs`, `MainMenu.cs`
+  6. `PauseScreen.cs`, `GameOverScreen.cs`, `VictoryScreen.cs`, `TrinketChoiceScreen.cs`
+
+**Decisions**:
+- Nomear exports como `_nodeNameLabel`, `_previewPanel`, etc. para clareza
+- Manter o campo privado tipado separado do NodePath (padrão Godot recomendado)
+- Os .tscn exigem edição manual no Inspector para apontar os NodePaths
+
+**Estimate**: 2-3 days
+
+---
+
+### 4. [ALTO] ResourceLoaderHelper + Eliminar Duplicação de Carga
+
+**Why**: 6 screens implementam o mesmo padrão `DirAccess.Open("res://...")`
+\+ foreach \+ `ResourceLoader.Load<T>()`. `BestiaryScreen.cs` já tem um genérico
+`LoadFromDir<T>()` que nenhuma outra screen usa. O padrão "End Run" navigation
+está quadruplicado. Tower tags checks duplicados entre LoadoutScreen e BestiaryScreen.
+
+**What to build**:
+- Criar `scripts/helpers/ResourceLoaderHelper.cs`:
+  ```csharp
+  public static Array<T> LoadAllFromDir<T>(string dirPath) where T : Resource
+  ```
+  com tratamento de erro e `ResourceLoader.CacheMode.Replace`
+- Refatorar LoadoutScreen, HUD, BriefingScreen, ShopScreen, MetaShopScreen,
+  TrinketChoiceScreen para usar o helper — elimina ~80 linhas duplicadas
+- Adicionar método `NavigateToMainMenu()` em UIManager para eliminar quadruplicação
+  em GameOverScreen, PauseScreen, VictoryScreen, FightCompleteScreen
+- Adicionar `GetTags()` em TowerData para eliminar checks manuais duplicados
+- Unificar fade-out+nav em TrinketChoiceScreen num método privado único
+
+**Files to change**:
+- `scripts/helpers/ResourceLoaderHelper.cs` — novo
+- `scripts/autoload/UIManager.cs` — adicionar `NavigateToMainMenu()`
+- `scripts/ui/screens/LoadoutScreen.cs` — usar helper + GetTags()
+- `scripts/ui/screens/FightCompleteScreen.cs` — usar NavigateToMainMenu
+- `scripts/ui/screens/GameOverScreen.cs` — usar NavigateToMainMenu
+- `scripts/ui/screens/PauseScreen.cs` — usar NavigateToMainMenu
+- `scripts/ui/screens/VictoryScreen.cs` — usar NavigateToMainMenu
+- `scripts/ui/HUD.cs` — usar helper
+- `scripts/ui/briefing/BriefingScreen.cs` — usar helper
+- `scripts/ui/trinket/TrinketChoiceScreen.cs` — unificar fade-out
+- `scripts/resources/TowerData.cs` — adicionar GetTags()
+
+**Estimate**: 2-3 days
+
+---
+
+### 5. [ALTO] Popular FlavorText nos Recursos
+
+**Why**: Todas as 5 classes Resource (TowerData, EnemyData, EquipData, TrinketData,
+SynergyData) declaram `FlavorText`, mas **zero** dos ~55 arquivos .tres o preenchem.
+O Bestiary renderiza lore condicionalmente — atualmente está sempre vazio. A feature
+de profundidade narrativa está completamente invisível.
+
+**What to build**:
+- Adicionar `FlavorText = "..."` em cada arquivo .tres relevante:
+  - 10× `tower_data/*.tres`
+  - 10× `enemy_data/*.tres`
+  - 20× `equip_data/*.tres`
+  - 10× `trinket_data/*.tres`
+  - 4× `synergy_data/*.tres`
+
+**Decisions**:
+- Conteúdo textual criado pelo designer/narrative designer
+- Pode ser feito em duas etapas: primeiro placeholder "TODO: lore text",
+  depois conteúdo real
+
+**Estimate**: 2-4h (estrutural) + 2-3d (conteúdo)
+
+---
+
+### 6. [ALTO] Converter String Routing para Enum no FightCompleteScreen
+
+**Why**: `_pendingOutcome` é string com switch/case em 3 lugares no
+FightCompleteScreen. Comparações com `"Fight"`, `"Shop"`, `"Boss"` — frágeis,
+sem type safety, erro só aparece em runtime se um outcome for renomeado.
+
+**What to build**:
+- Definir enum `SlotOutcome { Fight, Shop, Heal, Miniboss, Treasure, Boss }`
+  em arquivo compartilhado (ex: `scripts/systems/SlotOutcome.cs`)
+- Substituir `string _pendingOutcome` por `SlotOutcome _pendingOutcome`
+- Atualizar FightCompleteScreen e SlotManager
+
+**Estimate**: 0.5 day
+
+---
+
+### 7. [MÉDIO] Remover Dead Code + Inconsistências de Estilo
+
+**Why**: HUD.cs:283 tem código morto (variável `trinketId` que retorna null
+e nunca é lida). WaveEntry.cs e WaveData.cs usam fields (`[Export] public T X;`)
+em vez de auto-properties (`{ get; set; }`), diferente dos outros 10 data classes.
+Inconsistências que acumulam dívida técnica.
+
+**What to fix**:
+- Remover linha `string trinketId = ...` em `scripts/ui/HUD.cs:283`
+- Converter `WaveEntry.cs` linhas 6-7 e `WaveData.cs` linhas 9-11 para
+  auto-properties consistentes com o resto do código
+- Verificar se existe mais dead code (grep por variáveis não utilizadas)
+
+**Estimate**: 0.5 day
+
+---
+
+### 8. [MÉDIO] Mover StatusEffectData para Diretório Correto
+
+**Why**: `PoisonEffectData.cs`, `SlowEffectData.cs`, `StatusEffectData.cs`
+são `[GlobalClass] Resource` mas estão em `scripts/components/`. O diretório
+documentado para data classes é `scripts/resources/`. Causa confusão.
+
+**What to build**:
+- Mover os 3 arquivos para `scripts/resources/`
+- Atualizar referências em cenas .tscn se apontam por caminho absoluto
+- Nenhuma mudança de using (namespace global)
+
+**Estimate**: 0.5 day
+
+---
+
+### 9. [MÉDIO] Atualizar CLAUDE.md para Estado Real
+
+**Why**: CLAUDE.md lista torres como `CornerBaker.tres` e `BikeCourier.tres`
+que não existem — os nomes reais são `BreadBaker.tres` e `BreadCourier.tres`.
+`Aroma` é `AromaKeeper`. Diretório `Spawner/` não documentado no layout.
+
+**What to fix**:
+- Atualizar lista `resources/tower_data/` no Project Layout
+- Adicionar `Spawner/` ao layout (ou mover EnemySpawner para scripts/systems/)
+- Verificar e corrigir outras discrepâncias entre doc e realidade
+
+**Estimate**: 0.25 day
+
+---
+
+### 10. [BAIXO] Adicionar uids aos .tres Faltantes
+
+**Why**: ~60% dos .tres (wave_data, synergy_data, meta_upgrade_data, trinket_data,
+ui_screens) não têm `uid` no cabeçalho. Sem uid, o Godot não tem referência
+estável se o arquivo for movido ou renomeado.
+
+**What to build**:
+- Abrir cada .tres sem uid no Inspector do Godot (uid é gerado pelo editor,
+  não editado manualmente)
+- Alternativa: script de build que abre e ressalva cada recurso
+
+**Estimate**: 0.5-1d (ou incremental enquanto edita outros recursos)
+
+---
+
+### 11. [BAIXO] Extrair SynergyPreviewHelper
+
+**Why**: `GetPreviewSynergies()` existe em LoadoutScreen e BriefingScreen com
+lógica similar mas não idêntica. Extrair para helper comum evita divergência.
+
+**What to build**:
+- Criar `scripts/helpers/SynergyPreviewHelper.cs` com método único
+- LoadoutScreen e BriefingScreen passam a chamá-lo
+
+**Estimate**: 0.5 day
+
+---
+
 ## Camada de Polimento — Improvements to Existing Features
 
 Each item below builds on existing features and adds the visual, interactive,

@@ -140,9 +140,7 @@ public partial class Tower : Node2D
             float auraPercent = AuraComponent.GetDamageBonus(this);
             float globalAuraPercent = RunState.Instance?.GlobalAuraDamagePercent ?? 0f;
             float nearbyBonus = GetFirstStarterBonus();
-            float buffMultiplier = 1f;
-            if (IsAntiBuffed(this))
-                buffMultiplier = 0.5f;
+            float buffMultiplier = IsAntiBuffed(this) ? GameBalance.AntiBuffMultiplier : 1f;
             return (baseWithUpgrade + nearbyBonus) * (1f + (synergyPercent + equipPercent + auraPercent + globalAuraPercent + trinketPercent) * buffMultiplier) * (1f + shopPercent) * (1f + metaPercent);
         }
     }
@@ -180,7 +178,7 @@ public partial class Tower : Node2D
             float equipPercent = GetEquipFireRatePercent();
             float auraPercent = AuraComponent.GetFireRateBonus(this);
             float trinketPercent = RunState.Instance?.TrinketFireRateBonusPercent ?? 0f;
-            float buffMultiplier = IsAntiBuffed(this) ? 0.5f : 1f;
+            float buffMultiplier = IsAntiBuffed(this) ? GameBalance.AntiBuffMultiplier : 1f;
             return baseWithUpgrade * (1f + (synergyPercent + equipPercent + auraPercent + trinketPercent) * buffMultiplier) * (1f + shopPercent);
         }
     }
@@ -200,7 +198,7 @@ public partial class Tower : Node2D
             float shopPercent = RunState.Instance?.ShopRangeBonusPercent ?? 0f;
             float equipPercent = GetEquipRangePercent();
             float trinketPercent = RunState.Instance?.TrinketRangeBonusPercent ?? 0f;
-            float buffMultiplier = IsAntiBuffed(this) ? 0.5f : 1f;
+            float buffMultiplier = IsAntiBuffed(this) ? GameBalance.AntiBuffMultiplier : 1f;
             return baseWithUpgrade * (1f + (synergyPercent + equipPercent + trinketPercent) * buffMultiplier) * (1f + shopPercent);
         }
     }

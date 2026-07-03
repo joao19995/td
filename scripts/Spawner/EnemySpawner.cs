@@ -15,7 +15,7 @@ public partial class EnemySpawner : Node2D
 
     private bool _isBossFight = false;
     private bool _isMiniboss = false;
-    private float _minibossMultiplier = 1.5f;
+    private float _minibossMultiplier = GameBalance.MinibossStatMultiplier;
     private bool _isActive = false;
     private WaveModifier _currentModifier = WaveModifier.None;
     private float _currentDifficultyMult = 1f;
@@ -76,16 +76,16 @@ public partial class EnemySpawner : Node2D
 
         float spawnInterval = wave.SpawnInterval / Mathf.Sqrt(_currentDifficultyMult);
         if (_currentModifier == WaveModifier.Horde)
-            spawnInterval *= 0.5f;
+            spawnInterval *= GameBalance.HordeSpawnIntervalMultiplier;
 
         var spawnList = new System.Collections.Generic.List<(EnemyData data, int remaining)>();
         int totalCount = 0;
         foreach (var entry in wave.Entries)
         {
             if (entry?.Enemy == null || entry.Count <= 0) continue;
-            int count = _currentModifier == WaveModifier.Horde ? entry.Count * 2 : entry.Count;
+            int count = _currentModifier == WaveModifier.Horde ? entry.Count * GameBalance.HordeEnemyCountMultiplier : entry.Count;
             if (wave.IsFinalStretch)
-                count = Mathf.RoundToInt(count * 1.5f);
+                count = Mathf.RoundToInt(count * GameBalance.FinalStretchCountMultiplier);
             spawnList.Add((entry.Enemy, count));
             totalCount += count;
         }
@@ -162,13 +162,13 @@ public partial class EnemySpawner : Node2D
         switch (_currentModifier)
         {
             case WaveModifier.Armored:
-                enemy.SetModifierMultipliers(2f, 1f, 1f);
+                enemy.SetModifierMultipliers(GameBalance.ArmoredHpMultiplier, GameBalance.ArmoredDamageMultiplier, GameBalance.ArmoredGoldMultiplier);
                 break;
             case WaveModifier.Swift:
-                enemy.SetSpeedMultiplier(1.5f);
+                enemy.SetSpeedMultiplier(GameBalance.SwiftSpeedMultiplier);
                 break;
             case WaveModifier.GoldRush:
-                enemy.SetModifierMultipliers(1f, 1f, 2f);
+                enemy.SetModifierMultipliers(GameBalance.GoldRushHpMultiplier, GameBalance.GoldRushDamageMultiplier, GameBalance.GoldRushGoldMultiplier);
                 break;
         }
 

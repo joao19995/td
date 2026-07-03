@@ -53,7 +53,7 @@ public partial class AuraComponent : Node2D
 
         _scanTimer -= (float)delta;
         if (_scanTimer > 0f) return;
-        _scanTimer = 0.5f;
+        _scanTimer = GameBalance.AuraScanInterval;
 
         var myPos = GlobalPosition;
         var allTowers = GetTree().GetNodesInGroup("towers");

@@ -163,7 +163,7 @@ public partial class AttackComponent : Node
             && target.HealthPercent <= 0.5f)
         {
             target.TakeDamage(9999f);
-            _judgmentProtocolCooldown = 10f;
+            _judgmentProtocolCooldown = GameBalance.JudgmentProtocolCooldown;
             return true;
         }
 
@@ -171,7 +171,7 @@ public partial class AttackComponent : Node
         if (execThreshold > 0f && _judgmentSealCooldown <= 0f && target.HealthPercent <= execThreshold)
         {
             target.TakeDamage(9999f);
-            _judgmentSealCooldown = _equipData.ExecuteCooldownSeconds > 0f ? _equipData.ExecuteCooldownSeconds : 5f;
+            _judgmentSealCooldown = _equipData.ExecuteCooldownSeconds > 0f ? _equipData.ExecuteCooldownSeconds : GameBalance.JudgmentSealCooldown;
             return true;
         }
 

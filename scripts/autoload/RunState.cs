@@ -87,17 +87,17 @@ public partial class RunState : Node
         _passiveGoldTimer = 0f;
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
-        MetaDamageBonusPercent = damageLevel * 0.05f;
+        MetaDamageBonusPercent = damageLevel * GameBalance.MetaDamagePercentPerLevel;
         int goldLevel = SaveManager.Instance.GetMetaUpgradeLevel("local_sponsorship");
-        StartingGoldBonus = goldLevel * 50;
+        StartingGoldBonus = goldLevel * GameBalance.StartingGoldPerLevel;
         int livesLevel = SaveManager.Instance.GetMetaUpgradeLevel("starting_lives");
-        MetaStartingLivesBonus = livesLevel * 2;
+        MetaStartingLivesBonus = livesLevel * GameBalance.StartingLivesPerLevel;
         int shopLevel = SaveManager.Instance.GetMetaUpgradeLevel("shop_discount");
-        MetaShopDiscountPercent = shopLevel * 0.05f;
+        MetaShopDiscountPercent = shopLevel * GameBalance.MetaShopDiscountPerLevel;
         int rerollLevel = SaveManager.Instance.GetMetaUpgradeLevel("reroll_cost_reduction");
-        MetaRerollCostReductionPercent = rerollLevel * 0.10f;
+        MetaRerollCostReductionPercent = rerollLevel * GameBalance.MetaRerollCostReductionPerLevel;
         int goldBonusLevel = SaveManager.Instance.GetMetaUpgradeLevel("enemy_gold_bonus");
-        MetaEnemyGoldBonusPercent = goldBonusLevel * 0.10f;
+        MetaEnemyGoldBonusPercent = goldBonusLevel * GameBalance.MetaEnemyGoldBonusPerLevel;
         MetaStartWithEquipment = SaveManager.Instance.GetMetaUpgradeLevel("start_with_equipment") > 0;
         MetaStartTowerLevel = SaveManager.Instance.GetMetaUpgradeLevel("start_tower_level") > 0;
 
@@ -160,9 +160,9 @@ public partial class RunState : Node
         float ratio = SlotManager.Instance != null
             ? (float)FightsCompleted / Mathf.Max(1, SlotManager.Instance.FightsPerRun)
             : 1f;
-        int totalTokens = Mathf.RoundToInt(baseTokens * (1f + ratio));
+        int totalTokens = Mathf.RoundToInt(baseTokens * (GameBalance.TokenRewardBaseMultiplier + ratio));
         if (isVictory)
-            totalTokens = Mathf.RoundToInt(totalTokens * 1.5f);
+            totalTokens = Mathf.RoundToInt(totalTokens * GameBalance.TokenRewardVictoryMultiplier);
 
         SaveManager.Instance.AddMetaTokens(totalTokens);
         _towerLevels.Clear();
@@ -256,8 +256,8 @@ public partial class RunState : Node
             _passiveGoldTimer -= (float)delta;
             if (_passiveGoldTimer <= 0f)
             {
-                EconomyManager.Instance.AddMoney(5);
-                _passiveGoldTimer = 30f;
+                EconomyManager.Instance.AddMoney(GameBalance.PassiveGoldAmount);
+                _passiveGoldTimer = GameBalance.PassiveGoldInterval;
             }
         }
     }
@@ -267,8 +267,8 @@ public partial class RunState : Node
         float ratio = SlotManager.Instance != null
             ? (float)FightsCompleted / SlotManager.Instance.FightsPerRun
             : 0f;
-        if (ratio >= 0.66f) return "tier3";
-        if (ratio >= 0.33f) return "tier2";
+        if (ratio >= GameBalance.Tier3Threshold) return "tier3";
+        if (ratio >= GameBalance.Tier2Threshold) return "tier2";
         return "tier1";
     }
 
@@ -310,7 +310,7 @@ public partial class RunState : Node
 
         if (pool.Count == 0) return null;
 
-        int totalWaves = (int)(GD.Randi() % 6) + 5; // 5-10
+        int totalWaves = (int)(GD.Randi() % (GameBalance.MaxWaves - GameBalance.MinWaves + 1)) + GameBalance.MinWaves;
         var result = new Array<WaveData>();
 
         WaveModifier? prevModifier = null;
@@ -325,12 +325,12 @@ public partial class RunState : Node
                 Modifier = wave.Modifier,
             };
 
-            clone.IsFinalStretch = i >= totalWaves - 3;
-            clone.DifficultyMultiplier = 0.6f + 0.8f * (float)i / Mathf.Max(1, totalWaves - 1);
+            clone.IsFinalStretch = i >= totalWaves - GameBalance.FinalStretchWaveOffset;
+            clone.DifficultyMultiplier = GameBalance.DifficultyCurveMin + GameBalance.DifficultyCurveRange * (float)i / Mathf.Max(1, totalWaves - 1);
 
-            if (i >= 2)
+            if (i >= GameBalance.ModifierStartWave)
             {
-                var mods = i >= totalWaves - 2 ? HardModifiers : AllModifiers;
+                var mods = i >= totalWaves - GameBalance.HardModifierWaveOffset ? HardModifiers : AllModifiers;
                 int attempts = 0;
                 do {
                     clone.Modifier = mods[(int)(GD.Randi() % mods.Length)];

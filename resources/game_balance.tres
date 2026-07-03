@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="GameBalanceData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/GameBalanceData.cs" id="1_gb"]
+
+[resource]
+script = ExtResource("1_gb")
