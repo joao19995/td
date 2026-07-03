@@ -3,17 +3,22 @@ using System.Collections.Generic;
 
 public partial class ShopScreen : Control
 {
+    [Export] private NodePath _moneyLabelPath = new NodePath("VBox/MoneyLabel");
+    [Export] private NodePath _itemsContainerPath = new NodePath("VBox/ItemsScroll/ItemsContainer");
+    [Export] private NodePath _equipContainerPath = new NodePath("VBox/EquipScroll/EquipContainer");
+    [Export] private NodePath _leaveButtonPath = new NodePath("VBox/LeaveButton");
+
+    private Label _moneyLabel;
     private VBoxContainer _itemsContainer;
     private VBoxContainer _equipContainer;
-    private Label _moneyLabel;
     private Button _leaveButton;
 
     public override void _Ready()
     {
-        _moneyLabel = GetNode<Label>("VBox/MoneyLabel");
-        _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsScroll/ItemsContainer");
-        _equipContainer = GetNode<VBoxContainer>("VBox/EquipScroll/EquipContainer");
-        _leaveButton = GetNode<Button>("VBox/LeaveButton");
+        _moneyLabel = GetNode<Label>(_moneyLabelPath);
+        _itemsContainer = GetNode<VBoxContainer>(_itemsContainerPath);
+        _equipContainer = GetNode<VBoxContainer>(_equipContainerPath);
+        _leaveButton = GetNode<Button>(_leaveButtonPath);
 
         _leaveButton.Pressed += OnLeavePressed;
         UpdateMoney();

@@ -4,16 +4,26 @@ using System.Collections.Generic;
 
 public partial class LoadoutScreen : CanvasLayer
 {
-    private List<TowerData> _allTowers;
-    private List<SynergyData> _allSynergies;
-    private bool[] _selected;
-    private List<Button> _towerButtons;
-    private bool _isBatchUpdating;
+    [Export] private NodePath _infoLabelPath = new NodePath("VBox/TopRow/InfoLabel");
+    [Export] private NodePath _startButtonPath = new NodePath("VBox/BottomRow/StartRunButton");
+    [Export] private NodePath _randomButtonPath = new NodePath("VBox/TopRow/RandomButton");
+    [Export] private NodePath _towerListPath = new NodePath("VBox/ContentHBox/TowerScroll/TowerList");
+    [Export] private NodePath _previewPanelPath = new NodePath("VBox/ContentHBox/PreviewPanel");
+    [Export] private NodePath _previewSpritePath = new NodePath("VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewSprite");
+    [Export] private NodePath _previewNamePath = new NodePath("VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewName");
+    [Export] private NodePath _previewStatsPath = new NodePath("VBox/ContentHBox/PreviewPanel/PreviewStats");
+    [Export] private NodePath _previewSpecialPath = new NodePath("VBox/ContentHBox/PreviewPanel/PreviewSpecial");
+    [Export] private NodePath _synergyLabelPath = new NodePath("VBox/SynergyLabel");
+    [Export] private NodePath _saveHelpLabelPath = new NodePath("VBox/BottomRow/SaveHelpLabel");
+    [Export] private NodePath _titlePath = new NodePath("VBox/Title");
+    [Export] private NodePath _slot1Path = new NodePath("VBox/BottomRow/Slot1");
+    [Export] private NodePath _slot2Path = new NodePath("VBox/BottomRow/Slot2");
+    [Export] private NodePath _slot3Path = new NodePath("VBox/BottomRow/Slot3");
 
-    private Button _startButton;
+    [Export] private int MaxTowers = 4;
+
     private Label _infoLabel;
-    private Button _randomButton;
-    private Button[] _slotButtons;
+    private Button _startButton;
     private Label _saveHelpLabel;
     private VBoxContainer _towerList;
     private VBoxContainer _previewPanel;
@@ -22,27 +32,35 @@ public partial class LoadoutScreen : CanvasLayer
     private Label _previewStats;
     private Label _previewSpecial;
     private Label _synergyLabel;
+    private Label _title;
+    private Button _randomButton;
+    private Button[] _slotButtons;
 
-    [Export] private int MaxTowers = 4;
+    private List<TowerData> _allTowers;
+    private List<SynergyData> _allSynergies;
+    private bool[] _selected;
+    private List<Button> _towerButtons;
+    private bool _isBatchUpdating;
 
     public override void _Ready()
     {
-        _infoLabel = GetNode<Label>("VBox/TopRow/InfoLabel");
-        _startButton = GetNode<Button>("VBox/BottomRow/StartRunButton");
-        _randomButton = GetNode<Button>("VBox/TopRow/RandomButton");
-        _towerList = GetNode<VBoxContainer>("VBox/ContentHBox/TowerScroll/TowerList");
-        _previewPanel = GetNode<VBoxContainer>("VBox/ContentHBox/PreviewPanel");
-        _previewSprite = GetNode<TextureRect>("VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewSprite");
-        _previewName = GetNode<Label>("VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewName");
-        _previewStats = GetNode<Label>("VBox/ContentHBox/PreviewPanel/PreviewStats");
-        _previewSpecial = GetNode<Label>("VBox/ContentHBox/PreviewPanel/PreviewSpecial");
-        _synergyLabel = GetNode<Label>("VBox/SynergyLabel");
-        _saveHelpLabel = GetNode<Label>("VBox/BottomRow/SaveHelpLabel");
+        _infoLabel = GetNode<Label>(_infoLabelPath);
+        _startButton = GetNode<Button>(_startButtonPath);
+        _randomButton = GetNode<Button>(_randomButtonPath);
+        _towerList = GetNode<VBoxContainer>(_towerListPath);
+        _previewPanel = GetNode<VBoxContainer>(_previewPanelPath);
+        _previewSprite = GetNode<TextureRect>(_previewSpritePath);
+        _previewName = GetNode<Label>(_previewNamePath);
+        _previewStats = GetNode<Label>(_previewStatsPath);
+        _previewSpecial = GetNode<Label>(_previewSpecialPath);
+        _synergyLabel = GetNode<Label>(_synergyLabelPath);
+        _saveHelpLabel = GetNode<Label>(_saveHelpLabelPath);
+        _title = GetNode<Label>(_titlePath);
         _slotButtons = new Button[]
         {
-            GetNode<Button>("VBox/BottomRow/Slot1"),
-            GetNode<Button>("VBox/BottomRow/Slot2"),
-            GetNode<Button>("VBox/BottomRow/Slot3"),
+            GetNode<Button>(_slot1Path),
+            GetNode<Button>(_slot2Path),
+            GetNode<Button>(_slot3Path),
         };
 
         _startButton.Pressed += OnStartRunPressed;
@@ -78,7 +96,7 @@ public partial class LoadoutScreen : CanvasLayer
         _selected = new bool[_allTowers.Count];
         _towerButtons = new List<Button>();
 
-        GetNode<Label>("VBox/Title").Text = $"SELECT TOWERS (max {MaxTowers})";
+        _title.Text = $"SELECT TOWERS (max {MaxTowers})";
 
         int idx = 0;
         foreach (var data in _allTowers)

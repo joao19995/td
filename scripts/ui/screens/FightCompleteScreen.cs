@@ -2,11 +2,19 @@ using Godot;
 
 public partial class FightCompleteScreen : Control
 {
+    [Export] private NodePath _outcomeLabelPath = new NodePath("VBox/OutcomeLabel");
+    [Export] private NodePath _spinButtonPath = new NodePath("VBox/SpinButton");
+    [Export] private NodePath _rerollButtonPath = new NodePath("VBox/RerollButton");
+    [Export] private NodePath _goldLabelPath = new NodePath("VBox/GoldLabel");
+    [Export] private NodePath _livesLabelPath = new NodePath("VBox/LivesLabel");
+    [Export] private NodePath _endRunButtonPath = new NodePath("VBox/EndRunButton");
+
     private Label _outcomeLabel;
     private Button _spinButton;
     private Button _rerollButton;
     private Label _goldLabel;
     private Label _livesLabel;
+    private Button _endRunButton;
 
     private enum State { Spin, Resolve }
     private State _state = State.Spin;
@@ -14,11 +22,12 @@ public partial class FightCompleteScreen : Control
 
     public override void _Ready()
     {
-        _goldLabel = GetNode<Label>("VBox/GoldLabel");
-        _livesLabel = GetNode<Label>("VBox/LivesLabel");
-        _outcomeLabel = GetNode<Label>("VBox/OutcomeLabel");
-        _spinButton = GetNode<Button>("VBox/SpinButton");
-        _rerollButton = GetNode<Button>("VBox/RerollButton");
+        _outcomeLabel = GetNode<Label>(_outcomeLabelPath);
+        _spinButton = GetNode<Button>(_spinButtonPath);
+        _rerollButton = GetNode<Button>(_rerollButtonPath);
+        _goldLabel = GetNode<Label>(_goldLabelPath);
+        _livesLabel = GetNode<Label>(_livesLabelPath);
+        _endRunButton = GetNode<Button>(_endRunButtonPath);
 
         _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
         _livesLabel.Text = $"Lives: {GameManager.Instance.CurrentLives}";
@@ -26,7 +35,7 @@ public partial class FightCompleteScreen : Control
         _spinButton.Pressed += OnSpinPressed;
         _rerollButton.Pressed += OnRerollPressed;
         _rerollButton.Visible = false;
-        GetNode<Button>("VBox/EndRunButton").Pressed += OnEndRunPressed;
+        _endRunButton.Pressed += OnEndRunPressed;
     }
 
     private void OnSpinPressed()

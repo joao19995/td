@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public partial class TrinketChoiceScreen : Control
 {
+    [Export] private NodePath _titleLabelPath = new NodePath("VBox/TitleLabel");
+    [Export] private NodePath _cardsContainerPath = new NodePath("VBox/CardsContainer");
+
     private Label _titleLabel;
     private HBoxContainer _cardsContainer;
     private Button _skipButton;
@@ -12,8 +15,8 @@ public partial class TrinketChoiceScreen : Control
 
     public override void _Ready()
     {
-        _titleLabel = GetNode<Label>("VBox/TitleLabel");
-        _cardsContainer = GetNode<HBoxContainer>("VBox/CardsContainer");
+        _titleLabel = GetNode<Label>(_titleLabelPath);
+        _cardsContainer = GetNode<HBoxContainer>(_cardsContainerPath);
 
         _skipButton = new Button();
         _skipButton.Text = "Skip";

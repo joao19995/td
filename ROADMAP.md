@@ -68,7 +68,7 @@ nenhum destes é editável sem recompilação.
 
 ---
 
-### 2. [CRÍTICO] Extrair WaveGenerator de RunState
+### 2. [DONE] Extrair WaveGenerator de RunState
 
 **Why**: RunState.cs acumula ~115 linhas de lógica de gameplay (geração de waves,
 tier determination, passive gold timer, aplicação de trinkets) — viola a diretriz
@@ -94,7 +94,7 @@ de waves independentemente do estado da run.
 
 ---
 
-### 3. [CRÍTICO] Converter GetNode<>() para [Export] NodePath nas Screens
+### 3. [DONE] Converter GetNode<>() para [Export] NodePath nas Screens
 
 **Why**: 63 chamadas `GetNode<>()` com strings hardcoded em 12 arquivos de UI.
 Paths de até 5 níveis (`VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewSprite`).

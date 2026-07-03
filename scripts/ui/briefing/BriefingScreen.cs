@@ -4,12 +4,24 @@ using System.Text;
 
 public partial class BriefingScreen : Control
 {
+    [Export] private NodePath _mapPreviewPath = new NodePath("VBox/TopRow/MapPreview");
+    [Export] private NodePath _titleLabelPath = new NodePath("VBox/TopRow/InfoColumn/TitleLabel");
+    [Export] private NodePath _goldLabelPath = new NodePath("VBox/TopRow/InfoColumn/GoldLabel");
+    [Export] private NodePath _tierLabelPath = new NodePath("VBox/TopRow/InfoColumn/TierLabel");
+    [Export] private NodePath _waveListLabelPath = new NodePath("VBox/WaveScroll/WaveListLabel");
+    [Export] private NodePath _loadoutIconsPath = new NodePath("VBox/LoadoutRow/LoadoutIcons");
+    [Export] private NodePath _loadoutRowPath = new NodePath("VBox/LoadoutRow");
+    [Export] private NodePath _synergyLabelPath = new NodePath("VBox/SynergyLabel");
+    [Export] private NodePath _minibossLabelPath = new NodePath("VBox/MinibossLabel");
+    [Export] private NodePath _startButtonPath = new NodePath("VBox/StartButton");
+
     private TextureRect _mapPreview;
     private Label _titleLabel;
     private Label _goldLabel;
     private Label _tierLabel;
     private Label _waveListLabel;
     private HBoxContainer _loadoutIcons;
+    private HBoxContainer _loadoutRow;
     private Label _synergyLabel;
     private Label _minibossLabel;
     private Button _startButton;
@@ -18,15 +30,16 @@ public partial class BriefingScreen : Control
 
     public override void _Ready()
     {
-        _mapPreview = GetNode<TextureRect>("VBox/TopRow/MapPreview");
-        _titleLabel = GetNode<Label>("VBox/TopRow/InfoColumn/TitleLabel");
-        _goldLabel = GetNode<Label>("VBox/TopRow/InfoColumn/GoldLabel");
-        _tierLabel = GetNode<Label>("VBox/TopRow/InfoColumn/TierLabel");
-        _waveListLabel = GetNode<Label>("VBox/WaveScroll/WaveListLabel");
-        _loadoutIcons = GetNode<HBoxContainer>("VBox/LoadoutRow/LoadoutIcons");
-        _synergyLabel = GetNode<Label>("VBox/SynergyLabel");
-        _minibossLabel = GetNode<Label>("VBox/MinibossLabel");
-        _startButton = GetNode<Button>("VBox/StartButton");
+        _mapPreview = GetNode<TextureRect>(_mapPreviewPath);
+        _titleLabel = GetNode<Label>(_titleLabelPath);
+        _goldLabel = GetNode<Label>(_goldLabelPath);
+        _tierLabel = GetNode<Label>(_tierLabelPath);
+        _waveListLabel = GetNode<Label>(_waveListLabelPath);
+        _loadoutIcons = GetNode<HBoxContainer>(_loadoutIconsPath);
+        _loadoutRow = GetNode<HBoxContainer>(_loadoutRowPath);
+        _synergyLabel = GetNode<Label>(_synergyLabelPath);
+        _minibossLabel = GetNode<Label>(_minibossLabelPath);
+        _startButton = GetNode<Button>(_startButtonPath);
 
         var levelData = LevelManager.Instance.PendingLevelData;
         bool hasLevelData = levelData != null;
@@ -71,7 +84,7 @@ public partial class BriefingScreen : Control
     {
         if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
         {
-            string tier = RunState.Instance.GetWaveTier();
+            string tier = WaveGenerator.GetWaveTier(RunState.Instance.FightsCompleted, SlotManager.Instance.FightsPerRun);
             string tierName = tier switch
             {
                 "tier1" => "Tier 1",
@@ -166,7 +179,7 @@ public partial class BriefingScreen : Control
         var selectedIds = RunState.Instance.SelectedTowerIds;
         if (selectedIds == null || selectedIds.Count == 0)
         {
-            GetNode<HBoxContainer>("VBox/LoadoutRow").Visible = false;
+            _loadoutRow.Visible = false;
             return;
         }
 

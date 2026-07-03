@@ -3,12 +3,24 @@ using System.Collections.Generic;
 
 public partial class HUD : CanvasLayer
 {
-    private List<TowerData> _availableTowers;
-
     [Export] public float ButtonHeight = 14f;
     [Export] public float TowerBarSideMargin = 6f;
     [Export] public float TowerBarBottomMargin = 4f;
     [Export] public float WaveButtonWidth = 56f;
+
+    [Export] private NodePath _moneyLabelPath = new NodePath("InfoBar/MoneyLabel");
+    [Export] private NodePath _waveLabelPath = new NodePath("InfoBar/WaveLabel");
+    [Export] private NodePath _waveBarPath = new NodePath("WaveBar");
+    [Export] private NodePath _towerBarPath = new NodePath("TowerBar");
+    [Export] private NodePath _towerActionPanelPath = new NodePath("TowerActionPanel");
+    [Export] private NodePath _towerNameLabelPath = new NodePath("TowerActionPanel/TowerNameLabel");
+    [Export] private NodePath _statsLabelPath = new NodePath("TowerActionPanel/StatsLabel");
+    [Export] private NodePath _targetingLabelPath = new NodePath("TowerActionPanel/TargetingLabel");
+    [Export] private NodePath _equipLabelPath = new NodePath("TowerActionPanel/EquipLabel");
+    [Export] private NodePath _upgradeButtonPath = new NodePath("TowerActionPanel/UpgradeButton");
+    [Export] private NodePath _synergyLabelPath = new NodePath("SynergyLabel");
+
+    private List<TowerData> _availableTowers;
 
     private HBoxContainer _heartsContainer;
     private Label _moneyLabel;
@@ -41,10 +53,10 @@ public partial class HUD : CanvasLayer
     public override void _Ready()
     {
         Visible = false;
-        _moneyLabel = GetNode<Label>("InfoBar/MoneyLabel");
-        _waveLabel = GetNode<Label>("InfoBar/WaveLabel");
-        _waveBar = GetNode<HBoxContainer>("WaveBar");
-        _towerBar = GetNode<HBoxContainer>("TowerBar");
+        _moneyLabel = GetNode<Label>(_moneyLabelPath);
+        _waveLabel = GetNode<Label>(_waveLabelPath);
+        _waveBar = GetNode<HBoxContainer>(_waveBarPath);
+        _towerBar = GetNode<HBoxContainer>(_towerBarPath);
 
         _heartsContainer = new HBoxContainer();
         _heartsContainer.Name = "HeartsContainer";
@@ -93,11 +105,11 @@ public partial class HUD : CanvasLayer
         EventBus.Instance.AllWavesCompleted += OnAllWavesCompleted;
         EventBus.Instance.TowerPlaced += OnTowerPlaced;
 
-        _towerActionPanel = GetNode<VBoxContainer>("TowerActionPanel");
-        _towerNameLabel = GetNode<Label>("TowerActionPanel/TowerNameLabel");
-        _statsLabel = GetNode<Label>("TowerActionPanel/StatsLabel");
-        _targetingLabel = GetNode<Label>("TowerActionPanel/TargetingLabel");
-        _equipLabel = GetNode<Label>("TowerActionPanel/EquipLabel");
+        _towerActionPanel = GetNode<VBoxContainer>(_towerActionPanelPath);
+        _towerNameLabel = GetNode<Label>(_towerNameLabelPath);
+        _statsLabel = GetNode<Label>(_statsLabelPath);
+        _targetingLabel = GetNode<Label>(_targetingLabelPath);
+        _equipLabel = GetNode<Label>(_equipLabelPath);
 
         _equipIcon = new TextureRect();
         _equipIcon.Name = "EquipIcon";
@@ -112,7 +124,7 @@ public partial class HUD : CanvasLayer
         _towerActionPanel.MoveChild(_equipIcon, 3);
         _towerActionPanel.MoveChild(_equipDesc, 4);
 
-        _upgradeButton = GetNode<Button>("TowerActionPanel/UpgradeButton");
+        _upgradeButton = GetNode<Button>(_upgradeButtonPath);
 
         TowerSelectionManager.Instance.TowerSelected += OnTowerSelected;
         TowerSelectionManager.Instance.TowerDeselected += OnTowerDeselected;
@@ -130,7 +142,7 @@ public partial class HUD : CanvasLayer
             }
         };
 
-        _synergyLabel = GetNode<Label>("SynergyLabel");
+        _synergyLabel = GetNode<Label>(_synergyLabelPath);
         _synergyLabel.MouseEntered += OnSynergyLabelMouseEntered;
         _synergyLabel.MouseExited += HideTooltip;
         SynergyManager.Instance.SynergiesChanged += OnSynergiesChanged;
@@ -280,7 +292,6 @@ public partial class HUD : CanvasLayer
             _buffIconsContainer.AddChild(iconRect);
         }
 
-        string trinketId = RunState.Instance.AppliedTrinketIds.Count > 0 ? null : null;
         foreach (var tid in RunState.Instance.AppliedTrinketIds)
         {
             var trinketPath = $"res://resources/trinket_data/{tid}.tres";

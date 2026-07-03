@@ -3,24 +3,28 @@ using System.Collections.Generic;
 
 public partial class MetaShopScreen : Control
 {
+    [Export] private NodePath _tokenLabelPath = new NodePath("VBox/TokenLabel");
+    [Export] private NodePath _itemsContainerPath = new NodePath("VBox/ItemsScroll/ItemsContainer");
+    [Export] private NodePath _backButtonPath = new NodePath("VBox/BackButton");
+
     private Label _tokenLabel;
-    private HBoxContainer _tabsContainer;
     private VBoxContainer _itemsContainer;
     private Button _backButton;
 
+    private HBoxContainer _tabsContainer;
     private readonly List<(MetaUpgradeData data, Button buyBtn, Label statusLabel)> _allEntries = new();
     private string _activeTab = "All";
 
     public override void _Ready()
     {
-        _tokenLabel = GetNode<Label>("VBox/TokenLabel");
-        _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsScroll/ItemsContainer");
-        _backButton = GetNode<Button>("VBox/BackButton");
+        _tokenLabel = GetNode<Label>(_tokenLabelPath);
+        _itemsContainer = GetNode<VBoxContainer>(_itemsContainerPath);
+        _backButton = GetNode<Button>(_backButtonPath);
 
-            _tabsContainer = new HBoxContainer();
-            var vbox = GetNode<VBoxContainer>("VBox");
-            vbox.AddChild(_tabsContainer);
-            vbox.MoveChild(_tabsContainer, vbox.GetChildCount() - 2);
+        _tabsContainer = new HBoxContainer();
+        var vbox = GetNode<VBoxContainer>("VBox");
+        vbox.AddChild(_tabsContainer);
+        vbox.MoveChild(_tabsContainer, vbox.GetChildCount() - 2);
 
         _backButton.Pressed += () => UIManager.Instance.PopScreen();
         UpdateTokens();
