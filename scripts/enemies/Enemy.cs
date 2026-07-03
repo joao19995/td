@@ -128,7 +128,7 @@ public partial class Enemy : Area2D
 
         foreach (var node in allTowers)
         {
-            if (node is Tower tower)
+            if (node is Tower tower && GodotObject.IsInstanceValid(tower))
             {
                 float dist = tower.GlobalPosition.DistanceTo(myPos);
                 if (dist <= _data.AntiBuffAuraRadius)
@@ -138,7 +138,7 @@ public partial class Enemy : Area2D
 
         foreach (var tower in currentInRange)
         {
-            if (!_affectedTowers.Contains(tower))
+            if (!_affectedTowers.Contains(tower) && GodotObject.IsInstanceValid(tower))
             {
                 _affectedTowers.Add(tower);
                 Tower.AddAntiBuff(tower);
@@ -156,7 +156,8 @@ public partial class Enemy : Area2D
         {
             _affectedTowers.Remove(tower);
             Tower.RemoveAntiBuff(tower);
-            tower.RefreshStats();
+            if (GodotObject.IsInstanceValid(tower))
+                tower.RefreshStats();
         }
     }
 

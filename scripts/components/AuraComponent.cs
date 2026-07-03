@@ -42,7 +42,8 @@ public partial class AuraComponent : Node2D
     public override void _ExitTree()
     {
         foreach (var t in _affectedTowers)
-            RemoveBuff(t);
+            if (GodotObject.IsInstanceValid(t))
+                RemoveBuff(t);
         _affectedTowers.Clear();
     }
 
@@ -61,7 +62,7 @@ public partial class AuraComponent : Node2D
         foreach (var node in allTowers)
         {
             if (node == GetParent()) continue;
-            if (node is Tower tower)
+            if (node is Tower tower && GodotObject.IsInstanceValid(tower))
             {
                 float dist = tower.GlobalPosition.DistanceTo(myPos);
                 if (dist <= AuraRange)
@@ -94,7 +95,8 @@ public partial class AuraComponent : Node2D
         float curDmg = 0f, curFr = 0f;
         if (_activeBuffs.TryGetValue(tower, out var b)) { curDmg = b.damage; curFr = b.fireRate; }
         _activeBuffs[tower] = (curDmg + DamageBonusPercent, curFr + FireRateBonusPercent);
-        tower.RefreshStats();
+        if (GodotObject.IsInstanceValid(tower))
+            tower.RefreshStats();
     }
 
     private void RemoveBuff(Tower tower)
@@ -107,6 +109,7 @@ public partial class AuraComponent : Node2D
             _activeBuffs.Remove(tower);
         else
             _activeBuffs[tower] = (newDamage, newFireRate);
-        tower.RefreshStats();
+        if (GodotObject.IsInstanceValid(tower))
+            tower.RefreshStats();
     }
 }

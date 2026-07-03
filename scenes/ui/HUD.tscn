@@ -13,9 +13,6 @@ offset_bottom = 14.0
 grow_horizontal = 2
 theme_override_constants/separation = 6
 
-[node name="LivesLabel" type="Label" parent="InfoBar" unique_id=1449915102]
-layout_mode = 2
-
 [node name="MoneyLabel" type="Label" parent="InfoBar" unique_id=1676395297]
 layout_mode = 2
 

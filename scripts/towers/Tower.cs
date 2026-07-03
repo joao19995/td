@@ -52,10 +52,10 @@ public partial class Tower : Node2D
                 EmitSignal(SignalName.Clicked, this);
         };
 
-        AddToGroup("towers");
-
         if (_data != null)
         {
+            AddToGroup("towers");
+
             Clicked += tower => TowerSelectionManager.Instance?.SelectTower(tower);
             SetupAura();
             SetupGlobalAura();
@@ -217,6 +217,7 @@ public partial class Tower : Node2D
 
     private void ApplyData()
     {
+        if (_data == null) return;
         var detectionArea = GetNode<Area2D>("DetectionArea");
         var shape = detectionArea.GetNode<CollisionShape2D>("CollisionShape2D");
         var currentShape = shape.Shape as CircleShape2D;

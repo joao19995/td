@@ -167,4 +167,9 @@ public partial class SynergyManager : Node
             names.Add(s.DisplayName);
         return string.Join(", ", names);
     }
+
+    public System.Collections.Generic.IReadOnlyList<SynergyData> GetActiveSynergies()
+    {
+        return _activeSynergies.AsReadOnly();
+    }
 }
