@@ -50,14 +50,15 @@ jobs:
           cat mudancas.diff >> prompt.txt
 
           echo "🤖 Enviando dados para o Copilot Nativo..."
-          # CORREÇÃO: Usando a flag --prompt conforme exigido pela CLI para modo não-interativo
-          gh copilot explain --prompt "$(cat prompt.txt)" > resultado_copilot.md
+          
+          # A CLI do gh copilot muitas vezes exige a flag antes do argumento 'explain' ou direto no escopo global do comando
+          gh copilot explain -p "$(cat prompt.txt)" > resultado_copilot.md
 
           # 3. Passa o resultado para os outputs do step com delimitador de segurança
           echo "review_output<<EOF" >> $GITHUB_OUTPUT
           cat resultado_copilot.md >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
+          
       - name: Open issue if problems found
         if: contains(steps.review.outputs.review_output, 'ISSUES_FOUND')
         uses: actions/github-script@v7
