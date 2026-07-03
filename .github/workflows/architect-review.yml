@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 2 # Pega o commit atual e o anterior para fazer o diff
 
-- name: Run Godot Architect Agent Review
+      - name: Run Godot Architect Agent Review
         id: review
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
