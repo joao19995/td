@@ -57,14 +57,17 @@ public partial class ShopScreen : Control
             iconRect.Texture = item.Icon;
             iconRect.CustomMinimumSize = new Vector2(16, 16);
             iconRect.StretchMode = TextureRect.StretchModeEnum.Keep;
+            int effectiveCost = RunState.Instance?.GetEffectiveShopCost(item.Cost) ?? item.Cost;
             var label = new Label();
-            label.Text = $"{item.ItemName} ({item.Cost}g)";
+            label.Text = effectiveCost < item.Cost
+                ? $"{item.ItemName} ({effectiveCost}g, was {item.Cost}g)"
+                : $"{item.ItemName} ({item.Cost}g)";
             var desc = new Label();
             desc.Text = item.Description;
             desc.Modulate = new Color(0.7f, 0.7f, 0.7f);
             var buyBtn = new Button();
             buyBtn.Text = alreadyOwned ? "✓ Owned" : "Buy";
-            buyBtn.Disabled = alreadyOwned || !EconomyManager.Instance.CanAfford(item.Cost);
+            buyBtn.Disabled = alreadyOwned || !EconomyManager.Instance.CanAfford(effectiveCost);
             if (!alreadyOwned)
             {
                 var captured = item;
@@ -81,7 +84,7 @@ public partial class ShopScreen : Control
 
     private void OnBuyItem(ShopItemData item, Button btn)
     {
-        int cost = item.Cost;
+        int cost = RunState.Instance?.GetEffectiveShopCost(item.Cost) ?? item.Cost;
 
         bool hasPendingDiscount = RunState.Instance.FirstPurchaseDiscountPercent > 0f
             && item.FirstPurchaseDiscountPercent <= 0f;
@@ -150,8 +153,11 @@ public partial class ShopScreen : Control
             iconRect.CustomMinimumSize = new Vector2(16, 16);
             iconRect.StretchMode = TextureRect.StretchModeEnum.Keep;
 
+            int equipEffectiveCost = RunState.Instance?.GetEffectiveShopCost(equip.Cost) ?? equip.Cost;
             var label = new Label();
-            label.Text = $"{equip.Name} ({equip.Cost}g) [{equip.TargetTowerId.ToUpper()}]";
+            label.Text = equipEffectiveCost < equip.Cost
+                ? $"{equip.Name} ({equipEffectiveCost}g, was {equip.Cost}g) [{equip.TargetTowerId.ToUpper()}]"
+                : $"{equip.Name} ({equip.Cost}g) [{equip.TargetTowerId.ToUpper()}]";
 
             var desc = new Label();
             desc.Text = equip.Description;
@@ -165,15 +171,15 @@ public partial class ShopScreen : Control
             }
             else if (!string.IsNullOrEmpty(equippedId))
             {
-                buyBtn.Text = $"Replace ({equip.Cost}g)";
-                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equip.Cost);
+                buyBtn.Text = $"Replace ({equipEffectiveCost}g)";
+                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equipEffectiveCost);
                 var captured = equip;
                 buyBtn.Pressed += () => OnBuyEquip(captured, buyBtn);
             }
             else
             {
                 buyBtn.Text = "Buy & Equip";
-                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equip.Cost);
+                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(equipEffectiveCost);
                 var captured = equip;
                 buyBtn.Pressed += () => OnBuyEquip(captured, buyBtn);
             }
@@ -189,9 +195,10 @@ public partial class ShopScreen : Control
 
     private void OnBuyEquip(EquipData equip, Button btn)
     {
-        if (!EconomyManager.Instance.CanAfford(equip.Cost)) return;
+        int equipCost = RunState.Instance?.GetEffectiveShopCost(equip.Cost) ?? equip.Cost;
+        if (!EconomyManager.Instance.CanAfford(equipCost)) return;
 
-        EconomyManager.Instance.SpendMoney(equip.Cost);
+        EconomyManager.Instance.SpendMoney(equipCost);
         RunState.Instance.SetEquippedItem(equip.TargetTowerId, equip.Id);
         UpdateMoney();
 

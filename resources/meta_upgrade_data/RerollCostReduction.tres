@@ -4,14 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "local_sponsorship"
-Name = "Local Sponsorship"
-Description = "Start each run with 50 additional gold per level"
-CostTokens = 10
+Id = "reroll_cost_reduction"
+Name = "Second Chance Discount"
+Description = "Reroll costs reduced by 10% per level"
+CostTokens = 15
 MaxLevel = 3
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingGold"
-BonusPerLevel = 50
+StatType = "RerollCostReductionPercent"
+BonusPerLevel = 0.10
 Category = "Economy"
-

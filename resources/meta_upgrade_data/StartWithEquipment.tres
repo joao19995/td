@@ -4,14 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "unlock_bakery_truck"
-Name = "Buy the Bakery Truck"
-Description = "Unlocks Bakery Truck tower for use in runs"
-CostTokens = 50
+Id = "start_with_equipment"
+Name = "Starter Gear Voucher"
+Description = "Start each run with 1 random equipment on a loadout tower"
+CostTokens = 40
 MaxLevel = 1
-IsTowerUnlock = true
-TowerId = "bakery_truck"
-StatType = ""
+IsTowerUnlock = false
+TowerId = ""
+StatType = "StartWithEquipment"
 BonusPerLevel = 0.0
 Category = "Unlocks"
-

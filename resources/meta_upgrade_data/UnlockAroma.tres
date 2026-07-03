@@ -13,3 +13,5 @@ IsTowerUnlock = true
 TowerId = "aroma_keeper"
 StatType = ""
 BonusPerLevel = 0.0
+Category = "Unlocks"
+

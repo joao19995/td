@@ -13,3 +13,5 @@ IsTowerUnlock = true
 TowerId = "taste_tester"
 StatType = ""
 BonusPerLevel = 0.0
+Category = "Unlocks"
+

@@ -14,7 +14,6 @@ finished have been removed — their outcomes are described in GAME_STATUS.md.
 
 ---
 
-
 ## Camada de Polimento — Improvements to Existing Features
 
 Each item below builds on existing features and adds the visual, interactive,
@@ -25,55 +24,17 @@ Suggested execution order (lowest dependencies, maximum impact per effort).
 ---
 
 
+### 1. [DONE] Trinkets — UI Card + Visual Polish
 
-
-
-### 1. Trinkets — UI Card + Visual Polish
-
-**Why**: 10 trinkets exist but the UI is basic with no icons or card presentation.
-
-**What to build**:
-- **UI card-based**: each trinket presented as a card with icon, name, description,
-  border with rarity color
-- **Choice animation**: fade-in of cards, hover highlight, brief animation on "Take"
-- **Skip option**: "Skip" button if no trinket interests the player
-- **Rarity**: common (1 effect) and rare (2 effects)
-
-**Decisions**:
-- Cards = `PanelContainer` with `TextureRect` + `Label` children, instantiated
-  from a `TrinketCard.tscn` scene
-- Rarity = `Rarity` field (enum: Common/Uncommon/Rare) on `TrinketData`
-- Skip = advances without applying a trinket (RunState gets no bonus)
-
-**Estimate**: 2-3 days
+Cards with icons/name/description/rarity-colored border, fade-in/hover animation,
+Skip button. Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 2. Meta-Progression — Expansion
+### 2. [DONE] Meta-Progression — Expansion
 
-**Why**: 10 upgrades (5 base + 5 tower unlocks) is still slim for long-term progression.
-
-**What to build**:
-- **Catalog expansion**: 15-20 upgrades total:
-  - Tower unlocks (existing: 2 default + 8 purchasable)
-  - Stat upgrades: damage, fire rate, range, starting gold (existing)
-  - "Starting lives +2 per level"
-  - "Shop discount 5% per level"
-  - "Reroll cost -10% per level"
-  - "Start with 1 random equipment" (unlock)
-  - "Start towers at level 1" (unlock)
-  - "Enemy gold bonus +10% per level"
-- **Token reward scaling**: tokens = base × (1 + fightsCompleted / totalFights)
-  — bigger reward for longer runs
-- **Victory bonus**: +50% tokens if run beats the boss
-- **UI categories**: tabs for "Unlocks", "Stats", "Economy"
-
-**Decisions**:
-- New upgrades = `.tres` files — zero-code-change
-- Cost scaling remains `CostTokens × (level + 1)` — simple, consistent
-- Token scaling is a simple formula, no external config (can be exported later)
-
-**Estimate**: 2-3 days
+16 upgrades (10 new): Starting Lives, Shop Discount, Reroll Cost, Start Equip, Start Tower Lv1, Enemy Gold Bonus.
+Token reward scaling with victory bonus. UI tabs (All/Unlocks/Stats/Economy). Outcome documented in GAME_STATUS.md.
 
 ---
 
@@ -331,18 +292,16 @@ the game feels dead regardless of visual polish.
 ## Recommended Priority
 
 | # | Item | Impact | Effort | Dependencies |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|
 | 1 | Custom Sprites (towers + enemies) | Critical | 3-5d | None |
 | 2 | HUD Tooltips + Buff Icons | High | 2-3d | None |
 | 3 | Enemy/Projectile VFX | High | 3-5d | None |
-| 4 | Trinkets Cards | Medium | 2-3d | None |
-| 5 | Meta-Progression Expansion | Medium | 2-3d | None |
-| 6 | UI Transitions | Medium | 2-3d | None |
-| 7 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#6) |
-| 8 | Briefing + Preview | Medium | 1-2d | None |
-| 9 | Bestiary Sprites + Lore | Medium | 2-3d | None |
-| 10 | Waves + Elites | Low | 2-3d | None |
-| 11 | Targeted Priority UI | Low | 1d | None |
-| 12 | Loadout Preview | Low | 2-3d | None |
-| 13 | Tutorial/Onboarding | Low | 1-2d | None |
-| 14 | Sound System | Critical | 2-3d | None |
+| 4 | UI Transitions | Medium | 2-3d | None |
+| 5 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#4) |
+| 6 | Briefing + Preview | Medium | 1-2d | None |
+| 7 | Bestiary Sprites + Lore | Medium | 2-3d | None |
+| 8 | Waves + Elites | Low | 2-3d | None |
+| 9 | Targeted Priority UI | Low | 1d | None |
+| 10 | Loadout Preview | Low | 2-3d | None |
+| 11 | Tutorial/Onboarding | Low | 1-2d | None |
+| 12 | Sound System | Critical | 2-3d | None |

@@ -13,3 +13,5 @@ IsTowerUnlock = true
 TowerId = "fermentation_sage"
 StatType = ""
 BonusPerLevel = 0.0
+Category = "Unlocks"
+

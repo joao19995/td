@@ -13,3 +13,5 @@ IsTowerUnlock = true
 TowerId = "dough_exorcist"
 StatType = ""
 BonusPerLevel = 0.0
+Category = "Unlocks"
+

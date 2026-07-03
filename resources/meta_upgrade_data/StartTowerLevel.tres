@@ -4,14 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "unlock_bakery_truck"
-Name = "Buy the Bakery Truck"
-Description = "Unlocks Bakery Truck tower for use in runs"
+Id = "start_tower_level"
+Name = "Seasoned Recruits"
+Description = "Newly placed towers start at upgrade level 1"
 CostTokens = 50
 MaxLevel = 1
-IsTowerUnlock = true
-TowerId = "bakery_truck"
-StatType = ""
+IsTowerUnlock = false
+TowerId = ""
+StatType = "StartTowerLevel"
 BonusPerLevel = 0.0
 Category = "Unlocks"
-

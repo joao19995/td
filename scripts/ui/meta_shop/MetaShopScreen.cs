@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 public partial class MetaShopScreen : Control
 {
-    private VBoxContainer _itemsContainer;
     private Label _tokenLabel;
+    private HBoxContainer _tabsContainer;
+    private VBoxContainer _itemsContainer;
     private Button _backButton;
 
-    private readonly List<(MetaUpgradeData data, Button buyBtn, Label statusLabel)> _entries = new();
+    private readonly List<(MetaUpgradeData data, Button buyBtn, Label statusLabel)> _allEntries = new();
+    private string _activeTab = "All";
 
     public override void _Ready()
     {
@@ -15,9 +17,15 @@ public partial class MetaShopScreen : Control
         _itemsContainer = GetNode<VBoxContainer>("VBox/ItemsScroll/ItemsContainer");
         _backButton = GetNode<Button>("VBox/BackButton");
 
+            _tabsContainer = new HBoxContainer();
+            var vbox = GetNode<VBoxContainer>("VBox");
+            vbox.AddChild(_tabsContainer);
+            vbox.MoveChild(_tabsContainer, vbox.GetChildCount() - 2);
+
         _backButton.Pressed += () => UIManager.Instance.PopScreen();
         UpdateTokens();
-        BuildItemList();
+        BuildTabs();
+        BuildItemList("All");
     }
 
     private void UpdateTokens()
@@ -25,12 +33,51 @@ public partial class MetaShopScreen : Control
         _tokenLabel.Text = $"Tokens: {SaveManager.Instance.MetaTokens}";
     }
 
-    private void BuildItemList()
+    private void BuildTabs()
     {
-        _entries.Clear();
+        string[] tabs = { "All", "Unlocks", "Stats", "Economy" };
+        foreach (var tab in tabs)
+        {
+            var btn = new Button();
+            btn.Text = tab;
+            btn.ToggleMode = true;
+            btn.ButtonPressed = tab == "All";
+            if (tab == "All")
+                btn.Disabled = true;
+
+            var capturedTab = tab;
+            btn.Pressed += () => OnTabSelected(capturedTab);
+
+            _tabsContainer.AddChild(btn);
+        }
+    }
+
+    private void OnTabSelected(string tab)
+    {
+        _activeTab = tab;
+        foreach (var child in _tabsContainer.GetChildren())
+        {
+            if (child is Button btn)
+            {
+                btn.Disabled = false;
+                btn.ButtonPressed = btn.Text == tab;
+                if (btn.Text == tab)
+                    btn.Disabled = true;
+            }
+        }
+        RefreshList();
+    }
+
+    private void BuildItemList(string categoryFilter)
+    {
+        _allEntries.Clear();
         var items = LoadItems();
+
         foreach (var item in items)
         {
+            if (categoryFilter != "All" && item.Category != categoryFilter)
+                continue;
+
             var hbox = new HBoxContainer();
 
             int currentLevel = SaveManager.Instance.GetMetaUpgradeLevel(item.Id);
@@ -39,6 +86,7 @@ public partial class MetaShopScreen : Control
             string statusText = isMaxed ? "MAX" : $"Lv.{currentLevel}/{item.MaxLevel}";
             var label = new Label();
             label.Text = $"{item.Name} ({item.Description})";
+            label.SizeFlagsHorizontal = Control.SizeFlags.Expand | Control.SizeFlags.Fill;
             var statusLabel = new Label();
             statusLabel.Text = statusText;
 
@@ -63,7 +111,7 @@ public partial class MetaShopScreen : Control
             hbox.AddChild(buyBtn);
             _itemsContainer.AddChild(hbox);
 
-            _entries.Add((item, buyBtn, statusLabel));
+            _allEntries.Add((item, buyBtn, statusLabel));
         }
     }
 
@@ -90,7 +138,7 @@ public partial class MetaShopScreen : Control
         foreach (var child in _itemsContainer.GetChildren())
             child.QueueFree();
 
-        BuildItemList();
+        BuildItemList(_activeTab);
     }
 
     private static List<MetaUpgradeData> LoadItems()

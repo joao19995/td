@@ -13,3 +13,5 @@ IsTowerUnlock = true
 TowerId = "crust_crusader"
 StatType = ""
 BonusPerLevel = 0.0
+Category = "Unlocks"
+

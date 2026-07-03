@@ -26,6 +26,12 @@ public partial class RunState : Node
 
     public float MetaDamageBonusPercent { get; private set; } = 0f;
     public int StartingGoldBonus { get; private set; } = 0;
+    public int MetaStartingLivesBonus { get; private set; } = 0;
+    public float MetaShopDiscountPercent { get; private set; } = 0f;
+    public float MetaRerollCostReductionPercent { get; private set; } = 0f;
+    public float MetaEnemyGoldBonusPercent { get; private set; } = 0f;
+    public bool MetaStartWithEquipment { get; private set; } = false;
+    public bool MetaStartTowerLevel { get; private set; } = false;
 
     public float TrinketDamageBonusPercent { get; set; } = 0f;
     public float TrinketFireRateBonusPercent { get; set; } = 0f;
@@ -84,9 +90,50 @@ public partial class RunState : Node
         MetaDamageBonusPercent = damageLevel * 0.05f;
         int goldLevel = SaveManager.Instance.GetMetaUpgradeLevel("local_sponsorship");
         StartingGoldBonus = goldLevel * 50;
+        int livesLevel = SaveManager.Instance.GetMetaUpgradeLevel("starting_lives");
+        MetaStartingLivesBonus = livesLevel * 2;
+        int shopLevel = SaveManager.Instance.GetMetaUpgradeLevel("shop_discount");
+        MetaShopDiscountPercent = shopLevel * 0.05f;
+        int rerollLevel = SaveManager.Instance.GetMetaUpgradeLevel("reroll_cost_reduction");
+        MetaRerollCostReductionPercent = rerollLevel * 0.10f;
+        int goldBonusLevel = SaveManager.Instance.GetMetaUpgradeLevel("enemy_gold_bonus");
+        MetaEnemyGoldBonusPercent = goldBonusLevel * 0.10f;
+        MetaStartWithEquipment = SaveManager.Instance.GetMetaUpgradeLevel("start_with_equipment") > 0;
+        MetaStartTowerLevel = SaveManager.Instance.GetMetaUpgradeLevel("start_tower_level") > 0;
+
+        if (MetaStartTowerLevel)
+        {
+            foreach (var id in selectedTowerIds)
+            {
+                if (GetTowerLevel(id) == 0)
+                    SetTowerLevel(id, 1);
+            }
+        }
+
+        if (MetaStartWithEquipment)
+        {
+            System.Collections.Generic.List<EquipData> allEquips = new();
+            var dir = DirAccess.Open("res://resources/equip_data/");
+            if (dir != null)
+            {
+                foreach (var file in dir.GetFiles())
+                {
+                    if (!file.EndsWith(".tres") && !file.EndsWith(".res")) continue;
+                    var eq = ResourceLoader.Load<EquipData>("res://resources/equip_data/" + file, "", ResourceLoader.CacheMode.Replace);
+                    if (eq != null) allEquips.Add(eq);
+                }
+            }
+
+            var loadoutEquips = allEquips.FindAll(e => selectedTowerIds.Contains(e.TargetTowerId));
+            if (loadoutEquips.Count > 0)
+            {
+                var chosen = loadoutEquips[GD.RandRange(0, loadoutEquips.Count - 1)];
+                SetEquippedItem(chosen.TargetTowerId, chosen.Id);
+            }
+        }
 
         EconomyManager.Instance.SetMoney(gold + StartingGoldBonus);
-        GameManager.Instance.SetLives(lives);
+        GameManager.Instance.SetLives(lives + MetaStartingLivesBonus);
     }
 
     public void IncrementFights()
@@ -104,11 +151,20 @@ public partial class RunState : Node
         IsMiniboss = value;
     }
 
-    public void EndRun()
+    public void EndRun(bool isVictory = false)
     {
         if (!IsRunActive) return;
         IsRunActive = false;
-        SaveManager.Instance.AddMetaTokens(SaveManager.Instance.MetaTokensPerRun);
+
+        int baseTokens = SaveManager.Instance.MetaTokensPerRun;
+        float ratio = SlotManager.Instance != null
+            ? (float)FightsCompleted / Mathf.Max(1, SlotManager.Instance.FightsPerRun)
+            : 1f;
+        int totalTokens = Mathf.RoundToInt(baseTokens * (1f + ratio));
+        if (isVictory)
+            totalTokens = Mathf.RoundToInt(totalTokens * 1.5f);
+
+        SaveManager.Instance.AddMetaTokens(totalTokens);
         _towerLevels.Clear();
         _equippedItems.Clear();
         _ancientStarterAttackCount.Clear();
@@ -124,6 +180,12 @@ public partial class RunState : Node
         IsMiniboss = false;
         MetaDamageBonusPercent = 0f;
         StartingGoldBonus = 0;
+        MetaStartingLivesBonus = 0;
+        MetaShopDiscountPercent = 0f;
+        MetaRerollCostReductionPercent = 0f;
+        MetaEnemyGoldBonusPercent = 0f;
+        MetaStartWithEquipment = false;
+        MetaStartTowerLevel = false;
         TrinketDamageBonusPercent = 0f;
     }
 
@@ -208,6 +270,13 @@ public partial class RunState : Node
         if (ratio >= 0.66f) return "tier3";
         if (ratio >= 0.33f) return "tier2";
         return "tier1";
+    }
+
+    public int GetEffectiveShopCost(int baseCost)
+    {
+        if (MetaShopDiscountPercent > 0f)
+            return Mathf.Max(1, Mathf.RoundToInt(baseCost * (1f - MetaShopDiscountPercent)));
+        return baseCost;
     }
 
     public Array<WaveData> PickRunWaves()

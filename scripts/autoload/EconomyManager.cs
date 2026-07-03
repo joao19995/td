@@ -22,7 +22,8 @@ public partial class EconomyManager : Node
 
     private void OnEnemyDied(int reward)
     {
-        AddMoney(reward);
+        float bonus = RunState.Instance?.MetaEnemyGoldBonusPercent ?? 0f;
+        AddMoney(Mathf.RoundToInt(reward * (1f + bonus)));
     }
 
     public bool CanAfford(int cost) => _currentMoney >= cost;

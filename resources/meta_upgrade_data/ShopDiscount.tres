@@ -4,14 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "local_sponsorship"
-Name = "Local Sponsorship"
-Description = "Start each run with 50 additional gold per level"
-CostTokens = 10
+Id = "shop_discount"
+Name = "Bulk Flour Discount"
+Description = "All shop item costs reduced by 5% per level"
+CostTokens = 20
 MaxLevel = 3
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingGold"
-BonusPerLevel = 50
+StatType = "ShopDiscountPercent"
+BonusPerLevel = 0.05
 Category = "Economy"
-

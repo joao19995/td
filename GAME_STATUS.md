@@ -88,19 +88,27 @@ not implementation details.
 ## Trinkets (Run-Wide Charms)
 
 - **Treasure outcome** on the slot machine (20% base weight) lets the player choose 1 of 3 random trinkets.
+- **Card UI**: each trinket is presented as a `PanelContainer` card with:
+  - 32×32 icon from `TrinketData.Icon`
+  - Name and description labels
+  - Rarity-colored border — **Common** (gray), **Rare** (gold)
+  - Hover highlight and sequential fade-in animation (0.15s stagger)
+- **Skip button**: "Skip" advances without applying a trinket
 - Trinkets apply **run-wide** effects that last for the rest of the run:
   - *Secret Recipe Scroll*: +10% global damage
   - *Starter's Blessing*: restore 5 lives immediately
   - *Regular's Tip Jar*: gain 100 gold immediately
-  - *Proofing Time Candle*: +8% Attack Speed, -5% Range (trade-off)
+  - *Proofing Time Candle*: +8% Attack Speed, -5% Range (trade-off, **Rare**)
   - *Crust Fragment Relic*: +12% Crit Damage (multiplicative)
   - *Fermentation Diary*: +15% status effect duration (slow, poison)
   - *Sacred Flour Dust*: +10% slow/poison strength
   - *Heretic Census List*: +10% damage vs basic enemies
   - *Oven Heart Ember*: +1 starting tower range (small global aura, ~10px)
   - *First Starter Vessel*: every 30s gains +5 passive gold
-- **10 trinkets total**. Passive gold uses a timer in RunState._Process. Crit damage is multiplicative to the base crit multiplier. Trade-off trinkets use negative values in existing stat fields.
+- **10 trinkets total** (9 Common, 1 Rare). Rarity determined by `TrinketData.Rarity` enum field.
+- Passive gold uses a timer in RunState._Process. Crit damage is multiplicative to the base crit multiplier. Trade-off trinkets use negative values in existing stat fields.
 - Trinkets are single-use per run — once chosen, the effect is applied.
+- On Take/Skip: fade-out animation (0.2s) before transitioning to the next screen.
 
 ## Shop Items (Run-Wide Purchases)
 
@@ -125,15 +133,28 @@ not implementation details.
 ## Meta-Progression (Save System)
 
 - **Persistence**: meta-progression data (tokens, unlocked towers, discoveries) is saved to `user://save_data.json` using `FileAccess` + JSON — no `.tres` resources for save data (avoids documented security vector of `ResourceLoader.Load` on untrusted files).
-- **Meta tokens**: awarded at the end of every run (win or lose). Configurable via `SaveManager.MetaTokensPerRun` (default 10).
+- **Meta tokens**: awarded at the end of every run (win or lose). Token reward scales: `base × (1 + fightsCompleted / totalFights)`. Victory bonus: +50% tokens if the boss was defeated.
 - **Unlocked towers**: Bread Baker and Bread Courier start unlocked. All other 8 towers are purchased with tokens in the Meta Shop.
-- **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
-- **Upgrade catalog** (10 items):
+- **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
+- **Upgrade catalog** (16 items, 3 categories):
+
+  **Unlocks** (9 items):
   - 8 tower unlocks (various token costs)
+  - Starter Gear Voucher (40 tokens, 1 level): start each run with 1 random equipment on a loadout tower
+  - Seasoned Recruits (50 tokens, 1 level): newly placed towers start at upgrade level 1
+
+  **Stats** (3 items):
   - Secret Recipe +5% per level (15 tokens base, 3 levels max) — global damage bonus
-  - Local Sponsorship +50 starting gold per level (10 tokens base, 3 levels max)
+  - Local Sponsorship +50 starting gold per level (10 tokens base, 3 levels max) — starting gold
+  - Extra Loaves +2 lives per level (15 tokens base, 3 levels max) — starting lives
+
+  **Economy** (4 items):
+  - Bulk Flour Discount -5% per level (20 tokens base, 3 levels max) — shop item costs reduced
+  - Second Chance Discount -10% per level (15 tokens base, 3 levels max) — reroll costs reduced
+  - Tax on Industrial Bread +10% per level (20 tokens base, 3 levels max) — enemies grant more gold
+
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens x 1`, level 2 costs `CostTokens x 2`, etc. Each level grants the configured bonus.
-- **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold bonus is added before the run begins.
+- **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold/lives bonuses are added before the run begins. Shop discount reduces displayed costs in the shop UI. Reroll cost reduction applies at the slot machine. Enemy gold bonus multiplies all enemy gold rewards. Starter Gear Voucher picks a random equipment for a random loadout tower at run start. Seasoned Recruits sets all loadout towers to level 1 at run start.
 - **Corruption handling**: save file corruption or incompatible schema triggers a clean default reset with a warning — the game never crashes on broken save data.
 - **Migration**: if new default towers are added in a future update, existing save files automatically include them on first load after the update.
 
@@ -354,8 +375,8 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Run engine (slot machine) | `SlotManager` Inspector | Fight count per run, outcome weights, heal amount, miniboss multiplier, reroll cost, skew factor |
 | Shop items (run upgrades) | `ShopItemData` resource | Item ID, name, cost, stat bonus percent, heavy damage bonus, first-purchase discount |
 | Tower equipment | `EquipData` resource | Item ID, name, cost, target tower type, stat percent bonuses |
-| Trinkets | `TrinketData` resource | Item ID, name, damage/fire rate/range/crit damage/status duration/status strength percent bonuses, heal/gold amount, passive gold interval |
+| Trinkets | `TrinketData` resource | Item ID, name, rarity (Common/Rare), damage/fire rate/range/crit damage/status duration/status strength percent bonuses, heal/gold amount, passive gold interval |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |
 | Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted` |
 | Bestiary discovery | `SaveManager` JSON | Towers/enemies/equip/trinkets/synergies auto-discovered when first encountered |
-| Meta-progression | `MetaUpgradeData` resource | Item ID, name, cost tokens, max level, IsTowerUnlock, TowerId, StatType, BonusPerLevel |
+| Meta-progression | `MetaUpgradeData` resource | Item ID, name, cost tokens, max level, IsTowerUnlock, TowerId, StatType, BonusPerLevel, Category (Unlocks/Stats/Economy) |

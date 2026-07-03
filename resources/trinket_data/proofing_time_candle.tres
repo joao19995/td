@@ -8,6 +8,7 @@ script = ExtResource("1_sc")
 Id = "proofing_time_candle"
 Name = "Proofing Time Candle"
 Description = "+8% attack speed, -5% range"
+Rarity = 1
 FireRatePercentBonus = 0.08
 RangePercentBonus = -0.05
 Icon = ExtResource("1_proofing_time_candle1")

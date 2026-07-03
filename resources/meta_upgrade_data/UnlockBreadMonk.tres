@@ -13,3 +13,5 @@ IsTowerUnlock = true
 TowerId = "bread_monk"
 StatType = ""
 BonusPerLevel = 0.0
+Category = "Unlocks"
+

@@ -4,14 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "local_sponsorship"
-Name = "Local Sponsorship"
-Description = "Start each run with 50 additional gold per level"
-CostTokens = 10
+Id = "enemy_gold_bonus"
+Name = "Tax on Industrial Bread"
+Description = "Enemies grant 10% more gold per level"
+CostTokens = 20
 MaxLevel = 3
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingGold"
-BonusPerLevel = 50
+StatType = "EnemyGoldBonusPercent"
+BonusPerLevel = 0.10
 Category = "Economy"
-

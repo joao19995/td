@@ -1,5 +1,7 @@
 using Godot;
 
+public enum TrinketRarity { Common, Rare }
+
 [GlobalClass]
 public partial class TrinketData : Resource
 {
@@ -7,6 +9,7 @@ public partial class TrinketData : Resource
     [Export] public string Name { get; set; } = "";
     [Export] public string Description { get; set; } = "";
     [Export] public Texture2D Icon { get; set; }
+    [Export] public TrinketRarity Rarity { get; set; } = TrinketRarity.Common;
     [Export] public float DamagePercentBonus { get; set; } = 0f;
     [Export] public float FireRateBonusPercent { get; set; } = 0f;
     [Export] public float RangePercentBonus { get; set; } = 0f;

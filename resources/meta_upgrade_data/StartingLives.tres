@@ -4,14 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "local_sponsorship"
-Name = "Local Sponsorship"
-Description = "Start each run with 50 additional gold per level"
-CostTokens = 10
+Id = "starting_lives"
+Name = "Extra Loaves"
+Description = "Start each run with 2 additional lives per level"
+CostTokens = 15
 MaxLevel = 3
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingGold"
-BonusPerLevel = 50
-Category = "Economy"
-
+StatType = "StartingLives"
+BonusPerLevel = 2
+Category = "Stats"

@@ -30,7 +30,9 @@ public partial class SlotManager : Node
 
     public int GetRerollCost()
     {
-        return RerollBaseCost * (CurrentRerollCount + 1);
+        int baseCost = RerollBaseCost * (CurrentRerollCount + 1);
+        float reduction = RunState.Instance?.MetaRerollCostReductionPercent ?? 0f;
+        return Mathf.Max(1, Mathf.RoundToInt(baseCost * (1f - reduction)));
     }
 
     public void ResetRerolls()
