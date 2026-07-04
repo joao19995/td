@@ -288,15 +288,7 @@ public partial class BestiaryScreen : Control
         costLabel.Text = $"Cost: {t.Cost}g";
         vbox.AddChild(costLabel);
 
-        var tags = new List<string>();
-        if (t.HasSplash) tags.Add("SPLASH");
-        if (t.HasPoison) tags.Add("POISON");
-        if (t.HasSlow) tags.Add("SLOW");
-        if (t.HasAura) tags.Add("AURA");
-        if (t.HasChain) tags.Add("CHAIN");
-        if (t.HasCrit) tags.Add("CRIT");
-        if (t.HasExecute) tags.Add("EXECUTE");
-        if (t.HasGlobalAura) tags.Add("GLOBAL AURA");
+        var tags = TowerTagHelper.GetTags(t, "GLOBAL AURA");
         if (tags.Count > 0)
         {
             var tagLabel = new Label();

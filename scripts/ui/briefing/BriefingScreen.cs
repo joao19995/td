@@ -84,7 +84,7 @@ public partial class BriefingScreen : Control
     {
         if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
         {
-            string tier = WaveGenerator.GetWaveTier(RunState.Instance.FightsCompleted, SlotManager.Instance.FightsPerRun);
+            string tier = WaveGenerator.GetWaveTier(RunState.Instance.FightsCompleted, SlotManager.Instance?.FightsPerRun ?? 0);
             string tierName = tier switch
             {
                 "tier1" => "Tier 1",

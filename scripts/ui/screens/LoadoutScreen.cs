@@ -158,7 +158,7 @@ public partial class LoadoutScreen : CanvasLayer
         _previewName.Text = data.TowerName;
         _previewStats.Text = $"DMG:{data.Damage}  SPD:{data.FireRate:F1}  RNG:{data.Range:F0}";
 
-        var tags = data.GetTags();
+        var tags = TowerTagHelper.GetTags(data);
         _previewSpecial.Text = tags.Count > 0 ? string.Join(" ", tags) : "";
         _previewPanel.Modulate = new Color(1, 1, 1, 1);
         _previewPanel.MouseFilter = Control.MouseFilterEnum.Pass;
@@ -203,7 +203,7 @@ public partial class LoadoutScreen : CanvasLayer
     }
     private List<SynergyData> GetPreviewSynergies(List<string> selectedIds)
     {
-        var active = SynergyPreviewHelper.GetPreviewSynergies(selectedIds);
+        var active = SynergyPreviewHelper.GetPreviewSynergies(selectedIds, _allSynergies);
         active.RemoveAll(s => s == null || !AllTowersUnlocked(s));
         return active;
     }

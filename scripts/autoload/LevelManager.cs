@@ -77,7 +77,7 @@ public partial class LevelManager : Node
         PendingLevelData = Levels[_pendingLevelIndex];
 
         if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
-            PendingRunWaves = WaveGenerator.PickRunWaves(RunState.Instance.FightsCompleted, SlotManager.Instance.FightsPerRun);
+            PendingRunWaves = WaveGenerator.PickRunWaves(RunState.Instance.FightsCompleted, SlotManager.Instance?.FightsPerRun ?? 0);
         else
             PendingRunWaves = null;
 
