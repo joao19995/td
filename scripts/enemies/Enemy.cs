@@ -37,7 +37,7 @@ public partial class Enemy : Area2D
             ApplyData();
 
         if (_speedMultiplier != 1f)
-            _movement?.SetSpeedMultiplier(_speedMultiplier);
+            _movement?.SetBaseSpeedMultiplier(_speedMultiplier);
     }
 
     private void ConnectSignals()
@@ -69,11 +69,15 @@ public partial class Enemy : Area2D
         _hpMultiplier = statMultiplier;
         _dmgMultiplier = statMultiplier;
         _goldMultiplier = statMultiplier;
+        _speedMultiplier = 1f;
         _isElite = isElite;
         ConnectSignals();
 
         if (_movement != null)
+        {
             _movement.Initialize(curve, data.MoveSpeed);
+            _movement.SetBaseSpeedMultiplier(_speedMultiplier);
+        }
         else
             _pendingCurve = curve;
 
@@ -86,11 +90,17 @@ public partial class Enemy : Area2D
         _hpMultiplier *= hpMult;
         _dmgMultiplier *= dmgMult;
         _goldMultiplier *= goldMult;
+
+        if (_health != null)
+            ApplyData();
     }
 
     public void SetSpeedMultiplier(float mult)
     {
         _speedMultiplier = mult;
+
+        if (_movement != null)
+            _movement.SetBaseSpeedMultiplier(_speedMultiplier);
     }
 
     private void ApplyData()
@@ -104,6 +114,8 @@ public partial class Enemy : Area2D
             _movement.Initialize(_pendingCurve, _data.MoveSpeed);
             _pendingCurve = null;
         }
+
+        _movement?.SetBaseSpeedMultiplier(_speedMultiplier);
 
         if (_data.Sprite != null)
             GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;

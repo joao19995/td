@@ -131,7 +131,7 @@ public partial class Tower : Node2D
             if (_data.UpgradePath != null)
                 for (int i = 0; i < _currentUpgradeLevel && i < _data.UpgradePath.Count; i++)
                     bonus += _data.UpgradePath[i].DamageBonus;
-            float baseWithUpgrade = _data.Damage + bonus + _ancientStarterStacks;
+            float baseWithUpgrade = _data.Damage + bonus + (_ancientStarterStacks * GetAttackStackDamageFlat());
             float synergyPercent = SynergyManager.Instance?.GetDamageBonus(_data.Id) ?? 0f;
             float shopPercent = RunState.Instance?.ShopDamageBonusPercent ?? 0f;
             float metaPercent = RunState.Instance?.MetaDamageBonusPercent ?? 0f;
@@ -207,6 +207,7 @@ public partial class Tower : Node2D
     private float GetEquipFireRatePercent() => _equipData?.FireRatePercentBonus ?? 0f;
     private float GetEquipRangePercent() => _equipData?.RangePercentBonus ?? 0f;
     private float GetEquipCritChance() => _equipData?.CritChanceBonus ?? 0f;
+    private float GetAttackStackDamageFlat() => _equipData?.AttackStackDamageFlat ?? 0f;
 
 
     public void RefreshStats()

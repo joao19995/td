@@ -107,7 +107,7 @@ public partial class UIManager : Node
     {
         if (RunState.Instance.IsBossFight)
         {
-            RunState.Instance.EndRun();
+            RunState.Instance.EndRun(true);
             EventBus.Instance.EmitSignal(EventBus.SignalName.RunCompleted);
             PushScreen(VictoryData);
             return;
