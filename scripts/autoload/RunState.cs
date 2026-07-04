@@ -92,7 +92,6 @@ public partial class RunState : Node
         TrinketRangeFlatBonus = 0f;
         TrinketBasicDamagePercentBonus = 0f;
         _passiveGoldEffects.Clear();
-        _passiveGoldEffects.Clear();
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
         MetaDamageBonusPercent = damageLevel * GameBalance.MetaDamagePercentPerLevel;
