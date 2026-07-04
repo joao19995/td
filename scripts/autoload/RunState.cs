@@ -1,6 +1,5 @@
 using Godot;
 using Godot.Collections;
-using System.Collections.Generic;
 
 public partial class RunState : Node
 {
@@ -43,7 +42,7 @@ public partial class RunState : Node
     public float GlobalAuraDamagePercent { get; set; } = 0f;
     public float TrinketRangeFlatBonus { get; set; } = 0f;
     public float TrinketBasicDamagePercentBonus { get; set; } = 0f;
-    private readonly List<PassiveGoldEffect> _passiveGoldEffects = new();
+    private readonly System.Collections.Generic.List<PassiveGoldEffect> _passiveGoldEffects = new();
 
     private Dictionary<string, int> _towerLevels = new();
     private Dictionary<string, string> _equippedItems = new();
