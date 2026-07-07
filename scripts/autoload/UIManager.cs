@@ -102,6 +102,14 @@ public partial class UIManager : Node
             LevelManager.Instance.LevelContainer);
     }
 
+    public static void NavigateToMainMenuKeepRun()
+    {
+        GD.Print("[UIManager] NavigateToMainMenuKeepRun called — keeping run save, popping all screens.");
+        Instance.PopAll();
+        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/MainMenu.tscn",
+            LevelManager.Instance.LevelContainer);
+    }
+
     private void OnGameOver()
     {
         GD.Print("[UIManager] GameOver received — pushing GameOverScreen.");

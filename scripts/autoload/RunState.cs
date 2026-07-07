@@ -112,7 +112,6 @@ public partial class RunState : Node
         LastEnemiesKilled = 0;
         LastGoldEarned = 0;
         LastGoldSpent = 0;
-        _lastMoney = gold;
         AppliedTrinketIds.Clear();
         PurchasedShopItemIds.Clear();
         PurchasedItemIcons.Clear();
@@ -183,6 +182,7 @@ public partial class RunState : Node
         }
 
         EconomyManager.Instance.SetMoney(gold + StartingGoldBonus);
+        _lastMoney = EconomyManager.Instance.CurrentMoney;
         GameManager.Instance.SetLives(lives + MetaStartingLivesBonus);
         SaveManager.Instance.DeleteRunState();
     }
@@ -207,14 +207,7 @@ public partial class RunState : Node
         if (!IsRunActive) return;
         IsRunActive = false;
 
-        int baseTokens = SaveManager.Instance.MetaTokensPerRun;
-        float ratio = SlotManager.Instance != null
-            ? (float)FightsCompleted / Mathf.Max(1, SlotManager.Instance.FightsPerRun)
-            : 1f;
-        int totalTokens = Mathf.RoundToInt(baseTokens * (GameBalance.TokenRewardBaseMultiplier + ratio));
-        if (isVictory)
-            totalTokens = Mathf.RoundToInt(totalTokens * GameBalance.TokenRewardVictoryMultiplier);
-
+        int totalTokens = PreviewTokenReward(isVictory);
         LastTokenReward = totalTokens;
         LastFightsCompleted = FightsCompleted;
         LastEnemiesKilled = TotalEnemiesKilled;
@@ -417,33 +410,61 @@ public partial class RunState : Node
         SaveManager.Instance.SaveRunState(data);
     }
 
+    private static int GetInt(Godot.Collections.Dictionary data, string key, int fallback = 0)
+    {
+        if (!data.ContainsKey(key)) return fallback;
+        var val = data[key];
+        if (val.VariantType == Variant.Type.Int)
+            return (int)(long)val;
+        if (val.VariantType == Variant.Type.Float)
+            return Mathf.RoundToInt((float)(double)val);
+        return fallback;
+    }
+
+    private static float GetFloat(Godot.Collections.Dictionary data, string key, float fallback = 0f)
+    {
+        if (!data.ContainsKey(key)) return fallback;
+        var val = data[key];
+        if (val.VariantType == Variant.Type.Float)
+            return (float)(double)val;
+        if (val.VariantType == Variant.Type.Int)
+            return (int)(long)val;
+        return fallback;
+    }
+
+    private static string GetString(Godot.Collections.Dictionary data, string key, string fallback = "")
+    {
+        if (!data.ContainsKey(key)) return fallback;
+        return data[key].AsString();
+    }
+
     public bool TryResumeRun(Godot.Collections.Dictionary data)
     {
         if (data == null) return false;
 
         IsRunActive = true;
-        EconomyManager.Instance.SetMoney((int)(long)data["gold"]);
-        GameManager.Instance.SetLives((int)(long)data["lives"]);
-        FightsCompleted = (int)(long)data["fights_completed"];
+        EconomyManager.Instance.SetMoney(GetInt(data, "gold"));
+        GameManager.Instance.SetLives(GetInt(data, "lives"));
+        FightsCompleted = GetInt(data, "fights_completed");
         IsBossFight = data.ContainsKey("is_boss_fight") && (bool)data["is_boss_fight"];
         IsMiniboss = data.ContainsKey("is_miniboss") && (bool)data["is_miniboss"];
-        TotalEnemiesKilled = (int)(long)data["total_enemies_killed"];
-        TotalGoldEarned = (int)(long)data["total_gold_earned"];
-        TotalGoldSpent = (int)(long)data["total_gold_spent"];
-        GlobalAuraDamagePercent = (float)(double)data["global_aura_damage_percent"];
-        TrinketRangeFlatBonus = (float)(double)data["trinket_range_flat_bonus"];
-        TrinketBasicDamagePercentBonus = (float)(double)data["trinket_basic_damage_percent_bonus"];
-        ShopDamageBonusPercent = (float)(double)data["shop_damage_bonus_percent"];
-        ShopFireRateBonusPercent = (float)(double)data["shop_fire_rate_bonus_percent"];
-        ShopRangeBonusPercent = (float)(double)data["shop_range_bonus_percent"];
-        ShopHeavyDamageBonusPercent = (float)(double)data["shop_heavy_damage_bonus_percent"];
-        FirstPurchaseDiscountPercent = (float)(double)data["first_purchase_discount_percent"];
-        TrinketDamageBonusPercent = (float)(double)data["trinket_damage_bonus_percent"];
-        TrinketFireRateBonusPercent = (float)(double)data["trinket_fire_rate_bonus_percent"];
-        TrinketRangeBonusPercent = (float)(double)data["trinket_range_bonus_percent"];
-        TrinketCritDamageBonusPercent = (float)(double)data["trinket_crit_damage_bonus_percent"];
-        TrinketStatusDurationBonusPercent = (float)(double)data["trinket_status_duration_bonus_percent"];
-        TrinketStatusStrengthBonusPercent = (float)(double)data["trinket_status_strength_bonus_percent"];
+        TotalEnemiesKilled = GetInt(data, "total_enemies_killed");
+        TotalGoldEarned = GetInt(data, "total_gold_earned");
+        TotalGoldSpent = GetInt(data, "total_gold_spent");
+        GlobalAuraDamagePercent = GetFloat(data, "global_aura_damage_percent");
+        TrinketRangeFlatBonus = GetFloat(data, "trinket_range_flat_bonus");
+        TrinketBasicDamagePercentBonus = GetFloat(data, "trinket_basic_damage_percent_bonus");
+        ShopDamageBonusPercent = GetFloat(data, "shop_damage_bonus_percent");
+        ShopFireRateBonusPercent = GetFloat(data, "shop_fire_rate_bonus_percent");
+        ShopRangeBonusPercent = GetFloat(data, "shop_range_bonus_percent");
+        ShopHeavyDamageBonusPercent = GetFloat(data, "shop_heavy_damage_bonus_percent");
+        FirstPurchaseDiscountPercent = GetFloat(data, "first_purchase_discount_percent");
+        TrinketDamageBonusPercent = GetFloat(data, "trinket_damage_bonus_percent");
+        TrinketFireRateBonusPercent = GetFloat(data, "trinket_fire_rate_bonus_percent");
+        TrinketRangeBonusPercent = GetFloat(data, "trinket_range_bonus_percent");
+        TrinketCritDamageBonusPercent = GetFloat(data, "trinket_crit_damage_bonus_percent");
+        TrinketStatusDurationBonusPercent = GetFloat(data, "trinket_status_duration_bonus_percent");
+        TrinketStatusStrengthBonusPercent = GetFloat(data, "trinket_status_strength_bonus_percent");
 
         _lastMoney = EconomyManager.Instance.CurrentMoney;
 

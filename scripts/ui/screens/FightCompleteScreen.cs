@@ -36,8 +36,6 @@ public partial class FightCompleteScreen : Control
         _rerollButton.Pressed += OnRerollPressed;
         _rerollButton.Visible = false;
         _endRunButton.Pressed += OnEndRunPressed;
-
-        RunState.Instance?.SaveCurrentRun();
     }
 
     private void OnSpinPressed()
@@ -138,51 +136,9 @@ public partial class FightCompleteScreen : Control
         _rerollButton.MouseEntered += () =>
         {
             if (_rerollButton.Disabled && !EconomyManager.Instance.CanAfford(cost))
-                ShowTooltip("Not enough gold to reroll");
+                TooltipHelper.ShowTooltip(this, "Not enough gold to reroll");
         };
-        _rerollButton.MouseExited += HideTooltip;
-    }
-
-    private void ShowTooltip(string text)
-    {
-        var tooltip = GetNodeOrNull<Label>("TooltipLabel");
-        if (tooltip == null)
-        {
-            tooltip = new Label();
-            tooltip.Name = "TooltipLabel";
-            tooltip.Visible = false;
-            tooltip.MouseFilter = Control.MouseFilterEnum.Ignore;
-            tooltip.Modulate = new Color(0.95f, 0.95f, 0.85f);
-            tooltip.AutowrapMode = TextServer.AutowrapMode.Word;
-            tooltip.MaxLinesVisible = 3;
-            tooltip.CustomMinimumSize = new Vector2(60, 14);
-            var tooltipBg = new StyleBoxFlat();
-            tooltipBg.BgColor = new Color(0.05f, 0.05f, 0.08f, 0.92f);
-            tooltipBg.BorderColor = new Color(0.6f, 0.6f, 0.6f);
-            tooltipBg.BorderWidthLeft = 1;
-            tooltipBg.BorderWidthRight = 1;
-            tooltipBg.BorderWidthTop = 1;
-            tooltipBg.BorderWidthBottom = 1;
-            tooltipBg.ContentMarginLeft = 4;
-            tooltipBg.ContentMarginRight = 4;
-            tooltipBg.ContentMarginTop = 2;
-            tooltipBg.ContentMarginBottom = 2;
-            tooltip.AddThemeStyleboxOverride("normal", tooltipBg);
-            AddChild(tooltip);
-        }
-        float mouseX = GetViewport().GetMousePosition().X;
-        float mouseY = GetViewport().GetMousePosition().Y;
-        tooltip.OffsetLeft = Mathf.Clamp(mouseX + 8, 2, 300);
-        tooltip.OffsetTop = Mathf.Clamp(mouseY - tooltip.Size.Y - 4, 2, 170);
-        tooltip.Text = text;
-        tooltip.Show();
-    }
-
-    private void HideTooltip()
-    {
-        var tooltip = GetNodeOrNull<Label>("TooltipLabel");
-        if (tooltip != null)
-            tooltip.Hide();
+        _rerollButton.MouseExited += () => TooltipHelper.HideTooltip(this);
     }
 
     private void ResolveOutcome()

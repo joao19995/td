@@ -32,7 +32,7 @@ public partial class MainMenu : CanvasLayer
             _continueButton.Pressed += OnContinueRunPressed;
             var vbox = _startRunButton.GetParent<VBoxContainer>();
             vbox.AddChild(_continueButton);
-            vbox.MoveChild(_continueButton, vbox.GetChildren().Count - 1);
+            vbox.MoveChild(_continueButton, 1);
         }
     }
 

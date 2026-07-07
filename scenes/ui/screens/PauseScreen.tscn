@@ -43,4 +43,8 @@ text = "Bestiary"
 
 [node name="MenuButton" type="Button" parent="VBox" unique_id=1141296031]
 layout_mode = 2
-text = "Menu"
+text = "Main Menu"
+
+[node name="EndRunButton" type="Button" parent="VBox" unique_id=1141296032]
+layout_mode = 2
+text = "End Run"

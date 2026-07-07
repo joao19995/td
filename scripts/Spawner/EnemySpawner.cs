@@ -105,7 +105,7 @@ public partial class EnemySpawner : Node2D
                 spawnList[i] = (item.data, item.remaining - 1);
                 totalSpawned++;
 
-                await ToSignal(GetTree().CreateTimer(spawnInterval), Timer.SignalName.Timeout);
+                await ToSignal(GetTree().CreateTimer(spawnInterval, false), Timer.SignalName.Timeout);
                 if (!_isActive || !IsInstanceValid(this)) return;
             }
         }

@@ -38,8 +38,11 @@ public partial class VictoryScreen : Control
         UIManager.NavigateToMainMenu(true);
     }
 
-    private static void OnNewRunPressed()
+    private void OnNewRunPressed()
     {
-        UIManager.NavigateToMainMenu(true);
+        RunState.Instance.EndRun(true);
+        UIManager.Instance.PopAll();
+        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/LoadoutScreen.tscn",
+            LevelManager.Instance.LevelContainer);
     }
 }
