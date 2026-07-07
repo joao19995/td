@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Blessed Flour"
-Cost = 160
-DamageBonus = 6.0
+Cost = 130
+DamageBonus = 10.0
 FireRateBonus = 0.2

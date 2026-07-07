@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Explosive Charge"
-Cost = 150
+Cost = 120
 DamageBonus = 15.0

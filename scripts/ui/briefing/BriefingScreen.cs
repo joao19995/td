@@ -64,6 +64,8 @@ public partial class BriefingScreen : Control
 
         _startButton.Pressed += () =>
         {
+            GD.Print($"[Briefing] START pressed — popping briefing, loading level '{LevelManager.Instance.PendingLevelData?.LevelName}'.");
+            GD.Print($"[Briefing] IsBossFight={RunState.Instance.IsBossFight}, IsMiniboss={RunState.Instance.IsMiniboss}, FightsCompleted={RunState.Instance.FightsCompleted}.");
             UIManager.Instance.PopScreen();
             LevelManager.Instance.LoadPendingLevel();
         };

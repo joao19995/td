@@ -38,6 +38,11 @@ layout_mode = 2
 text = "Wave: -"
 horizontal_alignment = 1
 
+[node name="TokenLabel" type="Label" parent="VBox" unique_id=428719473]
+layout_mode = 2
+text = "Tokens: -"
+horizontal_alignment = 1
+
 [node name="MenuButton" type="Button" parent="VBox" unique_id=1832126485]
 layout_mode = 2
 text = "Menu"

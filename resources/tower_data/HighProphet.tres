@@ -11,13 +11,13 @@
 script = ExtResource("3_data")
 Id = "high_prophet"
 TowerName = "High Prophet of Sourdough"
-Damage = 24.0
+Damage = 40.0
 FireRate = 0.9
 Range = 56.0
-Cost = 400
+Cost = 320
 ProjectileScene = ExtResource("1_proj")
 Sprite = ExtResource("1_high_prophet1")
 HasGlobalAura = true
 GlobalAuraDamagePerTower = 0.02
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])
-FlavorText = "TODO: lore text"
+FlavorText = "The living embodiment of the Mother Dough's will."

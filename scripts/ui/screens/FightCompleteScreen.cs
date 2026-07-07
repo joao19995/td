@@ -44,6 +44,7 @@ public partial class FightCompleteScreen : Control
 
         if (_state == State.Resolve)
         {
+            GD.Print($"[FightComplete] Resolving outcome: {_pendingOutcome}.");
             ResolveOutcome();
             return;
         }
@@ -55,6 +56,7 @@ public partial class FightCompleteScreen : Control
 
         if (RunState.Instance.FightsCompleted >= SlotManager.Instance.FightsPerRun)
         {
+            GD.Print($"[FightComplete] FightsCompleted={RunState.Instance.FightsCompleted} >= FightsPerRun={SlotManager.Instance.FightsPerRun} — forcing BOSS.");
             ShowOutcome("BOSS FIGHT!");
             _spinButton.Text = "Continue";
             _spinButton.Disabled = false;
@@ -63,7 +65,9 @@ public partial class FightCompleteScreen : Control
             return;
         }
 
-        ShowOutcome(SlotManager.Instance.Spin());
+        var result = SlotManager.Instance.Spin();
+        GD.Print($"[FightComplete] Slot result: {result} (FightsCompleted={RunState.Instance.FightsCompleted}).");
+        ShowOutcome(result);
     }
 
     private void ShowOutcome(SlotOutcome outcome)
@@ -137,14 +141,18 @@ public partial class FightCompleteScreen : Control
         switch (_pendingOutcome)
         {
             case SlotOutcome.Shop:
+                GD.Print("[FightComplete] Outcome: Shop — pushing ShopScreen.");
                 UIManager.Instance.PushScreen(UIManager.Instance.ShopData);
                 break;
 
             case SlotOutcome.Treasure:
+                GD.Print("[FightComplete] Outcome: Treasure — pushing TrinketChoiceScreen.");
                 UIManager.Instance.PushScreen(UIManager.Instance.TrinketChoiceData);
                 break;
 
             default:
+                string pendingName = LevelManager.Instance.PendingLevelData?.LevelName ?? "unknown";
+                GD.Print($"[FightComplete] Outcome: {_pendingOutcome} — picking random level and pushing BriefingScreen (level='{pendingName}').");
                 LevelManager.Instance.PickRandomLevel();
                 UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
                 break;

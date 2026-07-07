@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Nova Blast"
-Cost = 200
+Cost = 160
 DamageBonus = 20.0
 RangeBonus = 12.0

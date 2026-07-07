@@ -63,6 +63,7 @@ public partial class EnemySpawner : Node2D
         _currentWaveIndex++;
         _waveInProgress = true;
         var wave = Waves[_currentWaveIndex];
+        GD.Print($"[Spawner] Starting wave {_currentWaveIndex + 1}/{Waves.Count} (mod={wave.Modifier}, diff={wave.DifficultyMultiplier:F2}, entries={wave.Entries?.Count ?? 0}).");
 
         if (wave.Entries == null || wave.Entries.Count == 0)
         {
@@ -132,7 +133,14 @@ public partial class EnemySpawner : Node2D
     private void CheckAllWavesCompleted()
     {
         if (_allWavesSpawned && _activeEnemyCount <= 0)
+        {
+            if (GameManager.Instance.CurrentLives <= 0)
+            {
+                GD.Print($"[EnemySpawner] All waves completed but player is dead — suppressing AllWavesCompleted.");
+                return;
+            }
             EventBus.Instance?.EmitSignal(EventBus.SignalName.AllWavesCompleted);
+        }
     }
 
     private Node GetEnemiesContainer()

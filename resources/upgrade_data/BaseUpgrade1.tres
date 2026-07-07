@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Reinforce"
-Cost = 75
-DamageBonus = 10.0
+Cost = 60
+DamageBonus = 15.0

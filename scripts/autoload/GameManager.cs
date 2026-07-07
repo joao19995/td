@@ -23,10 +23,12 @@ public partial class GameManager : Node
     private void OnEnemyReachedEnd(int damage)
     {
         _currentLives = Mathf.Max(0, _currentLives - damage);
+        GD.Print($"[GameManager] Enemy reached end! Damage={damage}, Lives now={_currentLives}.");
         EventBus.Instance.EmitSignal(EventBus.SignalName.LivesChanged, _currentLives);
 
         if (_currentLives <= 0)
         {
+            GD.Print("[GameManager] Lives reached 0 — triggering Game Over.");
             TriggerGameOver();
         }
     }
@@ -34,7 +36,7 @@ public partial class GameManager : Node
     private void TriggerGameOver()
     {
         EventBus.Instance.EmitSignal(EventBus.SignalName.GameOver);
-        GetTree().Paused = true; // pausa o jogo; Fase 10 vai mostrar o menu de game over
+        GetTree().Paused = true;
     }
 
     public void Heal(int amount)

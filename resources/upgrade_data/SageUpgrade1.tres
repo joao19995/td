@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Extended Culture"
-Cost = 130
-DamageBonus = 5.0
+Cost = 100
+DamageBonus = 8.0
 FireRateBonus = 0.2

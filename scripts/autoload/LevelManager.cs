@@ -100,9 +100,9 @@ public partial class LevelManager : Node
         if (CurrentLevelNode is not BaseLevel baseLevel) return;
         if (CurrentLevel == null) return;
 
+        GD.Print($"[LevelManager] Level loaded: '{CurrentLevel.LevelName}' (WorldSize={CurrentLevel.WorldSize}, Waves={(PendingRunWaves?.Count > 0 ? PendingRunWaves.Count.ToString() : "from LevelData")}).");
         baseLevel.ConfigureForRun(PendingRunWaves, BossWaveData);
 
-        // Pass per‑level world size to the camera, falling back to the default.
         CameraManager.Instance.Configure(CurrentLevel.WorldSize);
     }
 }

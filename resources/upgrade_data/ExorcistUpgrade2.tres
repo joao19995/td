@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Judgment Aura"
-Cost = 240
-DamageBonus = 10.0
+Cost = 190
+DamageBonus = 15.0
 FireRateBonus = 0.3

@@ -1,7 +1,7 @@
 # Roadmap
 
-MVP feature list, in a sensible build order based on dependencies. Items that are
-finished have been removed — their outcomes are described in GAME_STATUS.md.
+Reste do que falta implementar. Todos os items concluídos foram removidos
+— os seus outcomes estão descritos em GAME_STATUS.md.
 
 **Global constraints:**
 - 10 tower types, fixed (Bread Baker, Bread Courier, Aroma Keeper, Taste Tester,
@@ -14,314 +14,136 @@ finished have been removed — their outcomes are described in GAME_STATUS.md.
 
 ---
 
-## Camada de Refatoração — Arquitetura, Higiene e Dívida Técnica
+## Camada de Fundação — Estabilidade e Loop de Jogo
 
-Antes de expandir conteúdo, é necessário sanear violações das guidelines do projeto
-que comprometem escalabilidade e manutenibilidade. Cada item foi identificado numa
-auditoria arquitetural extensiva.
+Antes de qualquer polimento visual, é necessário garantir que o jogo é jogável
+do início ao fim sem crashes, softlocks, ou balanceamento quebrado. Esta camada
+fecha o loop de jogo para uma demo de ~5 horas.
 
 ---
 
-### 1. [DONE] Centralizar GameBalance em Resource Data-Driven
+### 1. Playtest End-to-End + Fix de Softlocks
 
-**Why**: ~40 valores de gameplay estão hardcoded em 7+ arquivos .cs, violando o
-princípio "all gameplay values come from .tres Resources". Multiplicadores de elite,
-modifiers de wave, cooldowns, penalidade anti-buff, fórmulas de meta-upgrade —
-nenhum destes é editável sem recompilação.
+**Why**: nunca houve um playthrough completo. Flows críticos (Game Over, Shop sem
+gold, reroll sem gold, briefing locked, tower placement sem dinheiro) podem estar
+a produzir crashes ou dead-ends silenciosos.
+
+**What to do**:
+- Jogar uma run completa do início ao fim (Main Menu → Loadout → 3 fights →
+  Boss → Victory) com logging nos flows críticos
+- Jogar um cenário de derrota (perder todas as vidas a meio de uma fight)
+- Testar edge cases:
+  - Clicar "Next Wave" com 0 gold
+  - Clicar "Reroll" com 0 gold
+  - Clicar "Continue" sem ter feito o spin
+  - Fechar menus com ESC em cada estado
+  - Sair durante uma fight e voltar
+  - Loadout com 1 única torre selecionada
+  - Tentar colocar torre com gold insuficiente
+  - Vender torre e colocar outra do mesmo tipo
+- Corrigir todos os softlocks e crashes detetados
+
+**Estimate**: 1 dia
+
+---
+
+### 2. Balance Pass (Damage / HP / Gold Economy)
+
+**Why**: os números atuais de enemy HP, damage das torres, gold rewards e custos
+nunca foram playtestados. Uma run com balanceamento errado ou morre na wave 3
+ou acaba em 10 minutos sem decisões.
+
+**What to do**:
+- Definir target de run: ~20-30 min, 3 fights + boss, ~24 waves no total
+- Ajustar valores base em `TowerData` e `EnemyData`:
+  - Tower damage: quebra de HP de enemy médio em 3-5 hits (tower básica)
+  - Enemy HP: escala por tier (tier1 fácil, tier3 duro)
+  - Gold economy: torre mais cara comprável após 2-3 waves de farm
+  - Upgrade costs: progression que justifica investir vs. colocar nova torre
+- Validar com 3 playthroughs: early game (tier1), mid game (tier2), late game (tier3 + boss)
+- Ajustar `GameBalanceData.tres` (elite multipliers, wave modifiers, meta-upgrade values)
+
+**Estimate**: 1-2 dias
+
+---
+
+### 3. Game Over + Victory Flows
+
+**Why**: quando o jogador perde todas as vidas ou derrota o boss, o ecrã final
+existe mas o fluxo de recompensa (tokens, resumo, navegação) pode estar
+incompleto ou quebrado.
 
 **What to build**:
-- Criar `resources/game_balance.tres` com campos para:
-  - Elite HP/Damage/Gold multipliers
-  - Wave modifier values (Horde interval/count multiplier, Armored/Swift/GoldRush multipliers,
-    FinalStretch count mult)
-  - Anti-buff penalty (0.5f)
-  - Synergy cooldown (10s), Judgment Seal cooldown (5s)
-  - Meta-upgrade per-level values (damage %/level, gold/level, lives/level, etc.)
-  - Passive gold amount/interval, tier thresholds (0.33, 0.66)
-  - Token reward formula constants (base, victory multiplier)
-  - Wave generation constants (min/max waves, difficulty curve params, final stretch offset)
-  - Wave modifier pools (AllModifiers, HardModifiers)
-- Criar `scripts/resources/GameBalanceData.cs` com `[GlobalClass]` e todos os exports
-- Criar `scripts/autoload/GameBalance.cs` singleton que carrega o Resource e expõe
-  os valores estaticamente
-- Substituir todas as constantes literais nos .cs por `GameBalance.Instance.X`
+- **Game Over**: confirmar que mostra ecrã de derrota, calcula tokens
+  (`FightsCompleted / TotalFights`), permite voltar ao Main Menu
+- **Victory**: ecrã de vitória com badges (tokens, inimigos mortos, gold gasto,
+  dano total), opção "New Run" e "Main Menu"
+- **End Run (abandonar)**: se o jogador desiste a meio, ganha tokens parciais
+  baseados no progresso
+- **Resumo rápido**: quantas waves sobreviveu, quantos inimigos converteu,
+  gold total ganho
 
 **Files to change**:
-- `scripts/resources/GameBalanceData.cs` — novo
-- `resources/game_balance.tres` — novo
-- `scripts/autoload/GameBalance.cs` — novo
-- `scripts/enemies/Enemy.cs` — linhas 98, 203, 212
-- `scripts/Spawner/EnemySpawner.cs` — linhas 18, 79, 86, 88, 165-171
-- `scripts/towers/Tower.cs` — linhas 145, 183, 203
-- `scripts/autoload/RunState.cs` — linhas 90-100, 163, 165, 260, 270-271, 282-287, 313, 328-329
-- `scripts/components/AttackComponent.cs` — linhas 166, 174
-- `scripts/components/AuraComponent.cs` — linha 56
+- `scripts/ui/screens/GameOverScreen.cs` — token reward, stats summary
+- `scripts/ui/screens/VictoryScreen.cs` — stats summary, New Run button
+- `scripts/autoload/RunState.cs` — `EndRun()` já calcula tokens, confirmar que
+  `isVictory` está a ser passado corretamente
+
+**Estimate**: 0.5 dia
+
+---
+
+### 4. Save Run State Mid-Run (opcional, recomendado)
+
+**Why**: se o jogador fecha o jogo durante uma fight (ou a meio de uma run),
+perde todo o progresso. Numa run de 30 min é aceitável; numa demo de 5h é
+frustrante.
+
+**What to build**:
+- Serializar `RunState` para JSON em `SaveManager`:
+  - Tower levels, equipment, trinkets, shop items comprados
+  - Gold, lives atuais
+  - FightsCompleted, IsBossFight, IsMiniboss
+  - AncientStarter stacks/attack counts
+- Salvar em momentos seguros (entre fights, após shop/heal/treasure)
+- Carregar no Main Menu: "Continue Run?" se houver save ativo
+- Limpar save ao terminar a run (victory/game over/end run)
 
 **Decisions**:
-- GameBalance é carregado uma vez no `_EnterTree` do autoload e nunca recarregado
-- Valores que variam por tower/enemy permanecem nos respectivos Resources;
-  este Resource contém apenas constantes globais de sistema
-- O arquivo `.tres` fica em `resources/` (raiz) por ser global, não específico
-  de uma categoria
+- Não salvar durante uma fight (mid-wave é demasiado complexo com projéteis
+  e enemies ativos)
+- Usar `SaveManager.SaveRunState(RunStateData data)` / `LoadRunState()`
+- RunStateData = struct/simple JSON, não Resource (evita security vector)
 
-**Estimate**: 3-4 days
+**Estimate**: 1 dia
 
 ---
 
-### 2. [DONE] Extrair WaveGenerator de RunState
+### 5. UI/UX Mínima para Clareza do Jogador
 
-**Why**: RunState.cs acumula ~115 linhas de lógica de gameplay (geração de waves,
-tier determination, passive gold timer, aplicação de trinkets) — viola a diretriz
-"autoloads são infraestrutura, não gameplay". Dificulta testar e reusar a lógica
-de waves independentemente do estado da run.
+**Why**: o jogo não dá feedback quando o jogador não pode fazer algo. Sem
+tooltips de erro, o jogador fica confuso.
 
 **What to build**:
-- Criar `scripts/systems/WaveGenerator.cs` com método estático
-  `PickRunWaves(int fightsCompleted, int fightsPerRun, string baseDir)`
-- Mover `GetWaveTier()`, arrays `AllModifiers`/`HardModifiers`, e toda a lógica
-  de difficulty curve / final stretch / modifier assignment
-- RunState passa a chamar `WaveGenerator.PickRunWaves(FightsCompleted,
-  SlotManager.Instance.FightsPerRun)`
-- Manter em RunState apenas estado puro (tower levels, equips, trinkets, shop items)
-  e delegação para sistemas especializados
+- **Botão "Next Wave" disabled** com tooltip: "Aguardando inimigos..." ou
+  "Complete a wave atual"
+- **Botão de tower disabled**: tooltip com "Sem gold suficiente" ou
+  "Tipo já colocado"
+- **Reroll button disabled**: tooltip com "Sem gold para reroll"
+- **Mensagem de "Wave Complete"** no HUD quando todos os inimigos morrem
+- **Feedback de compra**: flash verde no botão + "✓ Comprado" (já existe
+  na Shop, confirmar nos outros sítios)
+- **Indicador de boss fight no Briefing**: já existe ("BOSS FIGHT!") mas
+  confirmar que o label é visível e não colide com outros elementos
 
-**Files to change**:
-- `scripts/systems/WaveGenerator.cs` — novo
-- `scripts/autoload/RunState.cs` — remover linhas 265-346, substituir por delegação
-- Atualizar referências em BriefingScreen, EnemySpawner se acessam diretamente
-
-**Estimate**: 1-2 days
-
----
-
-### 3. [DONE] Converter GetNode<>() para [Export] NodePath nas Screens
-
-**Why**: 63 chamadas `GetNode<>()` com strings hardcoded em 12 arquivos de UI.
-Paths de até 5 níveis (`VBox/ContentHBox/PreviewPanel/PreviewHBox/PreviewSprite`).
-Qualquer renomeação de node no .tscn quebra silenciosamente em runtime. Viola
-diretamente a diretriz "No deep node paths — use [Export] NodePath".
-
-**What to build**:
-- Em cada screen, substituir cada `GetNode<T>("path/string")` por:
-  ```csharp
-  [Export] private NodePath _nomeField;
-  private Tipo _nome;
-  // em _Ready: _nome = GetNode<Tipo>(_nomeField);
-  ```
-- Configurar os NodePaths nos .tscn correspondentes via Inspector
-- Screens a modificar (por ordem de profundidade dos paths):
-  1. `LoadoutScreen.cs` — ~16 paths, 5 deles com profundidade 4-5
-  2. `BriefingScreen.cs` — ~11 paths, 4 com profundidade 4
-  3. `HUD.cs` — ~12 paths
-  4. `FightCompleteScreen.cs` — ~6 paths
-  5. `ShopScreen.cs`, `MetaShopScreen.cs`, `MainMenu.cs`
-  6. `PauseScreen.cs`, `GameOverScreen.cs`, `VictoryScreen.cs`, `TrinketChoiceScreen.cs`
-
-**Decisions**:
-- Nomear exports como `_nodeNameLabel`, `_previewPanel`, etc. para clareza
-- Manter o campo privado tipado separado do NodePath (padrão Godot recomendado)
-- Os .tscn exigem edição manual no Inspector para apontar os NodePaths
-
-**Estimate**: 2-3 days
-
----
-
-### 4. [DONE] ResourceLoaderHelper + Eliminar Duplicação de Carga
-
-**Why**: 6 screens implementam o mesmo padrão `DirAccess.Open("res://...")`
-\+ foreach \+ `ResourceLoader.Load<T>()`. `BestiaryScreen.cs` já tem um genérico
-`LoadFromDir<T>()` que nenhuma outra screen usa. O padrão "End Run" navigation
-está quadruplicado. Tower tags checks duplicados entre LoadoutScreen e BestiaryScreen.
-
-**What to build**:
-- Criar `scripts/helpers/ResourceLoaderHelper.cs`:
-  ```csharp
-  public static Array<T> LoadAllFromDir<T>(string dirPath) where T : Resource
-  ```
-  com tratamento de erro e `ResourceLoader.CacheMode.Replace`
-- Refatorar LoadoutScreen, HUD, BriefingScreen, ShopScreen, MetaShopScreen,
-  TrinketChoiceScreen para usar o helper — elimina ~80 linhas duplicadas
-- Adicionar método `NavigateToMainMenu()` em UIManager para eliminar quadruplicação
-  em GameOverScreen, PauseScreen, VictoryScreen, FightCompleteScreen
-- Adicionar `GetTags()` em TowerData para eliminar checks manuais duplicados
-- Unificar fade-out+nav em TrinketChoiceScreen num método privado único
-
-**Files to change**:
-- `scripts/helpers/ResourceLoaderHelper.cs` — novo
-- `scripts/autoload/UIManager.cs` — adicionar `NavigateToMainMenu()`
-- `scripts/ui/screens/LoadoutScreen.cs` — usar helper + GetTags()
-- `scripts/ui/screens/FightCompleteScreen.cs` — usar NavigateToMainMenu
-- `scripts/ui/screens/GameOverScreen.cs` — usar NavigateToMainMenu
-- `scripts/ui/screens/PauseScreen.cs` — usar NavigateToMainMenu
-- `scripts/ui/screens/VictoryScreen.cs` — usar NavigateToMainMenu
-- `scripts/ui/HUD.cs` — usar helper
-- `scripts/ui/briefing/BriefingScreen.cs` — usar helper
-- `scripts/ui/trinket/TrinketChoiceScreen.cs` — unificar fade-out
-- `scripts/resources/TowerData.cs` — adicionar GetTags()
-
-**Estimate**: 2-3 days
-
----
-
-### 5. [DONE] Popular FlavorText nos Recursos
-
-**Why**: Todas as 5 classes Resource (TowerData, EnemyData, EquipData, TrinketData,
-SynergyData) declaram `FlavorText`, mas **zero** dos ~55 arquivos .tres o preenchem.
-O Bestiary renderiza lore condicionalmente — atualmente está sempre vazio. A feature
-de profundidade narrativa está completamente invisível.
-
-**What to build**:
-- Adicionar `FlavorText = "..."` em cada arquivo .tres relevante:
-  - 10× `tower_data/*.tres`
-  - 10× `enemy_data/*.tres`
-  - 20× `equip_data/*.tres`
-  - 10× `trinket_data/*.tres`
-  - 4× `synergy_data/*.tres`
-
-**Decisions**:
-- Conteúdo textual criado pelo designer/narrative designer
-- Pode ser feito em duas etapas: primeiro placeholder "TODO: lore text",
-  depois conteúdo real
-
-**Estimate**: 2-4h (estrutural) + 2-3d (conteúdo)
-
----
-
-### 6. [IN PROGRESS] Converter String Routing para Enum no FightCompleteScreen
-
-**Why**: `_pendingOutcome` é string com switch/case em 3 lugares no
-FightCompleteScreen. Comparações com `"Fight"`, `"Shop"`, `"Boss"` — frágeis,
-sem type safety, erro só aparece em runtime se um outcome for renomeado.
-
-**What to build**:
-- Definir enum `SlotOutcome { Fight, Shop, Heal, Miniboss, Treasure, Boss }`
-  em arquivo compartilhado (ex: `scripts/systems/SlotOutcome.cs`)
-- Substituir `string _pendingOutcome` por `SlotOutcome _pendingOutcome`
-- Atualizar FightCompleteScreen e SlotManager
-
-**Estimate**: 0.5 day
-
----
-
-### 7. [IN PROGRESS] Remover Dead Code + Inconsistências de Estilo
-
-**Why**: HUD.cs:283 tem código morto (variável `trinketId` que retorna null
-e nunca é lida). WaveEntry.cs e WaveData.cs usam fields (`[Export] public T X;`)
-em vez de auto-properties (`{ get; set; }`), diferente dos outros 10 data classes.
-Inconsistências que acumulam dívida técnica.
-
-**What to fix**:
-- Remover linha `string trinketId = ...` em `scripts/ui/HUD.cs:283`
-- Converter `WaveEntry.cs` linhas 6-7 e `WaveData.cs` linhas 9-11 para
-  auto-properties consistentes com o resto do código
-- Verificar se existe mais dead code (grep por variáveis não utilizadas)
-
-**Estimate**: 0.5 day
-
----
-
-### 8. [DONE] Mover StatusEffectData para Diretório Correto
-
-**Why**: `PoisonEffectData.cs`, `SlowEffectData.cs`, `StatusEffectData.cs`
-são `[GlobalClass] Resource` mas estão em `scripts/components/`. O diretório
-documentado para data classes é `scripts/resources/`. Causa confusão.
-
-**What to build**:
-- Mover os 3 arquivos para `scripts/resources/`
-- Atualizar referências em cenas .tscn se apontam por caminho absoluto
-- Nenhuma mudança de using (namespace global)
-
-**Estimate**: 0.5 day
-
----
-
-### 9. [DONE] Atualizar CLAUDE.md para Estado Real
-
-**Why**: CLAUDE.md lista torres como `CornerBaker.tres` e `BikeCourier.tres`
-que não existem — os nomes reais são `BreadBaker.tres` e `BreadCourier.tres`.
-`Aroma` é `AromaKeeper`. Diretório `Spawner/` não documentado no layout.
-
-**What to fix**:
-- Atualizar lista `resources/tower_data/` no Project Layout
-- Adicionar `Spawner/` ao layout (ou mover EnemySpawner para scripts/systems/)
-- Verificar e corrigir outras discrepâncias entre doc e realidade
-
-**Estimate**: 0.25 day
-
----
-
-### 10. [DONE] Adicionar uids aos .tres Faltantes — 83 files flagged, pending Godot editor pass
-
-**Why**: ~60% dos .tres (wave_data, synergy_data, meta_upgrade_data, trinket_data,
-ui_screens) não têm `uid` no cabeçalho. Sem uid, o Godot não tem referência
-estável se o arquivo for movido ou renomeado.
-
-**What to build**:
-- Abrir cada .tres sem uid no Inspector do Godot (uid é gerado pelo editor,
-  não editado manualmente)
-- Alternativa: script de build que abre e ressalva cada recurso
-
-**Estimate**: 0.5-1d (ou incremental enquanto edita outros recursos)
-
----
-
-### 11. [DONE] Extrair SynergyPreviewHelper
-
-**Why**: `GetPreviewSynergies()` existe em LoadoutScreen e BriefingScreen com
-lógica similar mas não idêntica. Extrair para helper comum evita divergência.
-
-**What to build**:
-- Criar `scripts/helpers/SynergyPreviewHelper.cs` com método único
-- LoadoutScreen e BriefingScreen passam a chamá-lo
-
-**Estimate**: 0.5 day
+**Estimate**: 0.5 dia
 
 ---
 
 ## Camada de Polimento — Improvements to Existing Features
 
 Each item below builds on existing features and adds the visual, interactive,
-and depth polish that a real game needs.
-
-Suggested execution order (lowest dependencies, maximum impact per effort).
-
----
-
-
-### 1. [DONE] Trinkets — UI Card + Visual Polish
-
-Cards with icons/name/description/rarity-colored border, fade-in/hover animation,
-Skip button. Outcome documented in GAME_STATUS.md.
-
----
-
-### 2. [DONE] Meta-Progression — Expansion
-
-16 upgrades (10 new): Starting Lives, Shop Discount, Reroll Cost, Start Equip, Start Tower Lv1, Enemy Gold Bonus.
-Token reward scaling with victory bonus. UI tabs (All/Unlocks/Stats/Economy). Outcome documented in GAME_STATUS.md.
-
----
-
-### 3. [DONE] HUD — Tooltips + Run Buff Icons
-
-Tooltip panel (segue o rato), tooltips em tower buttons e synergy label, life counter com
-corações (ColorRect 4×4), buff icons expandidos (shop + trinket + synergy icons). 
-Outcome documented in GAME_STATUS.md.
-
----
-
-### 4. [DONE] Bestiary — Sprites + Stats + Lore
-
-Sprites e ícones nos entries, barras de stats normalizadas por categoria, progresso das
-categorias no topo, accordion detail views expansíveis/colapsáveis com lore (`FlavorText` adicionado
-a todos os dados de recurso) e mecânicas detalhadas. Outcome documented in GAME_STATUS.md.
-
----
-
-### 5. [DONE] Briefing — Map Preview + Loadout Reminder
-
-Map preview thumbnail, loadout icons, synergy preview, tier color label, miniboss indicator,
-fade-in animation + "START!" pulse. Outcome documented in GAME_STATUS.md.
+and depth polish that a real game needs. Only after the foundation layer is solid.
 
 ---
 
@@ -395,17 +217,7 @@ fade-in animation + "START!" pulse. Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 9. [DONE] Waves — Elite Enemies + Modifiers + Per-Type Counts
-
-WaveData refatorado: `Enemies`/`EnemyCount` substituído por `Entries` (Array de `WaveEntry`,
-cada um com Enemy + Count). `WaveModifier` enum (Horde/Armored/Swift/GoldRush). Elite enemies
-com 2× HP, 1.5× dano, 2× gold, spawn chance 20%. Enemy suporta multiplicadores separados
-(HP/damage/gold) para modifiers. +3 waves (5 por tier = 15 total). Briefing mostra
-quantidades por tipo. Outcome documented in GAME_STATUS.md.
-
----
-
-### 10. Tutorial / Onboarding
+### 9. Tutorial / Onboarding
 
 **Why**: new player has no guidance at all.
 
@@ -428,26 +240,7 @@ quantidades por tipo. Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 11. [DONE] Targeting Priority UI + Strategy Change
-
-"Target" label on tower panel, click to cycle First→Closest→Strongest→Last.
-`TargetingComponent.Strategy` set at runtime via `_selectedTower` field + `GuiInput` handler.
-Strategy persists per-instance, resets when tower is sold/re-placed.
-Outcome documented in GAME_STATUS.md.
-
----
-
-### 12. [DONE] Loadout — Stat Preview + Synergy Hints
-
-Hover shows stat preview panel (name, sprite, DMG/SPD/RNG, special tags).
-Synergy hints only for discovered synergies with unlocked required towers.
-Random "RND" button (Fisher-Yates shuffle + `_isBatchUpdating` guard).
-3 save slots in SaveManager JSON (left-click = load/save, right-click = overwrite).
-Outcome documented in GAME_STATUS.md.
-
----
-
-### 13. Game Assets (16x16 Sprites)
+### 10. Game Assets (16x16 Sprites)
 
 **Why**: 5 new towers and 5 new enemies use placeholder sprites. Equipment (20), trinkets (10), shop items (5), synergies (4), and projectile variants all have no unique icons. The game has no visual identity — every tower looks the same, no item has an icon.
 
@@ -460,7 +253,7 @@ Outcome documented in GAME_STATUS.md.
 
 ---
 
-### 14. Sound System (deferred — requires audio assets)
+### 11. Sound System (deferred — requires audio assets)
 
 **Why**: the game has no sound at all — the most noticeable gap. Without audio,
 the game feels dead regardless of visual polish.
@@ -484,17 +277,16 @@ the game feels dead regardless of visual polish.
 
 ## Recommended Priority
 
-| # | Item | Impact | Effort | Dependencies |
-|---|---|---|---|---|---|---|---|
-| 1 | Custom Sprites (towers + enemies) | Critical | 3-5d | None |
-| 2 | HUD Tooltips + Buff Icons | High | 2-3d | None |
-| 3 | Enemy/Projectile VFX | High | 3-5d | None |
-| 4 | UI Transitions | Medium | 2-3d | None |
-| 5 | Slot Machine Animation | Medium | 3-4d | UI Transitions (#4) |
-| 6 | Briefing + Preview | Medium | 1-2d | None |
-| 7 | Bestiary Sprites + Lore | Medium | 2-3d | None |
-| 8 | Waves + Elites | Low | 2-3d | None |
-| 9 | Targeted Priority UI | Low | 1d | None |
-| 10 | Loadout Preview | Low | 2-3d | None |
-| 11 | Tutorial/Onboarding | Low | 1-2d | None |
-| 12 | Sound System | Critical | 2-3d | None |
+| # | Item | Layer | Impact | Effort | Dependencies |
+|---|---|---|---|---|---|
+| 1 | Playtest + Fix Softlocks | Fundação | Critical | 1d | None |
+| 2 | Balance Pass | Fundação | Critical | 1-2d | #1 |
+| 3 | Game Over + Victory Flows | Fundação | High | 0.5d | #1 |
+| 4 | Save Run State Mid-Run | Fundação | Medium | 1d | #3 |
+| 5 | UI/UX Mínima | Fundação | Medium | 0.5d | #1 |
+| 6 | Custom Sprites | Polimento | Critical | 5-8d | None |
+| 7 | Enemy/Projectile VFX | Polimento | High | 3-5d | None |
+| 8 | UI Transitions | Polimento | Medium | 2-3d | None |
+| 9 | Slot Machine Animation | Polimento | Medium | 3-4d | #8 |
+| 10 | Tutorial/Onboarding | Polimento | Low | 1-2d | #5 |
+| 11 | Sound System | Polimento | Critical | 2-3d | None |

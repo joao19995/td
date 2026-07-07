@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Wild Fermentation"
-Cost = 190
-DamageBonus = 8.0
+Cost = 150
+DamageBonus = 12.0
 FireRateBonus = 0.3

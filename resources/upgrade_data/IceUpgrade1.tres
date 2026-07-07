@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Cryo Coil"
-Cost = 100
+Cost = 80
 FireRateBonus = 0.3

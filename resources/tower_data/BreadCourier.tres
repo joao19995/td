@@ -11,12 +11,11 @@
 script = ExtResource("2_be44t")
 Id = "bread_courier"
 TowerName = "Bread Courier"
-Damage = 16.0
-FireRate = 1.2
-Range = 46.0
-Cost = 120
+Damage = 28.0
+FireRate = 1.5
+Range = 44.0
+Cost = 90
 ProjectileScene = ExtResource("1_4gpsg")
 Sprite = ExtResource("1_bread_courier1")
 UpgradePath = Array[ExtResource("2_l78ne")]([ExtResource("3_fst1"), ExtResource("4_fst2")])
-FlavorText = "TODO: lore text"
-metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
+FlavorText = "Swift and tireless. The dough must reach its destination."

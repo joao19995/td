@@ -11,14 +11,13 @@
 script = ExtResource("2_k6g6c")
 Id = "bakery_truck"
 TowerName = "Bakery Truck"
-Damage = 20.0
+Damage = 35.0
 FireRate = 0.8
 Range = 44.0
-Cost = 180
+Cost = 140
 ProjectileScene = ExtResource("1_3qluu")
 Sprite = ExtResource("1_bakery_truck1")
 HasSplash = true
 SplashRadius = 36.0
 UpgradePath = Array[ExtResource("2_iqf0o")]([ExtResource("3_spl1"), ExtResource("4_spl2")])
-FlavorText = "TODO: lore text"
-metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
+FlavorText = "A mobile bakery. Also a mobile weapon."

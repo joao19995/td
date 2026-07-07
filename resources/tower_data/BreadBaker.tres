@@ -11,11 +11,11 @@
 script = ExtResource("3_y6wqu")
 Id = "bread_baker"
 TowerName = "Bread Baker"
-Damage = 18.0
+Damage = 35.0
+FireRate = 1.0
 Range = 48.0
-Cost = 100
+Cost = 75
 ProjectileScene = ExtResource("1_iejku")
 Sprite = ExtResource("1_bread_baker1")
 UpgradePath = Array[ExtResource("2_y6wqu")]([ExtResource("4_base1"), ExtResource("5_base2")])
-FlavorText = "TODO: lore text"
-metadata/_custom_type_script = "uid://c7g3mvd74xsfd"
+FlavorText = "The humble foundation of the Order. Steady hands, steady bread."

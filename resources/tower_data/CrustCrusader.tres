@@ -11,14 +11,14 @@
 script = ExtResource("3_data")
 Id = "crust_crusader"
 TowerName = "Crust Crusader"
-Damage = 22.0
+Damage = 38.0
 FireRate = 0.9
 Range = 46.0
-Cost = 300
+Cost = 220
 ProjectileScene = ExtResource("1_proj")
 Sprite = ExtResource("1_crust_crusader1")
 HasCrit = true
 CritChance = 0.15
 CritMultiplier = 2.0
 UpgradePath = Array[ExtResource("2_upg")]([ExtResource("4_up1"), ExtResource("5_up2")])
-FlavorText = "TODO: lore text"
+FlavorText = "A blade tempered in the finest olive oil. The crust shall prevail."

@@ -95,24 +95,31 @@ public partial class UIManager : Node
 
     public static void NavigateToMainMenu(bool victory = false)
     {
+        GD.Print($"[UIManager] NavigateToMainMenu called (victory={victory}). Ending run, popping all screens.");
         RunState.Instance.EndRun(victory);
         Instance.PopAll();
         SceneManager.Instance.LoadLevel("res://scenes/ui/screens/MainMenu.tscn",
             LevelManager.Instance.LevelContainer);
     }
 
-    private void OnGameOver() => PushScreen(GameOverData);
+    private void OnGameOver()
+    {
+        GD.Print("[UIManager] GameOver received — pushing GameOverScreen.");
+        PushScreen(GameOverData);
+    }
 
     private void OnAllWavesCompleted()
     {
         if (RunState.Instance.IsBossFight)
         {
+            GD.Print("[UIManager] All waves completed (BOSS) — ending run as victory.");
             RunState.Instance.EndRun(true);
             EventBus.Instance.EmitSignal(EventBus.SignalName.RunCompleted);
             PushScreen(VictoryData);
             return;
         }
 
+        GD.Print("[UIManager] All waves completed — pushing FightCompleteScreen.");
         PushScreen(FightCompleteData);
     }
 }
