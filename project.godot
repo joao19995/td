@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+GameBalance="*res://scripts/autoload/GameBalance.cs"
 EconomyManager="*uid://bpabpqj1km1wr"
 EventBus="*uid://bxaicp3urfys8"
 GameManager="*uid://bdyhlaph2hqex"
@@ -31,7 +32,6 @@ RunState="*res://scripts/autoload/RunState.cs"
 SaveManager="*res://scripts/autoload/SaveManager.cs"
 SynergyManager="*res://scripts/systems/SynergyManager.cs"
 SlotManager="*res://scripts/systems/SlotManager.cs"
-GameBalance="*res://scripts/autoload/GameBalance.cs"
 
 [display]
 

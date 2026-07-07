@@ -10,7 +10,7 @@ public partial class GlobalAuraComponent : Node2D
     {
         _scanTimer -= (float)delta;
         if (_scanTimer > 0f) return;
-        _scanTimer = 0.5f;
+        _scanTimer = GameBalance.AuraScanInterval;
 
         var towers = GetTree().GetNodesInGroup("towers");
         int count = towers.Count;

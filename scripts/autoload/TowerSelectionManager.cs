@@ -58,7 +58,7 @@ public partial class TowerSelectionManager : Node
         }
 
         if (_selectedTower != null && IsInstanceValid(_selectedTower))
-            _selectedTower.Modulate = new Color(1, 1, 1, 1);
+            ResetTowerModulate(_selectedTower);
 
         TowerPlacementManager.Instance.CancelPlacement();
 
@@ -77,7 +77,7 @@ public partial class TowerSelectionManager : Node
         if (_selectedTower == null) return;
 
         if (IsInstanceValid(_selectedTower))
-            _selectedTower.Modulate = new Color(1, 1, 1, 1);
+            ResetTowerModulate(_selectedTower);
         _selectedTower = null;
 
         if (_rangeIndicator != null)
@@ -87,5 +87,11 @@ public partial class TowerSelectionManager : Node
         }
 
         EmitSignal(SignalName.TowerDeselected);
+    }
+
+    private static void ResetTowerModulate(Tower tower)
+    {
+        bool hasSynergy = SynergyManager.Instance?.IsTowerAffected(tower.Data.Id) ?? false;
+        tower.Modulate = hasSynergy ? new Color(0.85f, 1, 0.85f) : Colors.White;
     }
 }

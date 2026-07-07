@@ -194,6 +194,19 @@ public partial class RunState : Node
         MetaStartWithEquipment = false;
         MetaStartTowerLevel = false;
         TrinketDamageBonusPercent = 0f;
+        TrinketFireRateBonusPercent = 0f;
+        TrinketRangeBonusPercent = 0f;
+        TrinketCritDamageBonusPercent = 0f;
+        TrinketStatusDurationBonusPercent = 0f;
+        TrinketStatusStrengthBonusPercent = 0f;
+        TrinketRangeFlatBonus = 0f;
+        TrinketBasicDamagePercentBonus = 0f;
+        ShopDamageBonusPercent = 0f;
+        ShopFireRateBonusPercent = 0f;
+        ShopRangeBonusPercent = 0f;
+        ShopHeavyDamageBonusPercent = 0f;
+        FirstPurchaseDiscountPercent = 0f;
+        GlobalAuraDamagePercent = 0f;
     }
 
     public int GetTowerLevel(string towerId)

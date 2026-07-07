@@ -11,10 +11,15 @@ public partial class Projectile : Area2D
     public bool WasCrit { get; set; }
     public int PierceCount { get; set; }
     private bool _returningToPool;
+    private const int _enemyCollisionMask = 1;
+    private CollisionShape2D _collisionShape;
+
+    [Export] private NodePath _collisionShapePath = new NodePath("CollisionShape2D");
 
     public override void _Ready()
     {
         AreaEntered += OnAreaEntered;
+        _collisionShape = GetNode<CollisionShape2D>(_collisionShapePath);
     }
 
     public void Initialize(Enemy target, float damage)
@@ -76,16 +81,8 @@ public partial class Projectile : Area2D
 
     private void FindNextTarget(Enemy exclude)
     {
-        var spaceState = GetWorld2D().DirectSpaceState;
-        var query = new PhysicsShapeQueryParameters2D();
-        var circle = new CircleShape2D { Radius = 200f };
-        query.Shape = circle;
-        query.Transform = new Transform2D(0, GlobalPosition);
-        query.CollideWithAreas = true;
-        query.CollideWithBodies = false;
-        query.CollisionMask = 1;
-
-        var results = spaceState.IntersectShape(query);
+        var query = GetPhysicsQuery(new CircleShape2D { Radius = 200f });
+        var results = GetWorld2D().DirectSpaceState.IntersectShape(query);
         Enemy nearest = null;
         float nearestDist = float.MaxValue;
 
@@ -114,20 +111,24 @@ public partial class Projectile : Area2D
         }
     }
 
+    private PhysicsShapeQueryParameters2D GetPhysicsQuery(CircleShape2D shape)
+    {
+        return new PhysicsShapeQueryParameters2D
+        {
+            Shape = shape,
+            Transform = new Transform2D(0, GlobalPosition),
+            CollideWithAreas = true,
+            CollideWithBodies = false,
+            CollisionMask = _enemyCollisionMask,
+        };
+    }
+
     private bool IsOverlappingTarget()
     {
-        var collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
-        if (collisionShape?.Shape is not CircleShape2D circle) return false;
+        if (_collisionShape?.Shape is not CircleShape2D circle) return false;
 
-        var spaceState = GetWorld2D().DirectSpaceState;
-        var query = new PhysicsShapeQueryParameters2D();
-        query.Shape = circle;
-        query.Transform = new Transform2D(0, GlobalPosition);
-        query.CollideWithAreas = true;
-        query.CollideWithBodies = false;
-        query.CollisionMask = 1;
-
-        var results = spaceState.IntersectShape(query);
+        var query = GetPhysicsQuery(circle);
+        var results = GetWorld2D().DirectSpaceState.IntersectShape(query);
         foreach (var result in results)
         {
             if (result["collider"].AsGodotObject() is Enemy enemy && enemy == Target)

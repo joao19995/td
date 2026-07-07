@@ -312,16 +312,21 @@ public partial class AttackComponent : Node
             current = nearest;
 
             if (_data.HasPoison)
+            {
+                float strengthMult = 1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)
+                                       + (_equipData?.PoisonDamagePercentBonus ?? 0f);
                 ApplyEffect(nearest, new PoisonEffectData
                 {
                     Duration = _data.PoisonDuration * _poisonDurationMultiplier,
-                    DamagePerTick = _data.PoisonDamagePerTick,
+                    DamagePerTick = _data.PoisonDamagePerTick * strengthMult,
                 });
+            }
             if (_data.HasSlow)
                 ApplyEffect(nearest, new SlowEffectData
                 {
                     Duration = _data.SlowDuration * _slowDurationMultiplier,
-                    SpeedMultiplier = _data.SlowMultiplier,
+                    SpeedMultiplier = _data.SlowMultiplier
+                        / (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)),
                 });
         }
     }
