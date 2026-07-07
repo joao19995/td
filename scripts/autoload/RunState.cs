@@ -42,12 +42,19 @@ public partial class RunState : Node
     public float GlobalAuraDamagePercent { get; set; } = 0f;
     public float TrinketRangeFlatBonus { get; set; } = 0f;
     public float TrinketBasicDamagePercentBonus { get; set; } = 0f;
-    private float _passiveGoldTimer;
+    private readonly System.Collections.Generic.List<PassiveGoldEffect> _passiveGoldEffects = new();
 
     private Dictionary<string, int> _towerLevels = new();
     private Dictionary<string, string> _equippedItems = new();
     private Dictionary<string, int> _ancientStarterAttackCount = new();
     private Dictionary<string, int> _ancientStarterStacks = new();
+
+    private sealed class PassiveGoldEffect
+    {
+        public int Amount;
+        public float Interval;
+        public float RemainingTime;
+    }
 
     public override void _EnterTree()
     {
@@ -84,7 +91,7 @@ public partial class RunState : Node
         GlobalAuraDamagePercent = 0f;
         TrinketRangeFlatBonus = 0f;
         TrinketBasicDamagePercentBonus = 0f;
-        _passiveGoldTimer = 0f;
+        _passiveGoldEffects.Clear();
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
         MetaDamageBonusPercent = damageLevel * GameBalance.MetaDamagePercentPerLevel;
@@ -245,19 +252,27 @@ public partial class RunState : Node
         if (trinket.GoldAmount > 0)
             EconomyManager.Instance.AddMoney(trinket.GoldAmount);
         if (trinket.PassiveGoldPerInterval > 0 && trinket.PassiveGoldInterval > 0f)
-            _passiveGoldTimer = trinket.PassiveGoldInterval;
+        {
+            _passiveGoldEffects.Add(new PassiveGoldEffect
+            {
+                Amount = trinket.PassiveGoldPerInterval,
+                Interval = trinket.PassiveGoldInterval,
+                RemainingTime = trinket.PassiveGoldInterval
+            });
+        }
     }
 
     public override void _Process(double delta)
     {
         if (!IsRunActive) return;
-        if (_passiveGoldTimer > 0f)
+
+        foreach (var effect in _passiveGoldEffects)
         {
-            _passiveGoldTimer -= (float)delta;
-            if (_passiveGoldTimer <= 0f)
+            effect.RemainingTime -= (float)delta;
+            while (effect.RemainingTime <= 0f)
             {
-                EconomyManager.Instance.AddMoney(GameBalance.PassiveGoldAmount);
-                _passiveGoldTimer = GameBalance.PassiveGoldInterval;
+                EconomyManager.Instance.AddMoney(effect.Amount);
+                effect.RemainingTime += effect.Interval;
             }
         }
     }

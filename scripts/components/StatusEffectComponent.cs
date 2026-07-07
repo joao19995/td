@@ -71,7 +71,7 @@ public partial class StatusEffectComponent : Node
             }
         }
 
-        _movement?.SetSpeedMultiplier(slow.SpeedMultiplier);
+        _movement?.SetStatusSpeedMultiplier(slow.SpeedMultiplier);
         _activeEffects.Add(new ActiveEffect
         {
             Data = slow,
@@ -103,7 +103,7 @@ public partial class StatusEffectComponent : Node
             if (effect.RemainingTime <= 0f && i < _activeEffects.Count)
             {
                 if (effect.Data is SlowEffectData)
-                    _movement?.SetSpeedMultiplier(1f);
+                    _movement?.SetStatusSpeedMultiplier(1f);
 
                 _activeEffects.RemoveAt(i);
             }
@@ -114,7 +114,7 @@ public partial class StatusEffectComponent : Node
 
     public void ClearEffects()
     {
-        _movement?.SetSpeedMultiplier(1f);
+        _movement?.SetStatusSpeedMultiplier(1f);
         _activeEffects.Clear();
         UpdateVisuals();
     }

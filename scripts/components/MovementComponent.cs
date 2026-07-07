@@ -11,7 +11,8 @@ public partial class MovementComponent : Node
 
     private Curve2D _curve;
     private float _speed;
-    private float _speedMultiplier = 1f;
+    private float _baseSpeedMultiplier = 1f;
+    private float _statusSpeedMultiplier = 1f;
     private float _distanceTraveled;
     private float _pathLength;
 
@@ -27,7 +28,8 @@ public partial class MovementComponent : Node
         _speed = speed;
         _pathLength = curve.GetBakedLength();
         _distanceTraveled = 0f;
-        _speedMultiplier = 1f;
+        _baseSpeedMultiplier = 1f;
+        _statusSpeedMultiplier = 1f;
         if (GetParent() is Node2D parent)
             parent.GlobalPosition = _curve.SampleBaked(0f);
     }
@@ -39,7 +41,7 @@ public partial class MovementComponent : Node
             return;
         }
 
-        _distanceTraveled += _speed * _speedMultiplier * (float)delta;
+        _distanceTraveled += _speed * _baseSpeedMultiplier * _statusSpeedMultiplier * (float)delta;
 
         if (_distanceTraveled >= _pathLength)
         {
@@ -51,8 +53,13 @@ public partial class MovementComponent : Node
             parent.GlobalPosition = _curve.SampleBaked(_distanceTraveled);
     }
 
-    public void SetSpeedMultiplier(float multiplier)
+    public void SetBaseSpeedMultiplier(float multiplier)
     {
-        _speedMultiplier = multiplier;
+        _baseSpeedMultiplier = multiplier;
+    }
+
+    public void SetStatusSpeedMultiplier(float multiplier)
+    {
+        _statusSpeedMultiplier = multiplier;
     }
 }

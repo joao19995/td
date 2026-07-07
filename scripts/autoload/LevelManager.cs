@@ -94,22 +94,15 @@ public partial class LevelManager : Node
     }
 
     private void OnLevelLoaded(Node levelNode)
-    {   
-        CurrentLevelNode = levelNode;
-
+    {
         GetTree().Paused = false;
-
+        CurrentLevelNode = levelNode as BaseLevel;
+        if (CurrentLevelNode is not BaseLevel baseLevel) return;
         if (CurrentLevel == null) return;
 
-        if (levelNode is BaseLevel baseLevel)
-        {
-            baseLevel.ConfigureForRun(PendingRunWaves, BossWaveData);
-        }
+        baseLevel.ConfigureForRun(PendingRunWaves, BossWaveData);
 
-    if (CurrentLevel != null && levelNode is not BaseLevel)
-        GD.PushWarning("LevelManager: Loaded level does not extend BaseLevel.");
-
-    // Pass per‑level world size to the camera, falling back to the default.
-    CameraManager.Instance.Configure(CurrentLevel?.WorldSize);
-}
+        // Pass per‑level world size to the camera, falling back to the default.
+        CameraManager.Instance.Configure(CurrentLevel.WorldSize);
+    }
 }

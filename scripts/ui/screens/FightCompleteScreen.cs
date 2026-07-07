@@ -63,12 +63,12 @@ public partial class FightCompleteScreen : Control
             return;
         }
 
-        DoSpin();
+        ShowOutcome(SlotManager.Instance.Spin());
     }
 
-    private void DoSpin()
+    private void ShowOutcome(SlotOutcome outcome)
     {
-        _pendingOutcome = SlotManager.Instance.Spin();
+        _pendingOutcome = outcome;
 
         switch (_pendingOutcome)
         {
@@ -113,7 +113,7 @@ public partial class FightCompleteScreen : Control
         _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
 
         SlotManager.Instance.ApplySkew(_pendingOutcome);
-        DoSpin();
+        ShowOutcome(SlotManager.Instance.Reroll());
     }
 
     private void UpdateRerollButton()
