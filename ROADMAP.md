@@ -11,53 +11,6 @@ fecha o loop de jogo para uma demo de ~5 horas.
 
 ---
 
-### 4. Save Run State Mid-Run (opcional, recomendado)
-
-**Why**: se o jogador fecha o jogo durante uma fight (ou a meio de uma run),
-perde todo o progresso. Numa run de 30 min é aceitável; numa demo de 5h é
-frustrante.
-
-**What to build**:
-- Serializar `RunState` para JSON em `SaveManager`:
-  - Tower levels, equipment, trinkets, shop items comprados
-  - Gold, lives atuais
-  - FightsCompleted, IsBossFight, IsMiniboss
-  - AncientStarter stacks/attack counts
-- Salvar em momentos seguros (entre fights, após shop/heal/treasure)
-- Carregar no Main Menu: "Continue Run?" se houver save ativo
-- Limpar save ao terminar a run (victory/game over/end run)
-
-**Decisions**:
-- Não salvar durante uma fight (mid-wave é demasiado complexo com projéteis
-  e enemies ativos)
-- Usar `SaveManager.SaveRunState(RunStateData data)` / `LoadRunState()`
-- RunStateData = struct/simple JSON, não Resource (evita security vector)
-
-**Estimate**: 1 dia
-
----
-
-### 5. UI/UX Mínima para Clareza do Jogador
-
-**Why**: o jogo não dá feedback quando o jogador não pode fazer algo. Sem
-tooltips de erro, o jogador fica confuso.
-
-**What to build**:
-- **Botão "Next Wave" disabled** com tooltip: "Aguardando inimigos..." ou
-  "Complete a wave atual"
-- **Botão de tower disabled**: tooltip com "Sem gold suficiente" ou
-  "Tipo já colocado"
-- **Reroll button disabled**: tooltip com "Sem gold para reroll"
-- **Mensagem de "Wave Complete"** no HUD quando todos os inimigos morrem
-- **Feedback de compra**: flash verde no botão + "✓ Comprado" (já existe
-  na Shop, confirmar nos outros sítios)
-- **Indicador de boss fight no Briefing**: já existe ("BOSS FIGHT!") mas
-  confirmar que o label é visível e não colide com outros elementos
-
-**Estimate**: 0.5 dia
-
----
-
 ## Camada de Polimento — Improvements to Existing Features
 
 Each item below builds on existing features and adds the visual, interactive,
@@ -200,11 +153,9 @@ the game feels dead regardless of visual polish.
 | 1 | Playtest + Fix Softlocks | Fundação | Critical | 1d | None |
 | 2 | Balance Pass | Fundação | Critical | 1-2d | #1 |
 | 3 | Game Over + Victory Flows | Fundação | High | 0.5d | #1 |
-| 4 | Save Run State Mid-Run | Fundação | Medium | 1d | #3 |
-| 5 | UI/UX Mínima | Fundação | Medium | 0.5d | #1 |
-| 6 | Custom Sprites | Polimento | Critical | 5-8d | None |
-| 7 | Enemy/Projectile VFX | Polimento | High | 3-5d | None |
-| 8 | UI Transitions | Polimento | Medium | 2-3d | None |
-| 9 | Slot Machine Animation | Polimento | Medium | 3-4d | #8 |
-| 10 | Tutorial/Onboarding | Polimento | Low | 1-2d | #5 |
-| 11 | Sound System | Polimento | Critical | 2-3d | None |
+| 4 | Custom Sprites | Polimento | Critical | 5-8d | None |
+| 5 | Enemy/Projectile VFX | Polimento | High | 3-5d | None |
+| 6 | UI Transitions | Polimento | Medium | 2-3d | None |
+| 7 | Slot Machine Animation | Polimento | Medium | 3-4d | #6 |
+| 8 | Tutorial/Onboarding | Polimento | Low | 1-2d | None |
+| 9 | Sound System | Polimento | Critical | 2-3d | None |

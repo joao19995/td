@@ -8,13 +8,14 @@ not implementation details.
 
 ## Game Loop
 
-- Game opens on a **Main Menu** with a "Start Run" button.
+- Game opens on a **Main Menu** with "Start Run", "Continue Run" (if a save exists), "Meta Shop", and "Bestiary" buttons.
 - **Start Run** opens the **Loadout screen**, where the player selects 1–4 tower types to bring into the run.
+- **Continue Run** (between Start Run and Meta Shop) resumes a saved run from the last safe point.
 - The run begins on a random map (Map1 or Map2). After placing towers and defeating all waves (all enemies must be killed, not just spawned), a **Fight Complete** screen appears.
 - From Fight Complete the player clicks **"Continue"** to spin the slot machine, which determines the next step (next fight, shop, heal, treasure, miniboss, or boss). Gold/lives/tower upgrades are preserved across the run.
 - After the configured number of fights (default 3), the slot machine automatically triggers a **Boss Fight** instead of rolling. Defeating the boss ends the run with Victory.
 - The player can always choose **"End Run"** from Fight Complete to end early and receive meta tokens.
-- Pressing **ESC** pauses the game at any time. Pressing again resumes.
+- Pressing **ESC** pauses the game at any time. Enemies stop spawning and all game ticks freeze. Pressing again resumes.
 - Running out of lives shows a **Game Over** screen with Menu buttons.
 - Completing all levels in classic mode shows a **Victory** screen.
 
@@ -40,6 +41,7 @@ not implementation details.
 - **Tower upgrades persist** by tower type across fights. If a Bread Baker tower is upgraded to level 2 and sold, the next Bread Baker placed starts at level 2.
 - **1-per-type** enforcement: only one tower of each type can be on the map at once. The HUD grays out the button and shows "(Placed)" for types already placed.
 - **Random map rotation**: each "Next Fight" loads a random map (Map1 or Map2).
+- **Mid-run save/resume**: run state (gold, lives, tower levels, equipment, trinkets, shop items, passive gold effects, all bonus fields) is saved to a separate `run_save.json` at every safe transition point (after fight, after shop, after trinket, after heal). The Main Menu shows "Continue Run" button when a save exists. Resuming goes straight to Briefing — the player re-rolls the slot machine on their next Fight Complete entry.
 
 ## Run Engine (Slot Machine)
 
@@ -54,7 +56,7 @@ not implementation details.
 - The shop sells run-wide bonuses (damage, fire rate, heavy damage, first-purchase discount) **and** tower-specific equipment that can be equipped per tower type.
 - All weights, heal amount, miniboss multiplier, fights-per-run, reroll cost, and skew factor are exported on SlotManager — no code changes needed to tweak.
 - Outcomes that involve a fight (Fight, Miniboss, Boss) reset all tower placement — player places towers fresh each fight.
-- **Reroll**: after seeing the slot outcome (except Boss/Heal), the player can pay gold to re-roll. Cost scales (50g -> 100g -> 150g). Each reroll reduces the weight of the outcome being rerolled by 50%, making repeats less likely.
+- **Reroll**: after seeing the slot outcome (except Boss/Heal), the player can pay gold to re-roll. Cost scales (50g -> 100g -> 150g). Each reroll reduces the weight of the outcome being rerolled by 50%, making repeats less likely. Hovering the reroll button when the player can't afford it shows "Not enough gold to reroll".
 
 ## Tower Equipment
 
@@ -257,7 +259,8 @@ not implementation details.
   - **Active synergies** (from `SynergyData.Icon`)
   - Each icon shows a tooltip on hover with name and description.
 - Shows a button for each available tower type (determined by loadout during runs). Towers are loaded dynamically from `resources/tower_data/` directory — no scene changes needed when adding new towers.
-- Buttons are disabled when the player cannot afford the tower, when that type is already placed, or during Game Over.
+- Buttons are disabled when the player cannot afford the tower, when that type is already placed, or during Game Over. Hovering a disabled button shows a tooltip explaining why (e.g. "Already placed", "Not enough gold (150g)", "Complete the current wave first", "No active spawner").
+- **Wave Complete label**: a green centered "WAVE COMPLETE!" label appears briefly at the top of the screen when all waves are cleared, then hides on the next level load.
 - Buttons update reactively when money changes, towers are placed, or towers are deselected.
 - **"Next Wave"** button to start each wave. **"Next Level"** button after all waves are cleared.
 - When a tower is selected: shows its **name**, **upgrade level**, **upgrade cost** (or "MAX" if fully upgraded), **targeting priority** (click to cycle First → Closest → Strongest → Last), and **equipped item**.
@@ -270,7 +273,7 @@ not implementation details.
 |---|---|---|
 | Main Menu | On startup | N/A |
 | Loadout | After clicking "Start Run" on Main Menu | No |
-| Pause | Pressing ESC during gameplay | Yes |
+| Pause | Pressing ESC during gameplay — Resume, Bestiary, Main Menu (keeps save), End Run (clears save) | Yes |
 | Game Over | Lives reach zero | Yes |
 | Victory | All levels completed (classic mode) or boss defeated (run mode) | Yes |
 | Fight Complete | All waves cleared during a run | Yes |
@@ -281,6 +284,7 @@ not implementation details.
 | Bestiary | Main Menu button or Pause screen — browse towers/enemies/equip/trinkets/synergies | Yes |
 
 - All pause-capable screens work while the game is paused and can be dismissed with ESC.
+- The **Pause** screen offers: Resume, Bestiary, Main Menu (navigates to main menu without clearing the run save — Continue Run still works), and End Run (clears the run save permanently).
 
 ### Briefing Screen
 
