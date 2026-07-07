@@ -46,6 +46,7 @@ public partial class HUD : CanvasLayer
     private HBoxContainer _buffIconsContainer;
     private Label _tooltipLabel;
     private EquipData _hoveredEquipData;
+    private Label _waveCompleteLabel;
     private bool _equipSignalConnected;
     private TextureRect _equipIcon;
     private Label _equipDesc;
@@ -93,6 +94,17 @@ public partial class HUD : CanvasLayer
         _buffIconsContainer.OffsetLeft = 2;
         _buffIconsContainer.OffsetTop = 42;
         AddChild(_buffIconsContainer);
+
+        _waveCompleteLabel = new Label();
+        _waveCompleteLabel.Name = "WaveCompleteLabel";
+        _waveCompleteLabel.Text = "WAVE COMPLETE!";
+        _waveCompleteLabel.HorizontalAlignment = HorizontalAlignment.Center;
+        _waveCompleteLabel.Visible = false;
+        _waveCompleteLabel.Modulate = new Color(0.3f, 1f, 0.3f);
+        _waveCompleteLabel.OffsetTop = GetViewport().GetVisibleRect().Size.Y / 2f - 10;
+        _waveCompleteLabel.OffsetLeft = 0;
+        _waveCompleteLabel.CustomMinimumSize = new Vector2(GetViewport().GetVisibleRect().Size.X, 20);
+        AddChild(_waveCompleteLabel);
 
         PositionTowerBar();
         _availableTowers = LoadAllTowers();
@@ -196,6 +208,15 @@ public partial class HUD : CanvasLayer
     {
         var size = new Vector2(WaveButtonWidth, ButtonHeight);
         _nextWaveButton = CreateButton(_waveBar, "Next Wave", size, OnNextWavePressed);
+        _nextWaveButton.MouseEntered += () =>
+        {
+            if (!_nextWaveButton.Disabled) return;
+            if (_activeSpawner == null)
+                ShowTooltip("No active spawner");
+            else if (!_activeSpawner.CanStartNextWave)
+                ShowTooltip("Complete the current wave first");
+        };
+        _nextWaveButton.MouseExited += HideTooltip;
     }
 
     private static List<TowerData> LoadAllTowers()
@@ -218,8 +239,20 @@ public partial class HUD : CanvasLayer
             var captured = towerData;
             button.MouseEntered += () =>
             {
-                string tooltipText = $"{captured.TowerName}\nCost: {captured.Cost}g\nDMG: {captured.Damage} | SPD: {captured.FireRate:F2} | RNG: {captured.Range}";
-                ShowTooltip(tooltipText);
+                if (button.Disabled)
+                {
+                    if (TowerPlacementManager.Instance.IsTowerTypePlaced(captured.Id))
+                        ShowTooltip($"{captured.TowerName}\nAlready placed");
+                    else if (!EconomyManager.Instance.CanAfford(captured.Cost))
+                        ShowTooltip($"{captured.TowerName}\nNot enough gold ({captured.Cost}g)");
+                    else
+                        ShowTooltip($"{captured.TowerName}\nUnavailable");
+                }
+                else
+                {
+                    string tooltipText = $"{captured.TowerName}\nCost: {captured.Cost}g\nDMG: {captured.Damage} | SPD: {captured.FireRate:F2} | RNG: {captured.Range}";
+                    ShowTooltip(tooltipText);
+                }
             };
             button.MouseExited += HideTooltip;
 
@@ -248,6 +281,7 @@ public partial class HUD : CanvasLayer
 
         _nextWaveButton.Visible = true;
         _nextWaveButton.Disabled = false;
+        _waveCompleteLabel.Visible = false;
 
         OnTowerDeselected();
         ApplyTowerFilter();
@@ -377,6 +411,7 @@ public partial class HUD : CanvasLayer
     private void OnAllWavesCompleted()
     {
         _nextWaveButton.Visible = false;
+        _waveCompleteLabel.Visible = true;
     }
 
     private void OnLivesChanged(int currentLives)

@@ -6,6 +6,7 @@ public partial class SaveManager : Node
     public static SaveManager Instance { get; private set; }
 
     private const string SavePath = "user://save_data.json";
+    private const string RunSavePath = "user://run_save.json";
 
     [Export] public int MetaTokensPerRun { get; set; } = 10;
 
@@ -212,6 +213,41 @@ public partial class SaveManager : Node
             _loadoutSlots[slot] = new Array<string>(ids);
             SaveGame();
         }
+    }
+
+    public void SaveRunState(Godot.Collections.Dictionary data)
+    {
+        string json = Json.Stringify(data);
+        using var file = FileAccess.Open(RunSavePath, FileAccess.ModeFlags.Write);
+        if (file == null)
+        {
+            GD.PrintErr("SaveManager: failed to open run save file for writing");
+            return;
+        }
+        file.StoreString(json);
+    }
+
+    public Godot.Collections.Dictionary LoadRunState()
+    {
+        if (!FileAccess.FileExists(RunSavePath)) return null;
+        using var file = FileAccess.Open(RunSavePath, FileAccess.ModeFlags.Read);
+        if (file == null) return null;
+        string json = file.GetAsText();
+        if (string.IsNullOrEmpty(json)) return null;
+        var result = Json.ParseString(json);
+        if (result.VariantType != Variant.Type.Dictionary) return null;
+        return result.AsGodotDictionary();
+    }
+
+    public void DeleteRunState()
+    {
+        if (FileAccess.FileExists(RunSavePath))
+            DirAccess.RemoveAbsolute(RunSavePath);
+    }
+
+    public bool HasRunState()
+    {
+        return FileAccess.FileExists(RunSavePath);
     }
 
     private void SetDefaults()

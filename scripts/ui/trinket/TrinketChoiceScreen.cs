@@ -151,6 +151,7 @@ public partial class TrinketChoiceScreen : Control
         tween.TweenCallback(Callable.From(() =>
         {
             preNavigate?.Invoke();
+            RunState.Instance?.SaveCurrentRun();
             LevelManager.Instance.PickRandomLevel();
             UIManager.Instance.PopScreen();
             UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);

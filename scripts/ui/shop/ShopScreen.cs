@@ -197,6 +197,7 @@ public partial class ShopScreen : Control
 
     private void OnLeavePressed()
     {
+        RunState.Instance?.SaveCurrentRun();
         LevelManager.Instance.PickRandomLevel();
         UIManager.Instance.PopScreen();
         UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);

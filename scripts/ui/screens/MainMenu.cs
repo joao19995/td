@@ -10,6 +10,7 @@ public partial class MainMenu : CanvasLayer
     private Button _startRunButton;
     private Button _metaShopButton;
     private Button _bestiaryButton;
+    private Button _continueButton;
     private Label _tokenLabel;
 
     public override void _Ready()
@@ -23,6 +24,26 @@ public partial class MainMenu : CanvasLayer
         _metaShopButton.Pressed += OnMetaShopPressed;
         _bestiaryButton.Pressed += OnBestiaryPressed;
         _tokenLabel.Text = $"Tokens: {SaveManager.Instance.MetaTokens}";
+
+        if (SaveManager.Instance.HasRunState())
+        {
+            _continueButton = new Button();
+            _continueButton.Text = "Continue Run";
+            _continueButton.Pressed += OnContinueRunPressed;
+            var vbox = _startRunButton.GetParent<VBoxContainer>();
+            vbox.AddChild(_continueButton);
+            vbox.MoveChild(_continueButton, vbox.GetChildren().Count - 1);
+        }
+    }
+
+    private void OnContinueRunPressed()
+    {
+        var data = SaveManager.Instance.LoadRunState();
+        if (data == null) return;
+
+        RunState.Instance.TryResumeRun(data);
+        LevelManager.Instance.PickRandomLevel();
+        UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
     }
 
     private void OnBestiaryPressed()

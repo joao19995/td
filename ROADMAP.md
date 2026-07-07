@@ -3,93 +3,11 @@
 Reste do que falta implementar. Todos os items concluídos foram removidos
 — os seus outcomes estão descritos em GAME_STATUS.md.
 
-**Global constraints:**
-- 10 tower types, fixed (Bread Baker, Bread Courier, Aroma Keeper, Taste Tester,
-  Bakery Truck, Bread Monk, Fermentation Sage, Crust Crusader, Dough Exorcist,
-  High Prophet of Sourdough)
-- Each map: max 1 tower of each type = max 10 towers per map (practical: 5 max per map)
-- Loadout: max 4 tower types per run
-- Towers are placed fresh each fight (no persistence of positions between fights)
-- Runs cycle randomly between Map1 and Map2
-
----
-
 ## Camada de Fundação — Estabilidade e Loop de Jogo
 
 Antes de qualquer polimento visual, é necessário garantir que o jogo é jogável
 do início ao fim sem crashes, softlocks, ou balanceamento quebrado. Esta camada
 fecha o loop de jogo para uma demo de ~5 horas.
-
----
-
-### 1. Playtest End-to-End + Fix de Softlocks
-
-**Why**: nunca houve um playthrough completo. Flows críticos (Game Over, Shop sem
-gold, reroll sem gold, briefing locked, tower placement sem dinheiro) podem estar
-a produzir crashes ou dead-ends silenciosos.
-
-**What to do**:
-- Jogar uma run completa do início ao fim (Main Menu → Loadout → 3 fights →
-  Boss → Victory) com logging nos flows críticos
-- Jogar um cenário de derrota (perder todas as vidas a meio de uma fight)
-- Testar edge cases:
-  - Clicar "Next Wave" com 0 gold
-  - Clicar "Reroll" com 0 gold
-  - Clicar "Continue" sem ter feito o spin
-  - Fechar menus com ESC em cada estado
-  - Sair durante uma fight e voltar
-  - Loadout com 1 única torre selecionada
-  - Tentar colocar torre com gold insuficiente
-  - Vender torre e colocar outra do mesmo tipo
-- Corrigir todos os softlocks e crashes detetados
-
-**Estimate**: 1 dia
-
----
-
-### 2. Balance Pass (Damage / HP / Gold Economy)
-
-**Why**: os números atuais de enemy HP, damage das torres, gold rewards e custos
-nunca foram playtestados. Uma run com balanceamento errado ou morre na wave 3
-ou acaba em 10 minutos sem decisões.
-
-**What to do**:
-- Definir target de run: ~20-30 min, 3 fights + boss, ~24 waves no total
-- Ajustar valores base em `TowerData` e `EnemyData`:
-  - Tower damage: quebra de HP de enemy médio em 3-5 hits (tower básica)
-  - Enemy HP: escala por tier (tier1 fácil, tier3 duro)
-  - Gold economy: torre mais cara comprável após 2-3 waves de farm
-  - Upgrade costs: progression que justifica investir vs. colocar nova torre
-- Validar com 3 playthroughs: early game (tier1), mid game (tier2), late game (tier3 + boss)
-- Ajustar `GameBalanceData.tres` (elite multipliers, wave modifiers, meta-upgrade values)
-
-**Estimate**: 1-2 dias
-
----
-
-### 3. Game Over + Victory Flows
-
-**Why**: quando o jogador perde todas as vidas ou derrota o boss, o ecrã final
-existe mas o fluxo de recompensa (tokens, resumo, navegação) pode estar
-incompleto ou quebrado.
-
-**What to build**:
-- **Game Over**: confirmar que mostra ecrã de derrota, calcula tokens
-  (`FightsCompleted / TotalFights`), permite voltar ao Main Menu
-- **Victory**: ecrã de vitória com badges (tokens, inimigos mortos, gold gasto,
-  dano total), opção "New Run" e "Main Menu"
-- **End Run (abandonar)**: se o jogador desiste a meio, ganha tokens parciais
-  baseados no progresso
-- **Resumo rápido**: quantas waves sobreviveu, quantos inimigos converteu,
-  gold total ganho
-
-**Files to change**:
-- `scripts/ui/screens/GameOverScreen.cs` — token reward, stats summary
-- `scripts/ui/screens/VictoryScreen.cs` — stats summary, New Run button
-- `scripts/autoload/RunState.cs` — `EndRun()` já calcula tokens, confirmar que
-  `isVictory` está a ser passado corretamente
-
-**Estimate**: 0.5 dia
 
 ---
 

@@ -64,30 +64,7 @@ not implementation details.
 - **Swap**: buying a new equipment for a tower that already has one replaces it (no refund). The entire equip list is rebuilt after purchase.
 - **Tower panel**: when selecting a tower during gameplay, the action panel shows the equipped item's **name**, **icon**, and **stat bonuses** (e.g. `+15% DMG | +20% POISON`) derived from the `EquipData` fields. Hovering the name shows a tooltip with description.
 - **Stat bonuses** are multiplicative-percent and stack additively with synergy bonuses in the EffectiveDamage formula.
-- **20 equipment items shipped** (2 per tower type), each with unique mechanics:
-
-  | Equip | Tower | Effect | Special Mechanic |
-  |---|---|---|---|
-  | Stone Oven | Bread Baker | +15% Damage | — |
-  | Ancient Starter | Bread Baker | +10% Damage | +1 raw damage per 10 attacks (stacking, resets on sell, persists across fights) |
-  | Electric Bike | Bread Courier | +20% Fire Rate | — |
-  | Messenger Crate Upgrade | Bread Courier | +1 pierce, -10% Fire Rate | Projectile hits 2 enemies instead of 1 |
-  | Megaphone | Aroma Keeper | +20% Range | — |
-  | Spice Wind Chimes | Aroma Keeper | +30% Slow Duration, -10% Damage | — |
-  | Silver Tray | Taste Tester | +20% Poison Damage | — |
-  | Double Sampling Plates | Taste Tester | applies poison to +1 extra target, -15% Fire Rate | Nearest enemy in 30px gets poison directly |
-  | Reinforced Suspension | Bakery Truck | +15% Splash Radius | — |
-  | Street Parade Route | Bakery Truck | +30% Area Damage, -20% Range | — |
-  | Sacred Robes | Bread Monk | +15% Aura Range | Affects aura scan range, not attack range |
-  | Prayer Beads of Gluten | Bread Monk | buffs +5% stronger, tower does not attack | Aura bonus percent increased; tower stops firing |
-  | Golden Proofing Bowl | Fermentation Sage | +15% Effect Duration | — |
-  | Wild Yeast Culture | Fermentation Sage | chain +1 extra bounce, -10% initial Damage | — |
-  | Tempered Crust Blade | Crust Crusader | +10% Crit Chance | — |
-  | Blessed Crunch Seal | Crust Crusader | crits make mini-splash (radius 30), -10% Fire Rate | Separate splash triggered only on crit connect |
-  | Holy Flour Pouch | Dough Exorcist | +20% Damage vs elites/boss | Bonus only applies to IsBoss/IsHeavy targets, not flat |
-  | Judgment Seal | Dough Exorcist | executes below 15% HP, -15% Damage | Instant kill at <15% HP with 5s internal cooldown |
-  | Golden Staff of Fermentation | High Prophet | +10% All Stats | — |
-  | First Starter Relic | High Prophet | +5% damage per nearby tower (range 40), -15% Range | Counts towers within 40px, bonus per tower |
+- **20 equipment items shipped** (2 per tower type) — see [`docs/tower.md`](tower.md) for full list with costs, effects, and trade-offs.
 
 ## Trinkets (Run-Wide Charms)
 
@@ -98,17 +75,7 @@ not implementation details.
   - Rarity-colored border — **Common** (gray), **Rare** (gold)
   - Hover highlight and sequential fade-in animation (0.15s stagger)
 - **Skip button**: "Skip" advances without applying a trinket
-- Trinkets apply **run-wide** effects that last for the rest of the run:
-  - *Secret Recipe Scroll*: +10% global damage
-  - *Starter's Blessing*: restore 5 lives immediately
-  - *Regular's Tip Jar*: gain 100 gold immediately
-  - *Proofing Time Candle*: +8% Attack Speed, -5% Range (trade-off, **Rare**)
-  - *Crust Fragment Relic*: +12% Crit Damage (multiplicative)
-  - *Fermentation Diary*: +15% status effect duration (slow, poison)
-  - *Sacred Flour Dust*: +10% slow/poison strength
-  - *Heretic Census List*: +10% damage vs basic enemies
-  - *Oven Heart Ember*: +1 starting tower range (small global aura, ~10px)
-  - *First Starter Vessel*: every 30s gains +5 passive gold
+- Trinkets apply **run-wide** effects that last for the rest of the run — see [`docs/trinket.md`](trinket.md) for full list with effects, rarity, and scope.
 - **10 trinkets total** (9 Common, 1 Rare). Rarity determined by `TrinketData.Rarity` enum field.
 - Passive gold uses a timer in RunState._Process. Crit damage is multiplicative to the base crit multiplier. Trade-off trinkets use negative values in existing stat fields.
 - Trinkets are single-use per run — once chosen, the effect is applied.
@@ -116,16 +83,7 @@ not implementation details.
 
 ## Shop Items (Run-Wide Purchases)
 
-- **5 items** available in the run Shop:
-
-  | # | Name | Effect | Cost |
-  |---|---|---|---|
-  | 1 | Secret Ingredient | +5% damage global | 80 |
-  | 2 | Fresh Batch | +5% fire rate global | 60 |
-  | 3 | Golden Proof Flour | +5% damage vs armored/heavy enemies | 90 |
-  | 4 | Rapid Oven Upgrade | +8% fire rate, -5% range (trade-off) | 100 |
-  | 5 | Discounted Starter Yeast | first shop purchase costs -30% gold | 120 |
-
+- **5 items** available in the run Shop — see [`docs/shop_item.md`](shop_item.md) for full list with costs and effects.
 - Shop items are loaded dynamically from `resources/run_data/` — no code changes needed.
 - Each item shows its **icon** (16x16 TextureRect), **name + cost**, and **description**.
 - Purchase feedback: button flashes green via Tween, text changes to "✓ Owned".
@@ -140,23 +98,7 @@ not implementation details.
 - **Meta tokens**: awarded at the end of every run (win or lose). Token reward scales: `base × (1 + fightsCompleted / totalFights)`. Victory bonus: +50% tokens if the boss was defeated.
 - **Unlocked towers**: Bread Baker and Bread Courier start unlocked. All other 8 towers are purchased with tokens in the Meta Shop.
 - **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
-- **Upgrade catalog** (16 items, 3 categories):
-
-  **Unlocks** (9 items):
-  - 8 tower unlocks (various token costs)
-  - Starter Gear Voucher (40 tokens, 1 level): start each run with 1 random equipment on a loadout tower
-  - Seasoned Recruits (50 tokens, 1 level): newly placed towers start at upgrade level 1
-
-  **Stats** (3 items):
-  - Secret Recipe +5% per level (15 tokens base, 3 levels max) — global damage bonus
-  - Local Sponsorship +50 starting gold per level (10 tokens base, 3 levels max) — starting gold
-  - Extra Loaves +2 lives per level (15 tokens base, 3 levels max) — starting lives
-
-  **Economy** (4 items):
-  - Bulk Flour Discount -5% per level (20 tokens base, 3 levels max) — shop item costs reduced
-  - Second Chance Discount -10% per level (15 tokens base, 3 levels max) — reroll costs reduced
-  - Tax on Industrial Bread +10% per level (20 tokens base, 3 levels max) — enemies grant more gold
-
+- **16 meta-upgrades** organized into Tower Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`docs/meta_upgrade.md`](meta_upgrade.md) for full list.
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens x 1`, level 2 costs `CostTokens x 2`, etc. Each level grants the configured bonus.
 - **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold/lives bonuses are added before the run begins. Shop discount reduces displayed costs in the shop UI. Reroll cost reduction applies at the slot machine. Enemy gold bonus multiplies all enemy gold rewards. Starter Gear Voucher picks a random equipment for a random loadout tower at run start. Seasoned Recruits sets all loadout towers to level 1 at run start.
 - **Corruption handling**: save file corruption or incompatible schema triggers a clean default reset with a warning — the game never crashes on broken save data.
@@ -166,22 +108,14 @@ not implementation details.
 
 - **Type-combination bonuses**: synergies activate based on which tower types are on the board. No adjacency or positioning logic — only type presence matters.
 - **Active synergies** are automatically evaluated whenever a tower is placed or removed.
-- **4 synergies shipped**:
-
-  | # | Name | Requirements | Effect |
-  |---|---|---|---|
-  | 1 | One Whiff, One Bite | Aroma Keeper + Taste Tester | +15% damage to both |
-  | 2 | Grand Opening Rush | 3+ tower types | +10% fire rate to all |
-  | 3 | Holy Fermentation Network | Aroma Keeper + Fermentation Sage | Slow/chain effects spread +30% further |
-  | 4 | Crust Judgment Protocol | Crust Crusader + Dough Exorcist | Crits against <50% HP cause instant kill (10s cooldown) |
-
+- **4 synergies shipped** — see [`docs/tower.md`](tower.md#synergies) for full list with requirements, effects, and strategy notes.
 - **Stat bonuses** are additive with equip bonuses: `EffectiveX = (base + upgradeFlat) * (1 + synergy + equip) * (1 + shop) * (1 + meta) * (1 + trinket)`. Damage, fire rate, and range all follow the same formula.
 - **Visual feedback**: towers affected by any synergy show a green tint. The HUD lists active synergy names at the top of the screen.
 - **Data-driven**: synergies are defined in `SynergyData` resource files under `resources/synergy_data/`. Adding a new `.tres` file in that folder is enough to register it — no code changes needed.
 
 ## Levels
 
-- The game ships with **2 maps** (Map1, Map2), each with its own tile layout, enemy path, and wave list.
+- The game ships with **2 maps** (Map1, Map2) — see [`docs/level.md`](level.md).
 - Adding a new map requires only a new scene and a **LevelData** resource file — no code changes.
 - Levels can configure:
   - Starting money and lives (or use global defaults)
@@ -204,6 +138,7 @@ not implementation details.
   - If another level exists, a **"Next Level"** button appears.
   - If it was the final level, the **Victory** screen is shown.
 - During a run, all waves completed shows the **Fight Complete** screen instead.
+- See [`docs/wave.md`](wave.md) for full wave compositions by tier.
 
 ### Wave Decoupling (Run Mode)
 
@@ -231,21 +166,7 @@ not implementation details.
 
 ## Towers
 
-- **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource.
-
-  | Tower | Cost | Type | Special Mechanic |
-  |---|---|---|---|
-  | Bread Baker | 100 | Standard single-target | — |
-  | Bread Courier | 120 | High fire rate, low damage | — |
-  | Aroma Keeper | 150 | Support | Slows enemies on hit (blue tint, duration refresh, no intensity stack) |
-  | Taste Tester | 180 | Support | Damage-over-time poison on hit (green tint, duration refresh, no intensity stack) |
-  | Bakery Truck | 250 | Area | Splash damage to all enemies within a radius. Shows a fading circle effect |
-  | Bread Monk | 220 | Aura support | Proximity aura buffs nearby towers (+10% dmg, +10% FR within 60px). Does not attack with Prayer Beads equip |
-  | Fermentation Sage | 250 | Chain | Projectile chains to nearest enemy on hit (1 bounce, 40px range, 50% damage). Propagates status effects |
-  | Crust Crusader | 300 | Crit | 15% base crit chance, 2x crit multiplier |
-  | Dough Exorcist | 340 | Execute | 2x damage vs targets below 20% HP, 1.5x vs elite/boss |
-  | High Prophet of Sourdough | 400 | Global aura | +2% global damage per friendly tower on the map (includes self). Recalculated every 0.5s |
-
+- **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource — see [`docs/tower.md`](tower.md) for full stats, DPS, upgrades, equipment, synergies, and open questions.
 - **Placement**: towers can only be placed on designated buildable tiles. Already-occupied tiles are blocked.
 - **Selection**: clicking a placed tower selects it. A semi-transparent circle shows its range. Right-click deselects.
 - **Upgrades**: each tower has a fixed upgrade path (2 tiers per tower). Upgrades increase damage, fire rate, and/or range.
@@ -272,7 +193,7 @@ not implementation details.
 - **Messenger Crate**: Projectile.PierceCount = 1. On hit, decrements pierce and finds next target via physics shape query. Homing continues on new target.
 - **Double Sampling**: after firing, scans 30px radius for nearest enemy and applies poison directly (no projectile).
 - **Blessed Crunch Seal**: on crit hit, triggers TriggerSplashAt with 30px radius. Uses same splash system as Bakery Truck.
-- **Judgment Seal**: if target <15% HP and cooldown <= 0, instakill with 9999 damage. 5s cooldown (reuses `_judgmentCooldown` field that also serves Crust Judgment Protocol synergy).
+- **Judgment Seal**: if target <15% HP and cooldown <= 0, instakill with 9999 damage. 5s cooldown.
 - **First Starter Relic**: GetFirstStarterBonus() scans towers group, counts those within 40px, returns `_data.Damage * (0.05 * count)` as raw damage.
 - **Prayer Beads**: `_auraOnly = true` means Tower._Process skips attack. Aura DamageBonusPercent and FireRateBonusPercent are multiplied by 1.05 in ApplyData.
 
@@ -290,21 +211,7 @@ not implementation details.
 
 ## Enemies
 
-- **10 enemy types**:
-
-  | # | Name | HP | Speed | Gold | Damage | Boss? | Special |
-  |---|---|---|---|---|---|---|---|
-  | 1 | Sliced Bread Tourist | 100 | 24 | 10 | 1 | — | Basic |
-  | 2 | Grocery Run Jogger | 60 | 48 | 15 | 1 | — | Fast, fragile |
-  | 3 | Lazy Alley Cat | 300 | 12 | 30 | 2 | — | Early tank |
-  | 4 | Pigeon w/ Stolen Baguette | 80 | 32 | 20 | 1 | — | Annoying flyer |
-  | 5 | Industrial Bread Dragon | 1000 | 16 | 100 | 5 | **BOSS** | Final boss |
-  | 6 | Microwave Meal Preacher | 200 | 20 | 25 | 2 | — | Medium "convinced" |
-  | 7 | Plastic Wrapped Sandwich Man | 180 | 28 | 22 | 2 | — | Medium resistance |
-  | 8 | Frozen Dough Abomination | 400 | 10 | 35 | 3 | — | Slow tank |
-  | 9 | The Gluten Null Bishop | 1500 | 14 | 120 | 6 | **BOSS** | Anti-buff aura (60px, 50% debuff to all tower percent bonuses) |
-  | 10 | Supermarket Overlord of White Bread | 900 | 18 | 80 | 4 | — | Elite/miniboss |
-
+- **10 enemy types** — see [`docs/enemy.md`](enemy.md) for full stats, TTK analysis, and counter strategies.
 - Each enemy has configurable health, speed, gold reward, sprite, damage to player, and IsBoss/IsHeavy flags via EnemyData resource.
 - Enemies follow a fixed path defined per level.
 - If an enemy reaches the end, it damages the player's lives and is removed.

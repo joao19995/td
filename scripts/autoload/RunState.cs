@@ -184,6 +184,7 @@ public partial class RunState : Node
 
         EconomyManager.Instance.SetMoney(gold + StartingGoldBonus);
         GameManager.Instance.SetLives(lives + MetaStartingLivesBonus);
+        SaveManager.Instance.DeleteRunState();
     }
 
     public void IncrementFights()
@@ -220,6 +221,7 @@ public partial class RunState : Node
         LastGoldEarned = TotalGoldEarned;
         LastGoldSpent = TotalGoldSpent;
         SaveManager.Instance.AddMetaTokens(totalTokens);
+        SaveManager.Instance.DeleteRunState();
         _towerLevels.Clear();
         _equippedItems.Clear();
         _ancientStarterAttackCount.Clear();
@@ -324,6 +326,231 @@ public partial class RunState : Node
                 RemainingTime = trinket.PassiveGoldInterval
             });
         }
+    }
+
+    public void SaveCurrentRun()
+    {
+        var data = new Godot.Collections.Dictionary
+        {
+            { "gold", EconomyManager.Instance.CurrentMoney },
+            { "lives", GameManager.Instance.CurrentLives },
+            { "fights_completed", FightsCompleted },
+            { "is_boss_fight", IsBossFight },
+            { "is_miniboss", IsMiniboss },
+            { "total_enemies_killed", TotalEnemiesKilled },
+            { "total_gold_earned", TotalGoldEarned },
+            { "total_gold_spent", TotalGoldSpent },
+            { "global_aura_damage_percent", GlobalAuraDamagePercent },
+            { "trinket_range_flat_bonus", TrinketRangeFlatBonus },
+            { "trinket_basic_damage_percent_bonus", TrinketBasicDamagePercentBonus },
+            { "shop_damage_bonus_percent", ShopDamageBonusPercent },
+            { "shop_fire_rate_bonus_percent", ShopFireRateBonusPercent },
+            { "shop_range_bonus_percent", ShopRangeBonusPercent },
+            { "shop_heavy_damage_bonus_percent", ShopHeavyDamageBonusPercent },
+            { "first_purchase_discount_percent", FirstPurchaseDiscountPercent },
+            { "trinket_damage_bonus_percent", TrinketDamageBonusPercent },
+            { "trinket_fire_rate_bonus_percent", TrinketFireRateBonusPercent },
+            { "trinket_range_bonus_percent", TrinketRangeBonusPercent },
+            { "trinket_crit_damage_bonus_percent", TrinketCritDamageBonusPercent },
+            { "trinket_status_duration_bonus_percent", TrinketStatusDurationBonusPercent },
+            { "trinket_status_strength_bonus_percent", TrinketStatusStrengthBonusPercent }
+        };
+
+        var selectedIds = new Godot.Collections.Array();
+        foreach (var id in SelectedTowerIds)
+            selectedIds.Add(id);
+        data["selected_tower_ids"] = selectedIds;
+
+        var towerLevelsDict = new Godot.Collections.Dictionary();
+        foreach (var kv in _towerLevels)
+            towerLevelsDict[kv.Key] = kv.Value;
+        data["tower_levels"] = towerLevelsDict;
+
+        var equippedItemsDict = new Godot.Collections.Dictionary();
+        foreach (var kv in _equippedItems)
+            equippedItemsDict[kv.Key] = kv.Value;
+        data["equipped_items"] = equippedItemsDict;
+
+        var ancientAttackDict = new Godot.Collections.Dictionary();
+        foreach (var kv in _ancientStarterAttackCount)
+            ancientAttackDict[kv.Key] = kv.Value;
+        data["ancient_attack_count"] = ancientAttackDict;
+
+        var ancientStacksDict = new Godot.Collections.Dictionary();
+        foreach (var kv in _ancientStarterStacks)
+            ancientStacksDict[kv.Key] = kv.Value;
+        data["ancient_stacks"] = ancientStacksDict;
+
+        var trinketIds = new Godot.Collections.Array();
+        foreach (var id in AppliedTrinketIds)
+            trinketIds.Add(id);
+        data["applied_trinket_ids"] = trinketIds;
+
+        var shopItemIds = new Godot.Collections.Array();
+        foreach (var id in PurchasedShopItemIds)
+            shopItemIds.Add(id);
+        data["purchased_shop_item_ids"] = shopItemIds;
+
+        var itemNames = new Godot.Collections.Array();
+        foreach (var name in PurchasedItemNames)
+            itemNames.Add(name);
+        data["purchased_item_names"] = itemNames;
+
+        var itemDescs = new Godot.Collections.Array();
+        foreach (var desc in PurchasedItemDescriptions)
+            itemDescs.Add(desc);
+        data["purchased_item_descriptions"] = itemDescs;
+
+        var passiveGoldArray = new Godot.Collections.Array();
+        foreach (var effect in _passiveGoldEffects)
+        {
+            var effectDict = new Godot.Collections.Dictionary
+            {
+                { "amount", effect.Amount },
+                { "interval", effect.Interval },
+                { "remaining_time", effect.RemainingTime }
+            };
+            passiveGoldArray.Add(effectDict);
+        }
+        data["passive_gold_effects"] = passiveGoldArray;
+
+        SaveManager.Instance.SaveRunState(data);
+    }
+
+    public bool TryResumeRun(Godot.Collections.Dictionary data)
+    {
+        if (data == null) return false;
+
+        IsRunActive = true;
+        EconomyManager.Instance.SetMoney((int)(long)data["gold"]);
+        GameManager.Instance.SetLives((int)(long)data["lives"]);
+        FightsCompleted = (int)(long)data["fights_completed"];
+        IsBossFight = data.ContainsKey("is_boss_fight") && (bool)data["is_boss_fight"];
+        IsMiniboss = data.ContainsKey("is_miniboss") && (bool)data["is_miniboss"];
+        TotalEnemiesKilled = (int)(long)data["total_enemies_killed"];
+        TotalGoldEarned = (int)(long)data["total_gold_earned"];
+        TotalGoldSpent = (int)(long)data["total_gold_spent"];
+        GlobalAuraDamagePercent = (float)(double)data["global_aura_damage_percent"];
+        TrinketRangeFlatBonus = (float)(double)data["trinket_range_flat_bonus"];
+        TrinketBasicDamagePercentBonus = (float)(double)data["trinket_basic_damage_percent_bonus"];
+        ShopDamageBonusPercent = (float)(double)data["shop_damage_bonus_percent"];
+        ShopFireRateBonusPercent = (float)(double)data["shop_fire_rate_bonus_percent"];
+        ShopRangeBonusPercent = (float)(double)data["shop_range_bonus_percent"];
+        ShopHeavyDamageBonusPercent = (float)(double)data["shop_heavy_damage_bonus_percent"];
+        FirstPurchaseDiscountPercent = (float)(double)data["first_purchase_discount_percent"];
+        TrinketDamageBonusPercent = (float)(double)data["trinket_damage_bonus_percent"];
+        TrinketFireRateBonusPercent = (float)(double)data["trinket_fire_rate_bonus_percent"];
+        TrinketRangeBonusPercent = (float)(double)data["trinket_range_bonus_percent"];
+        TrinketCritDamageBonusPercent = (float)(double)data["trinket_crit_damage_bonus_percent"];
+        TrinketStatusDurationBonusPercent = (float)(double)data["trinket_status_duration_bonus_percent"];
+        TrinketStatusStrengthBonusPercent = (float)(double)data["trinket_status_strength_bonus_percent"];
+
+        _lastMoney = EconomyManager.Instance.CurrentMoney;
+
+        if (data.ContainsKey("selected_tower_ids"))
+        {
+            var ids = data["selected_tower_ids"].AsGodotArray();
+            SelectedTowerIds = new Godot.Collections.Array<string>();
+            foreach (var id in ids)
+                SelectedTowerIds.Add(id.AsString());
+        }
+
+        if (data.ContainsKey("tower_levels"))
+        {
+            _towerLevels.Clear();
+            var levels = data["tower_levels"].AsGodotDictionary();
+            foreach (var key in levels.Keys)
+                _towerLevels[key.AsString()] = (int)(long)levels[key];
+        }
+
+        if (data.ContainsKey("equipped_items"))
+        {
+            _equippedItems.Clear();
+            var items = data["equipped_items"].AsGodotDictionary();
+            foreach (var key in items.Keys)
+                _equippedItems[key.AsString()] = items[key].AsString();
+        }
+
+        if (data.ContainsKey("ancient_attack_count"))
+        {
+            _ancientStarterAttackCount.Clear();
+            var att = data["ancient_attack_count"].AsGodotDictionary();
+            foreach (var key in att.Keys)
+                _ancientStarterAttackCount[key.AsString()] = (int)(long)att[key];
+        }
+
+        if (data.ContainsKey("ancient_stacks"))
+        {
+            _ancientStarterStacks.Clear();
+            var stk = data["ancient_stacks"].AsGodotDictionary();
+            foreach (var key in stk.Keys)
+                _ancientStarterStacks[key.AsString()] = (int)(long)stk[key];
+        }
+
+        if (data.ContainsKey("applied_trinket_ids"))
+        {
+            AppliedTrinketIds.Clear();
+            var trinkets = data["applied_trinket_ids"].AsGodotArray();
+            foreach (var id in trinkets)
+                AppliedTrinketIds.Add(id.AsString());
+        }
+
+        if (data.ContainsKey("purchased_shop_item_ids"))
+        {
+            PurchasedShopItemIds.Clear();
+            var shopIds = data["purchased_shop_item_ids"].AsGodotArray();
+            foreach (var id in shopIds)
+                PurchasedShopItemIds.Add(id.AsString());
+        }
+
+        PurchasedItemIcons.Clear();
+        PurchasedItemNames.Clear();
+        PurchasedItemDescriptions.Clear();
+
+        if (data.ContainsKey("purchased_item_names"))
+        {
+            var names = data["purchased_item_names"].AsGodotArray();
+            foreach (var n in names)
+                PurchasedItemNames.Add(n.AsString());
+        }
+
+        if (data.ContainsKey("purchased_item_descriptions"))
+        {
+            var descs = data["purchased_item_descriptions"].AsGodotArray();
+            foreach (var d in descs)
+                PurchasedItemDescriptions.Add(d.AsString());
+        }
+
+        if (data.ContainsKey("passive_gold_effects"))
+        {
+            _passiveGoldEffects.Clear();
+            var effects = data["passive_gold_effects"].AsGodotArray();
+            foreach (var e in effects)
+            {
+                var ed = e.AsGodotDictionary();
+                _passiveGoldEffects.Add(new PassiveGoldEffect
+                {
+                    Amount = (int)(long)ed["amount"],
+                    Interval = (float)(double)ed["interval"],
+                    RemainingTime = (float)(double)ed["remaining_time"]
+                });
+            }
+        }
+
+        int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
+        MetaDamageBonusPercent = damageLevel * GameBalance.MetaDamagePercentPerLevel;
+        int goldLevel = SaveManager.Instance.GetMetaUpgradeLevel("local_sponsorship");
+        StartingGoldBonus = goldLevel * GameBalance.StartingGoldPerLevel;
+        int livesLevel = SaveManager.Instance.GetMetaUpgradeLevel("starting_lives");
+        MetaStartingLivesBonus = livesLevel * GameBalance.StartingLivesPerLevel;
+        int shopLevel = SaveManager.Instance.GetMetaUpgradeLevel("shop_discount");
+        MetaShopDiscountPercent = shopLevel * GameBalance.MetaShopDiscountPerLevel;
+        int rerollLevel = SaveManager.Instance.GetMetaUpgradeLevel("reroll_cost_reduction");
+        MetaRerollCostReductionPercent = rerollLevel * GameBalance.MetaRerollCostReductionPerLevel;
+        int goldBonusLevel = SaveManager.Instance.GetMetaUpgradeLevel("enemy_gold_bonus");
+        MetaEnemyGoldBonusPercent = goldBonusLevel * GameBalance.MetaEnemyGoldBonusPerLevel;
+
+        return true;
     }
 
     public override void _Process(double delta)
