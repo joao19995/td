@@ -23,16 +23,30 @@ color = Color(0, 0, 0, 0.6)
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=1260734587]
 layout_mode = 0
-offset_left = 60.0
-offset_top = 60.0
-offset_right = 260.0
-offset_bottom = 130.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 280.0
+offset_bottom = 200.0
 
 [node name="Title" type="Label" parent="VBox" unique_id=456958582]
 layout_mode = 2
 text = "VICTORY!"
 horizontal_alignment = 1
 
-[node name="MenuButton" type="Button" parent="VBox" unique_id=1451343308]
+[node name="TokenLabel" type="Label" parent="VBox" unique_id=428719473]
+layout_mode = 2
+text = "Tokens: -"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="VBox" unique_id=670762372]
+layout_mode = 2
+text = "Stats: -"
+horizontal_alignment = 1
+
+[node name="NewRunButton" type="Button" parent="VBox" unique_id=1451343308]
+layout_mode = 2
+text = "New Run"
+
+[node name="MenuButton" type="Button" parent="VBox" unique_id=1832126485]
 layout_mode = 2
 text = "Menu"

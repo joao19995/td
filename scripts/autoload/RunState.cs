@@ -15,6 +15,9 @@ public partial class RunState : Node
     public Array<string> SelectedTowerIds { get; private set; } = new();
 
     public int FightsCompleted { get; private set; } = 0;
+    public int TotalEnemiesKilled { get; private set; } = 0;
+    public int TotalGoldEarned { get; private set; } = 0;
+    public int TotalGoldSpent { get; private set; } = 0;
     public bool IsBossFight { get; private set; } = false;
     public bool IsMiniboss { get; private set; } = false;
 
@@ -61,6 +64,37 @@ public partial class RunState : Node
         Instance = this;
     }
 
+    public override void _Ready()
+    {
+        EventBus.Instance.EnemyDied += OnEnemyDied;
+        EventBus.Instance.MoneyChanged += OnMoneyChanged;
+    }
+
+    public override void _ExitTree()
+    {
+        if (EventBus.Instance != null)
+        {
+            EventBus.Instance.EnemyDied -= OnEnemyDied;
+            EventBus.Instance.MoneyChanged -= OnMoneyChanged;
+        }
+    }
+
+    private void OnEnemyDied(int _)
+    {
+        TotalEnemiesKilled++;
+    }
+
+    private int _lastMoney;
+    private void OnMoneyChanged(int currentMoney)
+    {
+        int diff = currentMoney - _lastMoney;
+        if (diff > 0)
+            TotalGoldEarned += diff;
+        else if (diff < 0)
+            TotalGoldSpent -= diff;
+        _lastMoney = currentMoney;
+    }
+
     public void StartRun(int gold, int lives, Godot.Collections.Array<string> selectedTowerIds)
     {
         _towerLevels.Clear();
@@ -70,6 +104,15 @@ public partial class RunState : Node
         SelectedTowerIds = selectedTowerIds;
         IsRunActive = true;
         FightsCompleted = 0;
+        TotalEnemiesKilled = 0;
+        TotalGoldEarned = 0;
+        TotalGoldSpent = 0;
+        LastTokenReward = 0;
+        LastFightsCompleted = 0;
+        LastEnemiesKilled = 0;
+        LastGoldEarned = 0;
+        LastGoldSpent = 0;
+        _lastMoney = gold;
         AppliedTrinketIds.Clear();
         PurchasedShopItemIds.Clear();
         PurchasedItemIcons.Clear();
@@ -171,6 +214,11 @@ public partial class RunState : Node
         if (isVictory)
             totalTokens = Mathf.RoundToInt(totalTokens * GameBalance.TokenRewardVictoryMultiplier);
 
+        LastTokenReward = totalTokens;
+        LastFightsCompleted = FightsCompleted;
+        LastEnemiesKilled = TotalEnemiesKilled;
+        LastGoldEarned = TotalGoldEarned;
+        LastGoldSpent = TotalGoldSpent;
         SaveManager.Instance.AddMetaTokens(totalTokens);
         _towerLevels.Clear();
         _equippedItems.Clear();
@@ -178,6 +226,9 @@ public partial class RunState : Node
         _ancientStarterStacks.Clear();
         SelectedTowerIds.Clear();
         FightsCompleted = 0;
+        TotalEnemiesKilled = 0;
+        TotalGoldEarned = 0;
+        TotalGoldSpent = 0;
         AppliedTrinketIds.Clear();
         PurchasedShopItemIds.Clear();
         PurchasedItemIcons.Clear();
@@ -288,6 +339,24 @@ public partial class RunState : Node
                 effect.RemainingTime += effect.Interval;
             }
         }
+    }
+
+    public int LastTokenReward { get; private set; }
+    public int LastFightsCompleted { get; private set; }
+    public int LastEnemiesKilled { get; private set; }
+    public int LastGoldEarned { get; private set; }
+    public int LastGoldSpent { get; private set; }
+
+    public int PreviewTokenReward(bool isVictory = false)
+    {
+        int baseTokens = SaveManager.Instance.MetaTokensPerRun;
+        float ratio = SlotManager.Instance != null
+            ? (float)FightsCompleted / Mathf.Max(1, SlotManager.Instance.FightsPerRun)
+            : 1f;
+        int total = Mathf.RoundToInt(baseTokens * (GameBalance.TokenRewardBaseMultiplier + ratio));
+        if (isVictory)
+            total = Mathf.RoundToInt(total * GameBalance.TokenRewardVictoryMultiplier);
+        return total;
     }
 
     public int GetEffectiveShopCost(int baseCost)

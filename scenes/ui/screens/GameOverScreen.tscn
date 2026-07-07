@@ -26,7 +26,7 @@ layout_mode = 0
 offset_left = 60.0
 offset_top = 40.0
 offset_right = 260.0
-offset_bottom = 160.0
+offset_bottom = 220.0
 
 [node name="Title" type="Label" parent="VBox" unique_id=796576812]
 layout_mode = 2
@@ -41,6 +41,11 @@ horizontal_alignment = 1
 [node name="TokenLabel" type="Label" parent="VBox" unique_id=428719473]
 layout_mode = 2
 text = "Tokens: -"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="VBox" unique_id=670762372]
+layout_mode = 2
+text = "Stats: -"
 horizontal_alignment = 1
 
 [node name="MenuButton" type="Button" parent="VBox" unique_id=1832126485]

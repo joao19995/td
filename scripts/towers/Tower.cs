@@ -265,6 +265,11 @@ public partial class Tower : Node2D
             _aura.FireRateBonusPercent = auraFireRateBonus;
         }
 
+        RefreshSynergyModulate();
+    }
+
+    public void RefreshSynergyModulate()
+    {
         bool hasSynergy = SynergyManager.Instance?.IsTowerAffected(_data.Id) ?? false;
         Modulate = hasSynergy ? new Color(0.85f, 1, 0.85f) : Colors.White;
     }

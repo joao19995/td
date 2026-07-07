@@ -91,7 +91,6 @@ public partial class TowerSelectionManager : Node
 
     private static void ResetTowerModulate(Tower tower)
     {
-        bool hasSynergy = SynergyManager.Instance?.IsTowerAffected(tower.Data.Id) ?? false;
-        tower.Modulate = hasSynergy ? new Color(0.85f, 1, 0.85f) : Colors.White;
+        tower.RefreshSynergyModulate();
     }
 }
