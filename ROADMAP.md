@@ -146,6 +146,51 @@ the game feels dead regardless of visual polish.
 
 ---
 
+---
+
+## Acto 1 — Recalibrar para ~1h de duração / ~5 tentativas até vitória
+
+### Fase 1 — Instrumentação
+
+**O que**: medir tempo real de run sem mexer em balance.
+
+- `RunState.cs`: guardar `Time.GetTicksMsec()` em `StartRun()`, logar duração em `EndRun()`
+- Opcional: logar tempo por fight em `IncrementFights()`
+
+### Fase 2 — Alongar a run (estrutura)
+
+- `resources/act_data/Act1.tres`: `FightsPerRunOverride 3 → 8`
+- `resources/game_balance.tres`: `MinWaves 5→4, MaxWaves 10→7`
+
+### Fase 3 — Economia de ouro (dentro da run)
+
+- Rever `RewardGold` em `resources/enemy_data/*.tres` (tier1)
+- Confirmar `EconomyManager.StartingMoney` vs `GameBalance.StartingGoldPerLevel`
+- Confirmar custos em `resources/run_data/` e `resources/equip_data/`
+
+### Fase 4 — Balanceamento HP/dano (inimigos vs torres, tier1)
+
+- TTK do roster tier1 com torres base (Bread Baker 35 DPS, Bread Courier 42 DPS)
+- 8 fights sem upgrades meta não devem ser triviais nem impossíveis
+- `act1_boss.tres` (2× Supermarket Overlord, 900 HP cada) como parede justa
+
+### Fase 5 — Variedade de conteúdo (tier1)
+
+- 3-4 `WaveData.tres` adicionais em `resources/wave_data/tier1/`
+- Incluir Lazy Alley Cat na rotação tier1
+
+### Fase 6 — Economia de tokens meta (só se necessário)
+
+- Se Fase 1 mostrar que é preciso: reduzir custo dos primeiros unlocks em `resources/meta_upgrade_data/`
+- Ou: tornar `MetaTokensPerRun` data-driven via `scenes/system/SaveManager.tscn`
+
+### Fase 7 — Playtesting iterativo + ferramenta de dev
+
+- Método de debug em `RunState`/`SlotManager` para pular fights (`OS.IsDebugBuild()`)
+- Ciclo: correr → ler logs → ajustar um parâmetro de cada vez
+
+---
+
 ## Recommended Priority
 
 | # | Item | Layer | Impact | Effort | Dependencies |

@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Precision Rounds"
-Cost = 120
+Cost = 132
 DamageBonus = 10.0
 FireRateBonus = 0.4

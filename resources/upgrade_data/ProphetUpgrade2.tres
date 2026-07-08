@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Great Fermentation"
-Cost = 240
+Cost = 264
 DamageBonus = 15.0
 FireRateBonus = 0.3

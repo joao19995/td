@@ -30,7 +30,7 @@ Only crumbs remain.
 | Range | 44 |
 | Base DPS | 42 |
 | Full Upgrade DPS | 255.5 |
-| Total Investment | 730g |
+| Total Investment | 794g |
 | Full Upgrade Fire Rate | 3.5 (highest in the game) |
 | Mechanics | Fast projectile, many small hits |
 
@@ -39,10 +39,10 @@ Only crumbs remain.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS |
 |-------|------|------|--------|-----------|-------------|----------|-----|
 | I | Fresh Recruit | — | 28 | 1.5 | 28 | 1.5 | 42 |
-| II | Overclock | 80g | — | +0.5 | 28 | 2.0 | 56 |
-| III | Precision Rounds | 120g | +10 | +0.4 | 38 | 2.4 | 91.2 |
-| IV | Master Courier | 180g | +15 | +0.5 | 53 | 2.9 | 153.7 |
-| V | Herald of the Mother Dough | 260g | +20 | +0.6 | 73 | 3.5 | 255.5 |
+| II | Overclock | 88g | — | +0.5 | 28 | 2.0 | 56 |
+| III | Precision Rounds | 132g | +10 | +0.4 | 38 | 2.4 | 91.2 |
+| IV | Master Courier | 198g | +15 | +0.5 | 53 | 2.9 | 153.7 |
+| V | Herald of the Mother Dough | 286g | +20 | +0.6 | 73 | 3.5 | 255.5 |
 
 ### Level I — Fresh Recruit
 
@@ -52,7 +52,7 @@ Every Courier begins with a simple bicycle, a sturdy delivery bag, and a promise
 
 ### Level II — Overclock
 
-Cost: 80g — +0.5 Fire Rate
+Cost: 88g — +0.5 Fire Rate
 
 *"Pedal faster. The bread won't wait."*
 
@@ -60,7 +60,7 @@ The Courier upgrades their trusty bicycle with reinforced gears and an enchanted
 
 ### Level III — Precision Rounds
 
-Cost: 120g — +10 Damage, +0.4 Fire Rate
+Cost: 132g — +10 Damage, +0.4 Fire Rate
 
 *"Accuracy is faster than hesitation."*
 
@@ -70,7 +70,7 @@ Senior Couriers proudly claim they can hit a supermarket shopper from across a m
 
 ### Level IV — Master Courier
 
-Cost: 180g — +15 Damage, +0.5 Fire Rate
+Cost: 198g — +15 Damage, +0.5 Fire Rate
 
 *"Every shortcut is already memorized."*
 
@@ -80,7 +80,7 @@ Even the Grocery Run Joggers struggle to keep up.
 
 ### Level V — Herald of the Mother Dough
 
-Cost: 260g — +20 Damage, +0.6 Fire Rate
+Cost: 286g — +20 Damage, +0.6 Fire Rate
 
 *"The wind itself carries the bread."*
 
@@ -104,17 +104,17 @@ Some believe they have delivered so many loaves that time itself now makes room 
 
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
-| Electric Bike | 80g | +20% fire rate | *Blessed by the Patron Saint of Deliveries and rumored to coast uphill.* |
-| Messenger Crate Upgrade | 120g | Attacks pierce +1 enemy, -10% fire rate (trade-off) | *A reinforced bread crate that lets loaves continue through multiple heretics before stopping.* |
+| Electric Bike | 88g | +20% fire rate | *Blessed by the Patron Saint of Deliveries and rumored to coast uphill.* |
+| Messenger Crate Upgrade | 132g | Attacks pierce +1 enemy, -10% fire rate (trade-off) | *A reinforced bread crate that lets loaves continue through multiple heretics before stopping.* |
 
 ## Upgrades
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Overclock | 80g | — | +0.5 |
-| II→III | Precision Rounds | 120g | +10 | +0.4 |
-| III→IV | Master Courier | 180g | +15 | +0.5 |
-| IV→V | Herald of the Mother Dough | 260g | +20 | +0.6 |
+| I→II | Overclock | 88g | — | +0.5 |
+| II→III | Precision Rounds | 132g | +10 | +0.4 |
+| III→IV | Master Courier | 198g | +15 | +0.5 |
+| IV→V | Herald of the Mother Dough | 286g | +20 | +0.6 |
 
 ## Synergies
 

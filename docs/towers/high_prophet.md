@@ -28,13 +28,13 @@ No member of the Order has dared test whether the legend is true.
 
 | Stat | Value |
 |------|-------|
-| Cost | 320g |
+| Cost | 352g |
 | Damage | 40 |
 | Fire Rate | 0.9 |
 | Range | 56 (highest in the game) |
 | Base DPS | 36 |
 | Full Upgrade DPS | 241.5 |
-| Total Investment | 1,460g (most expensive tower) |
+| Total Investment | 1,574g (most expensive tower) |
 | Special | Global Aura: +2% damage per tower on map (incl. self), recalculated every 0.5s. With 5-tower cap: +10% to all towers. |
 | Mechanics | Global aura + personal DPS capstone |
 
@@ -43,10 +43,10 @@ No member of the Order has dared test whether the legend is true.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS |
 |-------|------|------|--------|-----------|-------------|----------|-----|
 | I | Chosen Disciple | — | 40 | 0.9 | 40 | 0.9 | 36 |
-| II | Sourdough Sermon | 160g | +10 | +0.2 | 50 | 1.1 | 55 |
-| III | Great Fermentation | 240g | +15 | +0.3 | 65 | 1.4 | 91 |
-| IV | Voice of the Mother Dough | 320g | +20 | +0.3 | 85 | 1.7 | 144.5 |
-| V | Living Prophet of the First Oven | 420g | +30 | +0.4 | 115 | 2.1 | 241.5 |
+| II | Sourdough Sermon | 176g | +10 | +0.2 | 50 | 1.1 | 55 |
+| III | Great Fermentation | 264g | +15 | +0.3 | 65 | 1.4 | 91 |
+| IV | Voice of the Mother Dough | 352g | +20 | +0.3 | 85 | 1.7 | 144.5 |
+| V | Living Prophet of the First Oven | 462g | +30 | +0.4 | 115 | 2.1 | 241.5 |
 
 ### Level I — Chosen Disciple
 
@@ -58,7 +58,7 @@ Few are ever considered worthy of hearing the First Recipe.
 
 ### Level II — Sourdough Sermon
 
-Cost: 160g — +10 Damage, +0.2 Fire Rate
+Cost: 176g — +10 Damage, +0.2 Fire Rate
 
 *"Every sermon leaves another soul hungry for truth."*
 
@@ -70,7 +70,7 @@ Every loaf becomes a lesson.
 
 ### Level III — Great Fermentation
 
-Cost: 240g — +15 Damage, +0.3 Fire Rate
+Cost: 264g — +15 Damage, +0.3 Fire Rate
 
 *"Faith rises, just as dough does."*
 
@@ -80,7 +80,7 @@ The air itself seems filled with purpose.
 
 ### Level IV — Voice of the Mother Dough
 
-Cost: 320g — +20 Damage, +0.3 Fire Rate
+Cost: 352g — +20 Damage, +0.3 Fire Rate
 
 *"The faithful no longer follow the Prophet. They follow the voice behind him."*
 
@@ -90,7 +90,7 @@ Even veteran heretics begin questioning everything they once believed.
 
 ### Level V — Living Prophet of the First Oven
 
-Cost: 420g — +30 Damage, +0.4 Fire Rate
+Cost: 462g — +30 Damage, +0.4 Fire Rate
 
 *"The First Oven still burns... and its flame walks among us."*
 
@@ -121,10 +121,10 @@ Even the Industrial Bread Dragon is said to have paused upon hearing the Prophet
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Sourdough Sermon | 160g | +10 | +0.2 |
-| II→III | Great Fermentation | 240g | +15 | +0.3 |
-| III→IV | Voice of the Mother Dough | 320g | +20 | +0.3 |
-| IV→V | Living Prophet of the First Oven | 420g | +30 | +0.4 |
+| I→II | Sourdough Sermon | 176g | +10 | +0.2 |
+| II→III | Great Fermentation | 264g | +15 | +0.3 |
+| III→IV | Voice of the Mother Dough | 352g | +20 | +0.3 |
+| IV→V | Living Prophet of the First Oven | 462g | +30 | +0.4 |
 
 ## Synergies
 
@@ -138,5 +138,5 @@ The Order celebrates new bakeries with a chaotic festival involving monks, couri
 
 ## Open Questions
 
-1. 1,460g total for a fixed +10% global dmg cap (5-tower rule). Is the value in personal DPS (241.5) as the capstone?
+1. 1,574g total for a fixed +10% global dmg cap (5-tower rule). Is the value in personal DPS (241.5) as the capstone?
 2. Golden Staff of Fermentation: +10% on 3 stats for 120g vs single-stat items at same price. Intentional capstone reward?

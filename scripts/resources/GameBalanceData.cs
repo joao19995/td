@@ -51,4 +51,8 @@ public partial class GameBalanceData : Resource
     [Export] public float JudgmentSealCooldown { get; set; } = 5f;
 
     [Export] public float AuraScanInterval { get; set; } = 0.5f;
+
+    [Export] public int StartingGold { get; set; } = 250;
+
+    [Export] public float DifficultyScalingPerFight { get; set; } = 0.07f;
 }

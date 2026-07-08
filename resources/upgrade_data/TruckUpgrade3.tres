@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Festival Cannon"
-Cost = 220
+Cost = 242
 DamageBonus = 25.0
 RangeBonus = 10.0

@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Grand Crusader of the First Oven"
-Cost = 340
+Cost = 374
 DamageBonus = 25.0
 FireRateBonus = 0.4

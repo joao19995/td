@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Toxic Vial"
-Cost = 100
+Cost = 110
 DamageBonus = 5.0

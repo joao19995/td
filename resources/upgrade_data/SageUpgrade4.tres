@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Archsage of the First Starter"
-Cost = 300
+Cost = 330
 DamageBonus = 20.0
 FireRateBonus = 0.4

@@ -30,7 +30,7 @@ The Aroma Keepers refuse to answer.
 | Range | 50 |
 | Base DPS | 22.5 |
 | Full Upgrade DPS | 133 |
-| Total Investment | 740g |
+| Total Investment | 804g |
 | Special | Slow: 0.5x speed, 3s duration (refresh, no intensity stack) |
 | Mechanics | Control tower — value is in crowd control + synergies |
 
@@ -39,10 +39,10 @@ The Aroma Keepers refuse to answer.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS |
 |-------|------|------|--------|-----------|-------------|----------|-----|
 | I | Fragrance Novice | — | 25 | 0.9 | 25 | 0.9 | 22.5 |
-| II | Cryo Coil | 80g | — | +0.3 | 25 | 1.2 | 30 |
-| III | Permafrost | 120g | +10 | +0.2 | 35 | 1.4 | 49 |
-| IV | Master of Aromas | 180g | +15 | +0.2 | 50 | 1.6 | 80 |
-| V | Keeper of the Eternal Scent | 260g | +20 | +0.3 | 70 | 1.9 | 133 |
+| II | Cryo Coil | 88g | — | +0.3 | 25 | 1.2 | 30 |
+| III | Permafrost | 132g | +10 | +0.2 | 35 | 1.4 | 49 |
+| IV | Master of Aromas | 198g | +15 | +0.2 | 50 | 1.6 | 80 |
+| V | Keeper of the Eternal Scent | 286g | +20 | +0.3 | 70 | 1.9 | 133 |
 
 ### Level I — Fragrance Novice
 
@@ -54,7 +54,7 @@ Their first lesson is simple: *"People may ignore words, but never a fresh loaf.
 
 ### Level II — Cryo Coil
 
-Cost: 80g — +0.3 Fire Rate
+Cost: 88g — +0.3 Fire Rate
 
 *"The colder the air, the longer the aroma lingers."*
 
@@ -62,7 +62,7 @@ By wrapping their vessels with enchanted cooling coils, the Keeper preserves the
 
 ### Level III — Permafrost
 
-Cost: 120g — +10 Damage, +0.2 Fire Rate
+Cost: 132g — +10 Damage, +0.2 Fire Rate
 
 *"A scent frozen in time."*
 
@@ -70,7 +70,7 @@ After years of experimentation, the Keeper learns to preserve fermentation aroma
 
 ### Level IV — Master of Aromas
 
-Cost: 180g — +15 Damage, +0.2 Fire Rate
+Cost: 198g — +15 Damage, +0.2 Fire Rate
 
 *"One breath can awaken forgotten memories."*
 
@@ -80,7 +80,7 @@ Entire crowds have reportedly stopped marching simply to inhale.
 
 ### Level V — Keeper of the Eternal Scent
 
-Cost: 260g — +20 Damage, +0.3 Fire Rate
+Cost: 286g — +20 Damage, +0.3 Fire Rate
 
 *"The fragrance of the First Oven still lingers."*
 
@@ -104,17 +104,17 @@ Even the oldest heretics hesitate before taking another step.
 
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
-| Megaphone | 80g | +20% range | *Invented after villagers complained they could smell the bread but not enough of it.* |
-| Spice Wind Chimes | 120g | +30% slow duration, -10% damage (trade-off) | *Hang them in the breeze and the sacred aroma lingers long after the Keeper has passed.* |
+| Megaphone | 88g | +20% range | *Invented after villagers complained they could smell the bread but not enough of it.* |
+| Spice Wind Chimes | 132g | +30% slow duration, -10% damage (trade-off) | *Hang them in the breeze and the sacred aroma lingers long after the Keeper has passed.* |
 
 ## Upgrades
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Cryo Coil | 80g | — | +0.3 |
-| II→III | Permafrost | 120g | +10 | +0.2 |
-| III→IV | Master of Aromas | 180g | +15 | +0.2 |
-| IV→V | Keeper of the Eternal Scent | 260g | +20 | +0.3 |
+| I→II | Cryo Coil | 88g | — | +0.3 |
+| II→III | Permafrost | 132g | +10 | +0.2 |
+| III→IV | Master of Aromas | 198g | +15 | +0.2 |
+| IV→V | Keeper of the Eternal Scent | 286g | +20 | +0.3 |
 
 ## Synergies
 

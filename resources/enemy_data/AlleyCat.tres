@@ -7,9 +7,9 @@
 script = ExtResource("1_cd5nw")
 Id = "enemy_cat"
 EnemyName = "Lazy Alley Cat"
-MaxHealth = 300.0
+MaxHealth = 150.0
 MoveSpeed = 12.0
-RewardGold = 30
+RewardGold = 10
 DamageToPlayer = 2
 Sprite = ExtResource("1_7uk0w")
 IsHeavy = true

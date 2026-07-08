@@ -8,6 +8,7 @@ public partial class Enemy : Area2D
     private MovementComponent _movement;
     private StatusEffectComponent _statusEffects;
     private HealthBar _healthBar;
+    private Label _healthLabel;
     private Curve2D _pendingCurve;
     private bool _signalsConnected;
     private bool _returningToPool;
@@ -31,6 +32,15 @@ public partial class Enemy : Area2D
         _healthBar = new HealthBar();
         _healthBar.Name = "HealthBar";
         AddChild(_healthBar);
+
+        _healthLabel = new Label();
+        _healthLabel.Name = "HealthLabel";
+        _healthLabel.LabelSettings = new LabelSettings { FontSize = 5, OutlineSize = 1, OutlineColor = Colors.Black };
+        _healthLabel.HorizontalAlignment = HorizontalAlignment.Center;
+        _healthLabel.Position = new Vector2(-8f, -20f);
+        _healthLabel.CustomMinimumSize = new Vector2(16f, 0f);
+        AddChild(_healthLabel);
+
         ConnectSignals();
 
         if (_data != null)
@@ -107,7 +117,10 @@ public partial class Enemy : Area2D
     {
         float eliteHpMult = _isElite ? GameBalance.EliteHpMultiplier : 1f;
         _health.Setup(_data.MaxHealth * _hpMultiplier * eliteHpMult);
-        _healthBar.SetHealth(_health.GetCurrentHealth(), _health.MaxHealth);
+        float initialHp = _health.GetCurrentHealth();
+        _healthBar.SetHealth(initialHp, _health.MaxHealth);
+        if (_healthLabel != null)
+            _healthLabel.Text = Mathf.RoundToInt(initialHp).ToString();
 
         if (_pendingCurve != null)
         {
@@ -130,6 +143,8 @@ public partial class Enemy : Area2D
     private void OnHealthChanged(float current, float max)
     {
         _healthBar?.SetHealth(current, max);
+        if (_healthLabel != null)
+            _healthLabel.Text = Mathf.RoundToInt(current).ToString();
     }
 
     public float GetCurrentHealth() => _health?.GetCurrentHealth() ?? 0f;

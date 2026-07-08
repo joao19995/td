@@ -30,7 +30,7 @@ Many enemies surrender simply from hearing it.
 | Range | 46 |
 | Base DPS | 34.2 raw (~39.3 w/ crit) |
 | Full Upgrade DPS | 226.8 raw (~260.8 w/ crit) |
-| Total Investment | 1,090g |
+| Total Investment | 1,177g |
 | Special | Crit: 15% chance, x2 multiplier |
 | Mechanics | Critical strikes — crits ignore Gluten Null Bishop's anti-buff aura (hard counter) |
 
@@ -39,10 +39,10 @@ Many enemies surrender simply from hearing it.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | Raw DPS | Expected DPS (w/ crit) |
 |-------|------|------|--------|-----------|-------------|----------|---------|----------------------|
 | I | Crust Squire | — | 38 | 0.9 | 38 | 0.9 | 34.2 | ~39.3 |
-| II | Sharpened Crust | 120g | +10 | +0.2 | 48 | 1.1 | 52.8 | ~60.7 |
-| III | Holy Crusher | 170g | +15 | +0.3 | 63 | 1.4 | 88.2 | ~101.4 |
-| IV | Knight of the Golden Crust | 240g | +20 | +0.3 | 83 | 1.7 | 141.1 | ~162.3 |
-| V | Grand Crusader of the First Oven | 340g | +25 | +0.4 | 108 | 2.1 | 226.8 | ~260.8 |
+| II | Sharpened Crust | 132g | +10 | +0.2 | 48 | 1.1 | 52.8 | ~60.7 |
+| III | Holy Crusher | 187g | +15 | +0.3 | 63 | 1.4 | 88.2 | ~101.4 |
+| IV | Knight of the Golden Crust | 264g | +20 | +0.3 | 83 | 1.7 | 141.1 | ~162.3 |
+| V | Grand Crusader of the First Oven | 374g | +25 | +0.4 | 108 | 2.1 | 226.8 | ~260.8 |
 
 ### Level I — Crust Squire
 
@@ -52,7 +52,7 @@ Young Crusaders begin as squires, entrusted with guarding village bakeries and e
 
 ### Level II — Sharpened Crust
 
-Cost: 120g — +10 Damage, +0.2 Fire Rate
+Cost: 132g — +10 Damage, +0.2 Fire Rate
 
 *"A sharper edge cuts through thicker heresy."*
 
@@ -62,7 +62,7 @@ Every strike lands cleaner, faster and with greater purpose.
 
 ### Level III — Holy Crusher
 
-Cost: 170g — +15 Damage, +0.3 Fire Rate
+Cost: 187g — +15 Damage, +0.3 Fire Rate
 
 *"Some loaves cannot be sliced. They must be shattered."*
 
@@ -72,7 +72,7 @@ Even Heavy enemies begin to falter.
 
 ### Level IV — Knight of the Golden Crust
 
-Cost: 240g — +20 Damage, +0.3 Fire Rate
+Cost: 264g — +20 Damage, +0.3 Fire Rate
 
 *"A knight's oath is baked into every crust."*
 
@@ -82,7 +82,7 @@ To face a Golden Knight is to face centuries of tradition.
 
 ### Level V — Grand Crusader of the First Oven
 
-Cost: 340g — +25 Damage, +0.4 Fire Rate
+Cost: 374g — +25 Damage, +0.4 Fire Rate
 
 *"Their blade remembers the First Bake."*
 
@@ -113,10 +113,10 @@ Even the Gluten Null Bishop fears the sound of their approaching footsteps.
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Sharpened Crust | 120g | +10 | +0.2 |
-| II→III | Holy Crusher | 170g | +15 | +0.3 |
-| III→IV | Knight of the Golden Crust | 240g | +20 | +0.3 |
-| IV→V | Grand Crusader of the First Oven | 340g | +25 | +0.4 |
+| I→II | Sharpened Crust | 132g | +10 | +0.2 |
+| II→III | Holy Crusher | 187g | +15 | +0.3 |
+| III→IV | Knight of the Golden Crust | 264g | +20 | +0.3 |
+| IV→V | Grand Crusader of the First Oven | 374g | +25 | +0.4 |
 
 ## Synergies
 

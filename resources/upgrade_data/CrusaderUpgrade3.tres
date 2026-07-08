@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Knight of the Golden Crust"
-Cost = 240
+Cost = 264
 DamageBonus = 20.0
 FireRateBonus = 0.3

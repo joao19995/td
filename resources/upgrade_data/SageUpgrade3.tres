@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Master of Living Cultures"
-Cost = 220
+Cost = 242
 DamageBonus = 15.0
 FireRateBonus = 0.3

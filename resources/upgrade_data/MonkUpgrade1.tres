@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Sacred Chant"
-Cost = 100
+Cost = 110
 DamageBonus = 8.0
 FireRateBonus = 0.2

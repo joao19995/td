@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Concentrated Venom"
-Cost = 140
+Cost = 154
 DamageBonus = 8.0
 FireRateBonus = 0.3

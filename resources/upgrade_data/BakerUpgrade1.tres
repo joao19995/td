@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Reinforced Dough"
-Cost = 60
+Cost = 66
 DamageBonus = 15.0

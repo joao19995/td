@@ -47,6 +47,8 @@ public partial class RunState : Node
     public float TrinketRangeFlatBonus { get; set; } = 0f;
     public float TrinketBasicDamagePercentBonus { get; set; } = 0f;
     private readonly System.Collections.Generic.List<PassiveGoldEffect> _passiveGoldEffects = new();
+    private ulong _runStartTimeMs;
+    private ulong _lastFightTimeMs;
 
     private Dictionary<string, int> _towerLevels = new();
     private Dictionary<string, string> _equippedItems = new();
@@ -103,6 +105,8 @@ public partial class RunState : Node
 
     public void StartRun(int gold, int lives, Godot.Collections.Array<string> selectedTowerIds)
     {
+        _runStartTimeMs = Time.GetTicksMsec();
+        _lastFightTimeMs = _runStartTimeMs;
         _towerLevels.Clear();
         _equippedItems.Clear();
         _ancientStarterAttackCount.Clear();
@@ -195,6 +199,11 @@ public partial class RunState : Node
 
     public void IncrementFights()
     {
+        ulong now = Time.GetTicksMsec();
+        float sinceLast = (now - _lastFightTimeMs) / 1000f;
+        float sinceStart = (now - _runStartTimeMs) / 1000f;
+        GD.Print($"[RunState] Fight {FightsCompleted + 1} start. SinceLastFight={sinceLast:F1}s, SinceRunStart={sinceStart:F1}s");
+        _lastFightTimeMs = now;
         FightsCompleted++;
     }
 
@@ -213,12 +222,16 @@ public partial class RunState : Node
         if (!IsRunActive) return;
         IsRunActive = false;
 
+        ulong elapsed = Time.GetTicksMsec() - _runStartTimeMs;
+        float durationSeconds = elapsed / 1000f;
         int totalTokens = PreviewTokenReward(isVictory);
         LastTokenReward = totalTokens;
         LastFightsCompleted = FightsCompleted;
         LastEnemiesKilled = TotalEnemiesKilled;
         LastGoldEarned = TotalGoldEarned;
         LastGoldSpent = TotalGoldSpent;
+
+        GD.Print($"[RunState] Run ended. Duration={durationSeconds:F1}s, FightsCompleted={FightsCompleted}, Victory={isVictory}, TokensAwarded={totalTokens}");
         SaveManager.Instance.AddMetaTokens(totalTokens);
         if (isVictory && SelectedAct != null)
         {

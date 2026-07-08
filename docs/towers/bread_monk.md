@@ -32,7 +32,7 @@ Everyone is too afraid to ask.
 | Range | 50 |
 | Base DPS | 30 |
 | Full Upgrade DPS | 187 |
-| Total Investment | 880g |
+| Total Investment | 952g |
 | Special | Aura: 60 range, +10% damage / +10% fire rate to other towers (not self) |
 | Mechanics | Aura buffer |
 
@@ -41,10 +41,10 @@ Everyone is too afraid to ask.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS |
 |-------|------|------|--------|-----------|-------------|----------|-----|
 | I | Silent Disciple | — | 30 | 1.0 | 30 | 1.0 | 30 |
-| II | Sacred Chant | 100g | +8 | +0.2 | 38 | 1.2 | 45.6 |
-| III | Devotion Aura | 140g | +12 | +0.3 | 50 | 1.5 | 75 |
-| IV | Abbot of Fermentation | 200g | +15 | +0.3 | 65 | 1.8 | 117 |
-| V | Grandmaster of the Sacred Crust | 280g | +20 | +0.4 | 85 | 2.2 | 187 |
+| II | Sacred Chant | 110g | +8 | +0.2 | 38 | 1.2 | 45.6 |
+| III | Devotion Aura | 154g | +12 | +0.3 | 50 | 1.5 | 75 |
+| IV | Abbot of Fermentation | 220g | +15 | +0.3 | 65 | 1.8 | 117 |
+| V | Grandmaster of the Sacred Crust | 308g | +20 | +0.4 | 85 | 2.2 | 187 |
 
 ### Level I — Silent Disciple
 
@@ -56,7 +56,7 @@ Only after mastering patience are they allowed onto the battlefield.
 
 ### Level II — Sacred Chant
 
-Cost: 100g — +8 Damage, +0.2 Fire Rate
+Cost: 110g — +8 Damage, +0.2 Fire Rate
 
 *"Every verse strengthens the faithful."*
 
@@ -64,7 +64,7 @@ The Disciple learns the First Hymns of Fermentation, ancient chants sung in perf
 
 ### Level III — Devotion Aura
 
-Cost: 140g — +12 Damage, +0.3 Fire Rate
+Cost: 154g — +12 Damage, +0.3 Fire Rate
 
 *"Faith shared is faith multiplied."*
 
@@ -74,7 +74,7 @@ Though the sacred aura itself does not grow stronger, the Monk's own conviction 
 
 ### Level IV — Abbot of Fermentation
 
-Cost: 200g — +15 Damage, +0.3 Fire Rate
+Cost: 220g — +15 Damage, +0.3 Fire Rate
 
 *"A calm heart steadies every hand."*
 
@@ -84,7 +84,7 @@ Simply standing near an Abbot reminds the faithful why they fight.
 
 ### Level V — Grandmaster of the Sacred Crust
 
-Cost: 280g — +20 Damage, +0.4 Fire Rate
+Cost: 308g — +20 Damage, +0.4 Fire Rate
 
 *"Even silence can become a sermon."*
 
@@ -108,17 +108,17 @@ No sermon was ever needed.
 
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
-| Sacred Robes | 100g | +15% aura range | *Woven from flour sacks used in the oldest monastery.* |
+| Sacred Robes | 110g | +15% aura range | *Woven from flour sacks used in the oldest monastery.* |
 | Prayer Beads of Gluten | 150g | Aura potency ×1.05 (10% → 10.5%), but tower **stops attacking** (extreme trade-off) | *Each bead represents a year of silent fermentation. The monk becomes so focused that they stop fighting entirely.* |
 
 ## Upgrades
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Sacred Chant | 100g | +8 | +0.2 |
-| II→III | Devotion Aura | 140g | +12 | +0.3 |
-| III→IV | Abbot of Fermentation | 200g | +15 | +0.3 |
-| IV→V | Grandmaster of the Sacred Crust | 280g | +20 | +0.4 |
+| I→II | Sacred Chant | 110g | +8 | +0.2 |
+| II→III | Devotion Aura | 154g | +12 | +0.3 |
+| III→IV | Abbot of Fermentation | 220g | +15 | +0.3 |
+| IV→V | Grandmaster of the Sacred Crust | 308g | +20 | +0.4 |
 
 > Upgrades only improve the Monk's personal damage/FR, not the aura magnitude.
 

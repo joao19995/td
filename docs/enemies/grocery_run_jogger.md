@@ -18,9 +18,9 @@ Fortunately, they cannot outrun the smell of fresh bread forever.
 
 | Stat | Value |
 |------|-------|
-| HP | 60 |
+| HP | 35 |
 | Speed | 48 (fastest in the game) |
-| Gold Reward | 15 |
+| Gold Reward | 5 |
 | Damage to Player | 1 |
 | Type | Fast, fragile |
 | Tier | 1 — Innocent |
@@ -33,4 +33,4 @@ Fast and fragile. Dies quickly but reaches the end fast if ignored.
 
 | Tower | TTK Base (35 DPS) | TTK T2 (84 DPS) |
 |-------|-------------------|-----------------|
-| Bread Baker | 1.71s | 0.71s |
+| Bread Baker | 1.00s | 0.42s |

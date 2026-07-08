@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Abbot of Fermentation"
-Cost = 200
+Cost = 220
 DamageBonus = 15.0
 FireRateBonus = 0.3

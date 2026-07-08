@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Grandmaster of the Sacred Crust"
-Cost = 280
+Cost = 308
 DamageBonus = 20.0
 FireRateBonus = 0.4

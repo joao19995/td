@@ -28,13 +28,13 @@ The victims usually agree afterward.
 
 | Stat | Value |
 |------|-------|
-| Cost | 260g |
+| Cost | 286g |
 | Damage | 35 |
 | Fire Rate | 1.0 |
 | Range | 50 |
 | Base DPS | 35 |
 | Full Upgrade DPS | 242 |
-| Total Investment | 1,200g |
+| Total Investment | 1,294g |
 | Special | Execute: x2 damage if target HP ≤ 20%. x1.5 extra if target is Boss/Heavy (multiplicative — up to x3 total) |
 | Mechanics | Execute / burst — strongest single-target burst in the game |
 
@@ -43,10 +43,10 @@ The victims usually agree afterward.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | Std DPS | Execute DPS (×2) | Boss DPS (×3) |
 |-------|------|------|--------|-----------|-------------|----------|---------|-----------------|--------------|
 | I | Rite Initiate | — | 35 | 1.0 | 35 | 1.0 | 35 | 70 | 105 |
-| II | Blessed Flour | 130g | +10 | +0.2 | 45 | 1.2 | 54 | 108 | 162 |
-| III | Judgment Aura | 190g | +15 | +0.3 | 60 | 1.5 | 90 | 180 | 270 |
-| IV | High Exorcist | 260g | +20 | +0.3 | 80 | 1.8 | 144 | 288 | 432 |
-| V | Grand Purifier of the Mother Dough | 360g | +30 | +0.4 | 110 | 2.2 | 242 | 484 | 726 |
+| II | Blessed Flour | 143g | +10 | +0.2 | 45 | 1.2 | 54 | 108 | 162 |
+| III | Judgment Aura | 209g | +15 | +0.3 | 60 | 1.5 | 90 | 180 | 270 |
+| IV | High Exorcist | 286g | +20 | +0.3 | 80 | 1.8 | 144 | 288 | 432 |
+| V | Grand Purifier of the Mother Dough | 396g | +30 | +0.4 | 110 | 2.2 | 242 | 484 | 726 |
 
 ### Level I — Rite Initiate
 
@@ -58,7 +58,7 @@ Most never forget their first successful conversion.
 
 ### Level II — Blessed Flour
 
-Cost: 130g — +10 Damage, +0.2 Fire Rate
+Cost: 143g — +10 Damage, +0.2 Fire Rate
 
 *"Even flour can become holy."*
 
@@ -66,7 +66,7 @@ The Exorcist is entrusted with blessed flour milled from wheat grown within the 
 
 ### Level III — Judgment Aura
 
-Cost: 190g — +15 Damage, +0.3 Fire Rate
+Cost: 209g — +15 Damage, +0.3 Fire Rate
 
 *"Mercy ends where corruption begins."*
 
@@ -76,7 +76,7 @@ The guilty often lower their gaze before the first attack.
 
 ### Level IV — High Exorcist
 
-Cost: 260g — +20 Damage, +0.3 Fire Rate
+Cost: 286g — +20 Damage, +0.3 Fire Rate
 
 *"The strongest corruption demands the strongest conviction."*
 
@@ -86,7 +86,7 @@ Many enemies surrender before judgment is pronounced.
 
 ### Level V — Grand Purifier of the Mother Dough
 
-Cost: 360g — +30 Damage, +0.4 Fire Rate
+Cost: 396g — +30 Damage, +0.4 Fire Rate
 
 *"No corruption survives the First Starter."*
 
@@ -117,10 +117,10 @@ When the Grand Purifier raises a hand... judgment has already been delivered.
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Blessed Flour | 130g | +10 | +0.2 |
-| II→III | Judgment Aura | 190g | +15 | +0.3 |
-| III→IV | High Exorcist | 260g | +20 | +0.3 |
-| IV→V | Grand Purifier of the Mother Dough | 360g | +30 | +0.4 |
+| I→II | Blessed Flour | 143g | +10 | +0.2 |
+| II→III | Judgment Aura | 209g | +15 | +0.3 |
+| III→IV | High Exorcist | 286g | +20 | +0.3 |
+| IV→V | Grand Purifier of the Mother Dough | 396g | +30 | +0.4 |
 
 ## Synergies
 

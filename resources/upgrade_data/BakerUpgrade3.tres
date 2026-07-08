@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Master Baker"
-Cost = 160
+Cost = 176
 DamageBonus = 25.0
 FireRateBonus = 0.3

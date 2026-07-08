@@ -7,7 +7,6 @@ public partial class AttackComponent : Node
     private TowerData _data;
     private EquipData _equipData;
     private float _effectiveDamage;
-    private float _lastFiredDamage;
     private float _effectiveFireRate;
     private float _effectiveCritChance;
     private float _effectiveCritMultiplier;
@@ -76,9 +75,6 @@ public partial class AttackComponent : Node
 
         if (_data != null)
         {
-            if (_data.HasSplash)
-                effects.Add((mainEnemy, hitPosition) => TriggerSplashDamage(mainEnemy, hitPosition));
-
             if (_data.HasPoison)
                 effects.Add((mainEnemy, _) => ApplyEffect(mainEnemy, new PoisonEffectData
                 {
@@ -95,9 +91,6 @@ public partial class AttackComponent : Node
                     SpeedMultiplier = _data.SlowMultiplier
                         / (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)),
                 }));
-
-            if (_data.HasChain)
-                effects.Add((mainEnemy, hitPosition) => TriggerChain(mainEnemy, _lastFiredDamage * _data.ChainBounceDamageMultiplier));
         }
 
         _precomputedHitEffects = effects.Count > 0
@@ -143,7 +136,6 @@ public partial class AttackComponent : Node
         if (TryInstaKill(target, wasCrit)) return;
 
         ApplyDamageModifiers(target, ref damage);
-        _lastFiredDamage = damage;
 
         SpawnProjectile(target, towerPos, damage, wasCrit);
         TrySpreadPoison(target, towerPos);
@@ -205,21 +197,44 @@ public partial class AttackComponent : Node
         var projectile = ProjectileFactory.Create(_data.ProjectileScene, damage, target, towerPos);
         projectile.WasCrit = wasCrit;
         projectile.PierceCount = _equipData?.PierceBonus ?? 0;
-        projectile.OnHitEffect = _precomputedHitEffects;
+
+        Action<Enemy, Vector2> hitEffects = _precomputedHitEffects;
+        float capturedDamage = damage;
+
+        if (_data.HasSplash)
+        {
+            var prev = hitEffects;
+            hitEffects = (mainEnemy, hitPosition) =>
+            {
+                prev?.Invoke(mainEnemy, hitPosition);
+                TriggerSplashDamage(mainEnemy, hitPosition, capturedDamage);
+            };
+        }
+
+        if (_data.HasChain)
+        {
+            var prev = hitEffects;
+            hitEffects = (mainEnemy, hitPosition) =>
+            {
+                prev?.Invoke(mainEnemy, hitPosition);
+                TriggerChain(mainEnemy, capturedDamage * _data.ChainBounceDamageMultiplier);
+            };
+        }
 
         float splashCritRadius = _equipData?.SplashOnCritRadius ?? 0f;
         if (splashCritRadius > 0f)
         {
-            var existing = projectile.OnHitEffect;
-            float captured = splashCritRadius;
-            projectile.OnHitEffect = (mainEnemy, hitPosition) =>
+            var prev = hitEffects;
+            float capturedRadius = splashCritRadius;
+            hitEffects = (mainEnemy, hitPosition) =>
             {
-                existing?.Invoke(mainEnemy, hitPosition);
+                prev?.Invoke(mainEnemy, hitPosition);
                 if (projectile.WasCrit)
-                    TriggerSplashAt(mainEnemy, hitPosition, captured);
+                    TriggerSplashAt(mainEnemy, hitPosition, capturedRadius, capturedDamage);
             };
         }
 
+        projectile.OnHitEffect = hitEffects;
         GetProjectilesContainer().CallDeferred(Node.MethodName.AddChild, projectile);
     }
 
@@ -341,12 +356,12 @@ public partial class AttackComponent : Node
         return LevelManager.Instance.CurrentLevelNode;
     }
 
-    private void TriggerSplashDamage(Enemy mainEnemy, Vector2 hitPosition)
+    private void TriggerSplashDamage(Enemy mainEnemy, Vector2 hitPosition, float damage)
     {
-        TriggerSplashAt(mainEnemy, hitPosition, _data.SplashRadius * _splashRadiusMultiplier);
+        TriggerSplashAt(mainEnemy, hitPosition, _data.SplashRadius * _splashRadiusMultiplier, damage);
     }
 
-    private void TriggerSplashAt(Enemy mainEnemy, Vector2 hitPosition, float radius)
+    private void TriggerSplashAt(Enemy mainEnemy, Vector2 hitPosition, float radius, float damage)
     {
         var spaceState = GetParent<Node2D>().GetWorld2D().DirectSpaceState;
         var query = new PhysicsShapeQueryParameters2D();
@@ -370,7 +385,7 @@ public partial class AttackComponent : Node
             if (result["collider"].AsGodotObject() is Enemy surroundingEnemy)
             {
                 if (surroundingEnemy == mainEnemy) continue;
-                surroundingEnemy.TakeDamage(_lastFiredDamage);
+                surroundingEnemy.TakeDamage(damage);
             }
         }
     }

@@ -16,10 +16,10 @@ Enemies evolve across tiers as the game progresses:
 
 | Enemy | HP | Speed | Gold | Dmg | Type | Tier | File |
 |-------|----|-------|------|-----|------|------|------|
-| Sliced Bread Tourist | 100 | 24 | 10 | 1 | Basic | 1 — Innocent | [📄](enemies/sliced_bread_tourist.md) |
-| Grocery Run Jogger | 60 | 48 | 15 | 1 | Fast, fragile | 1 — Innocent | [📄](enemies/grocery_run_jogger.md) |
-| Lazy Alley Cat | 300 | 12 | 30 | 2 | Heavy — early tank | 1 — Innocent | [📄](enemies/lazy_alley_cat.md) |
-| Pigeon with a Stolen Baguette | 80 | 32 | 20 | 1 | Light, fast | 1 — Innocent | [📄](enemies/pigeon_with_a_stolen_baguette.md) |
+| Sliced Bread Tourist | 50 | 24 | 3 | 1 | Basic | 1 — Innocent | [📄](enemies/sliced_bread_tourist.md) |
+| Grocery Run Jogger | 35 | 48 | 5 | 1 | Fast, fragile | 1 — Innocent | [📄](enemies/grocery_run_jogger.md) |
+| Lazy Alley Cat | 150 | 12 | 10 | 2 | Heavy — early tank | 1 — Innocent | [📄](enemies/lazy_alley_cat.md) |
+| Pigeon with a Stolen Baguette | 40 | 32 | 6 | 1 | Light, fast | 1 — Innocent | [📄](enemies/pigeon_with_a_stolen_baguette.md) |
 | Microwave Meal Preacher | 200 | 20 | 25 | 2 | Heavy — medium convert | 2 — Follower | [📄](enemies/microwave_meal_preacher.md) |
 | Plastic Wrapped Sandwich Man | 180 | 28 | 22 | 2 | Medium resist | 2 — Follower | [📄](enemies/plastic_wrapped_sandwich_man.md) |
 | Frozen Dough Abomination | 400 | 10 | 35 | 3 | Heavy — slow tank | 2 — Follower | [📄](enemies/frozen_dough_abomination.md) |

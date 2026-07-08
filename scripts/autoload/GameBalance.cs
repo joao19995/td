@@ -54,4 +54,6 @@ public partial class GameBalance : Node
     public static float JudgmentProtocolCooldown => Data.JudgmentProtocolCooldown;
     public static float JudgmentSealCooldown => Data.JudgmentSealCooldown;
     public static float AuraScanInterval => Data.AuraScanInterval;
+    public static int StartingGold => Data.StartingGold;
+    public static float DifficultyScalingPerFight => Data.DifficultyScalingPerFight;
 }

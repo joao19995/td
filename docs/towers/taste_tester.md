@@ -28,7 +28,7 @@ Many enemies surrender voluntarily after their first sample.
 | Range | 48 |
 | Base DPS | 30 (+10 poison) = **40 sustained DPS** |
 | Full Upgrade DPS | 140 (+10 poison) = **150 sustained DPS** |
-| Total Investment | 840g |
+| Total Investment | 912g |
 | Special | Poison: 10 dmg/tick (1s), 4s duration (refresh, no intensity stack) |
 | Mechanics | Poison DoT |
 
@@ -37,10 +37,10 @@ Many enemies surrender voluntarily after their first sample.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS | Sustained DPS |
 |-------|------|------|--------|-----------|-------------|----------|-----|---------------|
 | I | Junior Taster | — | 30 | 1.0 | 30 | 1.0 | 30 | 40 |
-| II | Toxic Vial | 100g | +5 | — | 35 | 1.0 | 35 | 45 |
-| III | Concentrated Venom | 140g | +8 | +0.3 | 43 | 1.3 | 55.9 | 65.9 |
-| IV | Master Sommelier of Dough | 200g | +12 | +0.3 | 55 | 1.6 | 88 | 98 |
-| V | Grand Inquisitor of Flavor | 280g | +15 | +0.4 | 70 | 2.0 | 140 | 150 |
+| II | Toxic Vial | 110g | +5 | — | 35 | 1.0 | 35 | 45 |
+| III | Concentrated Venom | 154g | +8 | +0.3 | 43 | 1.3 | 55.9 | 65.9 |
+| IV | Master Sommelier of Dough | 220g | +12 | +0.3 | 55 | 1.6 | 88 | 98 |
+| V | Grand Inquisitor of Flavor | 308g | +15 | +0.4 | 70 | 2.0 | 140 | 150 |
 
 ### Level I — Junior Taster
 
@@ -50,7 +50,7 @@ Every Taste Tester begins by sampling hundreds of loaves each day. Before they l
 
 ### Level II — Toxic Vial
 
-Cost: 100g — +5 Damage
+Cost: 110g — +5 Damage
 
 *"Every recipe needs one secret ingredient."*
 
@@ -58,7 +58,7 @@ The Taster begins carrying carefully prepared fermentation extracts distilled fr
 
 ### Level III — Concentrated Venom
 
-Cost: 140g — +8 Damage, +0.3 Fire Rate
+Cost: 154g — +8 Damage, +0.3 Fire Rate
 
 *"One taste becomes impossible to forget."*
 
@@ -66,7 +66,7 @@ Years of experimentation allow the Taster to refine their persuasive mixtures in
 
 ### Level IV — Master Sommelier of Dough
 
-Cost: 200g — +12 Damage, +0.3 Fire Rate
+Cost: 220g — +12 Damage, +0.3 Fire Rate
 
 *"Every crumb tells a story."*
 
@@ -76,7 +76,7 @@ Their recommendations are considered absolute truth among bakers.
 
 ### Level V — Grand Inquisitor of Flavor
 
-Cost: 280g — +15 Damage, +0.4 Fire Rate
+Cost: 308g — +15 Damage, +0.4 Fire Rate
 
 *"No tongue can deny the Mother Dough."*
 
@@ -107,10 +107,10 @@ No second sample was required.
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Toxic Vial | 100g | +5 | — |
-| II→III | Concentrated Venom | 140g | +8 | +0.3 |
-| III→IV | Master Sommelier of Dough | 200g | +12 | +0.3 |
-| IV→V | Grand Inquisitor of Flavor | 280g | +15 | +0.4 |
+| I→II | Toxic Vial | 110g | +5 | — |
+| II→III | Concentrated Venom | 154g | +8 | +0.3 |
+| III→IV | Master Sommelier of Dough | 220g | +12 | +0.3 |
+| IV→V | Grand Inquisitor of Flavor | 308g | +15 | +0.4 |
 
 ## Synergies
 

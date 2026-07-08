@@ -28,7 +28,7 @@ To the Sage, conversion is contagious.
 | Range | 52 |
 | Base DPS | 27 (+13.5 chain) = **40.5 total** |
 | Full Upgrade DPS | 178.5 (+89.3 chain) = **267.8 total** |
-| Total Investment | 950g |
+| Total Investment | 1027g |
 | Special | Chain: 1 bounce, 40 range, 0.5x damage on bounce. Bounces to nearest enemy. |
 | Mechanics | Chain lightning |
 
@@ -39,10 +39,10 @@ To the Sage, conversion is contagious.
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | Direct DPS | Total DPS (+chain) |
 |-------|------|------|--------|-----------|-------------|----------|------------|-------------------|
 | I | Culture Scholar | — | 30 | 0.9 | 30 | 0.9 | 27 | 40.5 |
-| II | Extended Culture | 100g | +8 | +0.2 | 38 | 1.1 | 41.8 | 62.7 |
-| III | Wild Fermentation | 150g | +12 | +0.3 | 50 | 1.4 | 70 | 105 |
-| IV | Master of Living Cultures | 220g | +15 | +0.3 | 65 | 1.7 | 110.5 | 165.8 |
-| V | Archsage of the First Starter | 300g | +20 | +0.4 | 85 | 2.1 | 178.5 | 267.8 |
+| II | Extended Culture | 110g | +8 | +0.2 | 38 | 1.1 | 41.8 | 62.7 |
+| III | Wild Fermentation | 165g | +12 | +0.3 | 50 | 1.4 | 70 | 105 |
+| IV | Master of Living Cultures | 242g | +15 | +0.3 | 65 | 1.7 | 110.5 | 165.8 |
+| V | Archsage of the First Starter | 330g | +20 | +0.4 | 85 | 2.1 | 178.5 | 267.8 |
 
 ### Level I — Culture Scholar
 
@@ -54,7 +54,7 @@ Their first lesson is simple: *"Never rush fermentation."*
 
 ### Level II — Extended Culture
 
-Cost: 100g — +8 Damage, +0.2 Fire Rate
+Cost: 110g — +8 Damage, +0.2 Fire Rate
 
 *"Healthy cultures never stop growing."*
 
@@ -62,7 +62,7 @@ The Sage learns to sustain ancient yeast colonies far beyond their natural lifes
 
 ### Level III — Wild Fermentation
 
-Cost: 150g — +12 Damage, +0.3 Fire Rate
+Cost: 165g — +12 Damage, +0.3 Fire Rate
 
 *"Order begins with controlled chaos."*
 
@@ -72,7 +72,7 @@ The cultures spread faster, stronger and with remarkable enthusiasm—much to th
 
 ### Level IV — Master of Living Cultures
 
-Cost: 220g — +15 Damage, +0.3 Fire Rate
+Cost: 242g — +15 Damage, +0.3 Fire Rate
 
 *"Every starter remembers its ancestors."*
 
@@ -82,7 +82,7 @@ Even fellow Sages seek their guidance.
 
 ### Level V — Archsage of the First Starter
 
-Cost: 300g — +20 Damage, +0.4 Fire Rate
+Cost: 330g — +20 Damage, +0.4 Fire Rate
 
 *"The first culture still lives."*
 
@@ -108,17 +108,17 @@ Where an Archsage walks, fermentation follows.
 
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
-| Golden Proofing Bowl | 100g | +15% status effect duration — ⚠️ **Broken**: Sage has no status effects, this item does nothing. | *A revered artifact whose original purpose has been completely forgotten.* |
-| Wild Yeast Culture | 150g | Chain +1 extra bounce, -10% initial damage (trade-off) | *Unstable, aggressive, and banned in three monasteries.* |
+| Golden Proofing Bowl | 110g | +15% status effect duration — ⚠️ **Broken**: Sage has no status effects, this item does nothing. | *A revered artifact whose original purpose has been completely forgotten.* |
+| Wild Yeast Culture | 165g | Chain +1 extra bounce, -10% initial damage (trade-off) | *Unstable, aggressive, and banned in three monasteries.* |
 
 ## Upgrades
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Extended Culture | 100g | +8 | +0.2 |
-| II→III | Wild Fermentation | 150g | +12 | +0.3 |
-| III→IV | Master of Living Cultures | 220g | +15 | +0.3 |
-| IV→V | Archsage of the First Starter | 300g | +20 | +0.4 |
+| I→II | Extended Culture | 110g | +8 | +0.2 |
+| II→III | Wild Fermentation | 165g | +12 | +0.3 |
+| III→IV | Master of Living Cultures | 242g | +15 | +0.3 |
+| IV→V | Archsage of the First Starter | 330g | +20 | +0.4 |
 
 ## Synergies
 

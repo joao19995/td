@@ -20,9 +20,9 @@ Many are converted before finishing their vacation.
 
 | Stat | Value |
 |------|-------|
-| HP | 100 |
+| HP | 50 |
 | Speed | 24 |
-| Gold Reward | 10 |
+| Gold Reward | 3 |
 | Damage to Player | 1 |
 | Type | Basic |
 | Tier | 1 — Innocent |
@@ -35,4 +35,4 @@ Generic low-threat enemy. Good tier1 default.
 
 | Tower | TTK Base (35 DPS) | TTK T2 (84 DPS) |
 |-------|-------------------|-----------------|
-| Bread Baker | 2.86s | 1.19s |
+| Bread Baker | 1.43s | 0.60s |

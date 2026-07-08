@@ -30,7 +30,7 @@ Insurance companies refuse to cover them.
 | Range | 44 |
 | Base DPS | 28/target |
 | Full Upgrade DPS | 104/target |
-| Total Investment | 940g |
+| Total Investment | 1020g |
 | Special | Splash: radius 36, full damage (no falloff) |
 | Mechanics | AoE splash — best vs horde waves |
 
@@ -39,10 +39,10 @@ Insurance companies refuse to cover them.
 | Level | Name | Cost | Damage | Range | Total Damage | Total Range | DPS (1 target) | DPS (3 targets) |
 |-------|------|------|--------|-------|-------------|-------------|----------------|-----------------|
 | I | Rolling Bakery | — | 35 | 44 | 35 | 44 | 28 | 84 |
-| II | Explosive Charge | 120g | +15 | — | 50 | 44 | 40 | 120 |
-| III | Nova Blast | 160g | +20 | +12 | 70 | 56 | 56 | 168 |
-| IV | Festival Cannon | 220g | +25 | +10 | 95 | 66 | 76 | 228 |
-| V | Cathedral on Wheels | 300g | +35 | +14 | 130 | 80 | 104 | 312 |
+| II | Explosive Charge | 132g | +15 | — | 50 | 44 | 40 | 120 |
+| III | Nova Blast | 176g | +20 | +12 | 70 | 56 | 56 | 168 |
+| IV | Festival Cannon | 242g | +25 | +10 | 95 | 66 | 76 | 228 |
+| V | Cathedral on Wheels | 330g | +35 | +14 | 130 | 80 | 104 | 312 |
 
 ### Level I — Rolling Bakery
 
@@ -54,7 +54,7 @@ Its crew quickly learns that fresh bread can be just as effective against hereti
 
 ### Level II — Explosive Charge
 
-Cost: 120g — +15 Damage
+Cost: 132g — +15 Damage
 
 *"Too much pressure. Just enough baking."*
 
@@ -66,7 +66,7 @@ The Order has politely declined.
 
 ### Level III — Nova Blast
 
-Cost: 160g — +20 Damage, +12 Range
+Cost: 176g — +20 Damage, +12 Range
 
 *"One loaf becomes a festival."*
 
@@ -76,7 +76,7 @@ Entire town squares have reportedly been converted during accidental demonstrati
 
 ### Level IV — Festival Cannon
 
-Cost: 220g — +25 Damage, +10 Range
+Cost: 242g — +25 Damage, +10 Range
 
 *"Every battle deserves a grand opening."*
 
@@ -86,7 +86,7 @@ Enemies rarely know whether they are under attack... or attending a parade.
 
 ### Level V — Cathedral on Wheels
 
-Cost: 300g — +35 Damage, +14 Range
+Cost: 330g — +35 Damage, +14 Range
 
 *"The Mother Dough travels with her faithful."*
 
@@ -111,16 +111,16 @@ Where the Cathedral on Wheels arrives... a bakery soon follows.
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
 | Reinforced Suspension | 80g | +15% splash radius | *Built to survive cobblestones, potholes, and enthusiastic festival crowds.* |
-| Street Parade Route | 120g | +30% area damage, -20% range (trade-off) | *The truck takes the loudest route through town, maximizing exposure and collateral pastry damage.* |
+| Street Parade Route | 132g | +30% area damage, -20% range (trade-off) | *The truck takes the loudest route through town, maximizing exposure and collateral pastry damage.* |
 
 ## Upgrades
 
 | Level | Upgrade | Cost | Damage | Range |
 |-------|---------|------|--------|-------|
-| I→II | Explosive Charge | 120g | +15 | — |
-| II→III | Nova Blast | 160g | +20 | +12 |
-| III→IV | Festival Cannon | 220g | +25 | +10 |
-| IV→V | Cathedral on Wheels | 300g | +35 | +14 |
+| I→II | Explosive Charge | 132g | +15 | — |
+| II→III | Nova Blast | 176g | +20 | +12 |
+| III→IV | Festival Cannon | 242g | +25 | +10 |
+| IV→V | Cathedral on Wheels | 330g | +35 | +14 |
 
 ## Synergies
 

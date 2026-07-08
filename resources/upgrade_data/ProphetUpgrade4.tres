@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Living Prophet of the First Oven"
-Cost = 420
+Cost = 462
 DamageBonus = 30.0
 FireRateBonus = 0.4

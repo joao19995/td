@@ -28,7 +28,7 @@ Their motto is simple:
 | Range | 48 |
 | Base DPS | 35 |
 | Full Upgrade DPS | 247 |
-| Total Investment | 635g |
+| Total Investment | 691g |
 | DPS/Gold Efficiency | 0.389 (full upgrade) |
 | Mechanics | Pure direct damage |
 
@@ -37,10 +37,10 @@ Their motto is simple:
 | Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS |
 |-------|------|------|--------|-----------|-------------|----------|-----|
 | I | Apprentice's Hands | — | 35 | 1.0 | 35 | 1.0 | 35 |
-| II | Reinforced Dough | 60g | +15 | — | 50 | 1.0 | 50 |
-| III | Heavy Barrel | 100g | +20 | +0.2 | 70 | 1.2 | 84 |
-| IV | Master Baker | 160g | +25 | +0.3 | 95 | 1.5 | 142.5 |
-| V | Grandmaster of the First Oven | 240g | +35 | +0.4 | 130 | 1.9 | 247 |
+| II | Reinforced Dough | 66g | +15 | — | 50 | 1.0 | 50 |
+| III | Heavy Barrel | 110g | +20 | +0.2 | 70 | 1.2 | 84 |
+| IV | Master Baker | 176g | +25 | +0.3 | 95 | 1.5 | 142.5 |
+| V | Grandmaster of the First Oven | 264g | +35 | +0.4 | 130 | 1.9 | 247 |
 
 ### Level I — Apprentice's Hands
 
@@ -50,7 +50,7 @@ The newest member of the Order. Armed with little more than a wooden peel, a fai
 
 ### Level II — Reinforced Dough
 
-Cost: 60g — +15 Damage
+Cost: 66g — +15 Damage
 
 *"A stronger loaf begins with stronger hands."*
 
@@ -58,7 +58,7 @@ Years of kneading dense rye dough strengthen both body and spirit. Every loaf no
 
 ### Level III — Heavy Barrel
 
-Cost: 100g — +20 Damage, +0.2 Fire Rate
+Cost: 110g — +20 Damage, +0.2 Fire Rate
 
 *"More dough. More momentum."*
 
@@ -68,7 +68,7 @@ Veterans jokingly refer to it as portable bakery artillery.
 
 ### Level IV — Master Baker
 
-Cost: 160g — +25 Damage, +0.3 Fire Rate
+Cost: 176g — +25 Damage, +0.3 Fire Rate
 
 *"The oven obeys before the dough is even mixed."*
 
@@ -78,7 +78,7 @@ The aroma alone is enough to shake the faith of industrial bread followers.
 
 ### Level V — Grandmaster of the First Oven
 
-Cost: 240g — +35 Damage, +0.4 Fire Rate
+Cost: 264g — +35 Damage, +0.4 Fire Rate
 
 *"Every loaf remembers their touch."*
 
@@ -109,10 +109,10 @@ Their recipes are considered sacred texts throughout the Order.
 
 | Level | Upgrade | Cost | Damage | Fire Rate |
 |-------|---------|------|--------|-----------|
-| I→II | Reinforced Dough | 60g | +15 | — |
-| II→III | Heavy Barrel | 100g | +20 | +0.2 |
-| III→IV | Master Baker | 160g | +25 | +0.3 |
-| IV→V | Grandmaster of the First Oven | 240g | +35 | +0.4 |
+| I→II | Reinforced Dough | 66g | +15 | — |
+| II→III | Heavy Barrel | 110g | +20 | +0.2 |
+| III→IV | Master Baker | 176g | +25 | +0.3 |
+| IV→V | Grandmaster of the First Oven | 264g | +35 | +0.4 |
 
 ## Synergies
 

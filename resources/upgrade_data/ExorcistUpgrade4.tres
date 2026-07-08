@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Grand Purifier of the Mother Dough"
-Cost = 360
+Cost = 396
 DamageBonus = 30.0
 FireRateBonus = 0.4

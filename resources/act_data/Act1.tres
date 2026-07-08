@@ -12,5 +12,5 @@ Tier1WaveDir = "res://resources/wave_data/tier1/"
 Tier2WaveDir = "res://resources/wave_data/tier1/"
 Tier3WaveDir = "res://resources/wave_data/tier1/"
 BossWaveData = ExtResource("1_boss")
-FightsPerRunOverride = 3
+FightsPerRunOverride = 8
 RequiredPreviousActId = ""

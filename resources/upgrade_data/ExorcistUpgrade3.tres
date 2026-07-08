@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "High Exorcist"
-Cost = 260
+Cost = 286
 DamageBonus = 20.0
 FireRateBonus = 0.3

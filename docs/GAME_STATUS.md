@@ -13,7 +13,7 @@ not implementation details.
 - **Continue Run** (between Start Run and Meta Shop) resumes a saved run from the last safe point.
 - The run begins on a random map (Map1 or Map2). After placing towers and defeating all waves (all enemies must be killed, not just spawned), a **Fight Complete** screen appears.
 - From Fight Complete the player clicks **"Continue"** to spin the slot machine, which determines the next step (next fight, shop, heal, treasure, miniboss, or boss). Gold/lives/tower upgrades are preserved across the run.
-- After the configured number of fights (default 3), the slot machine automatically triggers a **Boss Fight** instead of rolling. Defeating the boss ends the run with Victory.
+- After the configured number of fights (8 in Act 1), the slot machine automatically triggers a **Boss Fight** instead of rolling. Defeating the boss ends the run with Victory.
 - The player can always choose **"End Run"** from Fight Complete to end early and receive meta tokens.
 - Pressing **ESC** pauses the game at any time. Enemies stop spawning and all game ticks freeze. Pressing again resumes.
 - Running out of lives shows a **Game Over** screen with Menu buttons.
@@ -51,7 +51,8 @@ not implementation details.
   - **Heal** (15%): restores 5 lives (configurable) without a fight
   - **Miniboss** (10%): harder fight with 1.5x enemy stats on a random map
   - **Treasure** (20%): pick 1 of 3 random trinkets (run-wide charms)
-- After the configured number of fights (default 3), a **boss fight** triggers automatically using a dedicated boss wave (Boss enemy + minions).
+- After 8 fights, a **boss fight** triggers automatically using a dedicated boss wave (Boss enemy + minions).
+- Enemy stats scale +20% per fight completed (`DifficultyScalingPerFight = 0.20`), multiplicative with wave-internal curve (0.9x → 1.2x).
 - Defeating the boss ends the run with a **Victory** screen and awards meta tokens.
 - The shop sells run-wide bonuses (damage, fire rate, heavy damage, first-purchase discount) **and** tower-specific equipment that can be equipped per tower type.
 - All weights, heal amount, miniboss multiplier, fights-per-run, reroll cost, and skew factor are exported on SlotManager — no code changes needed to tweak.
@@ -145,24 +146,25 @@ not implementation details.
 ### Wave Decoupling (Run Mode)
 
 - Waves are **decoupled from map layout** during runs. Each fight picks waves from a **difficulty tier** based on `FightsCompleted`:
-  - Fight 1 -> `tier1` (easy)
-  - Fight 2 -> `tier2` (medium)
-  - Fight 3+ -> `tier3` (hard)
-- Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change. 5 waves per tier (15 total) for run mode variety.
+  - Act 1 uses `tier1` for all fights (same 4 enemy types across the whole run).
+  - Act 2 uses `tier1` → `tier2` → `tier3` progression.
+- Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change. 7 waves in tier1 for run mode variety.
 - `LevelData.Waves` is used only in classic mode (non-run) — unchanged.
 - **Boss fights** ignore the tier system and always use `BossWaveData` (set in `LevelManager` Inspector).
 - **Miniboss** `statMultiplier` (1.5x HP, gold, damage) is cumulative with tier difficulty.
 
-### Wave Generation (5-10 Waves Per Fight)
+### Wave Generation (4-7 Waves Per Fight)
 
-- `RunState.PickRunWaves()` generates **5-10 random waves** per fight, drawn with repetition from the current tier pool.
+- `RunState.PickRunWaves()` generates **4-7 random waves** per fight, drawn with repetition from the current tier pool (7 wave templates in tier1).
 - **Difficulty scaling** applies to each wave within the fight:
-  - `DifficultyMultiplier` ranges from **0.6x** (first wave) to **1.4x** (last wave)
+  - `DifficultyMultiplier` ranges from **0.9x** (first wave) to **1.2x** (last wave)
   - Affects: **enemy HP** (×multiplier), **spawn interval** (÷√multiplier → faster at high difficulty)
+- **Per-fight scaling**: enemy stats (HP, damage) increase by **20% per fight** via `DifficultyScalingPerFight`, multiplicative with the internal wave curve.
+  - Fight 1: 1.00× | Fight 4: 1.60× | Fight 8: 2.40×
 - **Final stretch**: the last 3 waves get **1.5× enemy count**.
 - **Modifier assignment**: waves 1-2 have no modifier (use wave's base). Waves 3+ get random modifiers from the pool. Last 2 waves draw from a harder pool (Horde, Armored). Consecutive same-modifier is avoided.
 - **Wave data is cloned at generation** — templates `.tres` are never mutated. Runtime fields (`DifficultyMultiplier`, `IsFinalStretch`) are set on the clone.
-- Briefing screen shows each wave as `W1 [0.6x]: 5 enemies`, with modifier tags for non-`None` modifiers.
+- Briefing screen shows each wave as `W1 [0.9x]: 5 enemies`, with modifier tags for non-`None` modifiers.
 
 ---
 
@@ -343,7 +345,7 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted`. 5 waves per tier (15 total) |
 | Wave entries (per-type counts) | `WaveEntry` sub-resource inside each `WaveData` | Enemy type + count per entry |
 | Wave modifiers | `WaveModifier` enum on `WaveData` | `None`, `Horde` (2× enemies, 0.5× interval), `Armored` (2× HP), `Swift` (1.5× speed), `GoldRush` (2× gold) |
-| Wave generation (run mode) | `RunState.PickRunWaves()` | 5-10 waves per fight, `DifficultyMultiplier` 0.6x-1.4x scaling, final stretch (last 3 waves ×1.5 count), random modifiers on waves 3+ |
-| Difficulty scaling (runtime) | `WaveData.DifficultyMultiplier` / `WaveData.IsFinalStretch` | Non-exported fields set on clone per fight. HP × mult, spawn ÷√mult, count ×1.5 on final stretch |
+| Wave generation (run mode) | `RunState.PickRunWaves()` | 4-7 waves per fight, `DifficultyMultiplier` 0.9x-1.2x scaling, per-fight scaling +20%, final stretch (last 3 waves ×1.5 count), random modifiers on waves 3+ |
+| Difficulty scaling (runtime) | `WaveData.DifficultyMultiplier` / `WaveData.IsFinalStretch` / `GameBalance.DifficultyScalingPerFight` | Non-exported fields set on clone per fight. HP × mult, spawn ÷√mult, count ×1.5 on final stretch. +20% per fight to HP/damage |
 | Bestiary discovery | `SaveManager` JSON | Towers/enemies/equip/trinkets/synergies auto-discovered when first encountered |
 | Meta-progression | `MetaUpgradeData` resource | Item ID, name, cost tokens, max level, IsTowerUnlock, TowerId, StatType, BonusPerLevel, Category (Unlocks/Stats/Economy) |

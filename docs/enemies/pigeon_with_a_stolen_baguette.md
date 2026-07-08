@@ -22,9 +22,9 @@ Which somehow makes everything even stranger.
 
 | Stat | Value |
 |------|-------|
-| HP | 80 |
+| HP | 40 |
 | Speed | 32 |
-| Gold Reward | 20 |
+| Gold Reward | 6 |
 | Damage to Player | 1 |
 | Type | Light, fast |
 | Tier | 1 — Innocent |
@@ -37,4 +37,4 @@ Conceptually a flyer but currently follows the normal path (placeholder until fl
 
 | Tower | TTK Base (35 DPS) | TTK T2 (84 DPS) |
 |-------|-------------------|-----------------|
-| Bread Baker | 2.29s | 0.95s |
+| Bread Baker | 1.14s | 0.48s |

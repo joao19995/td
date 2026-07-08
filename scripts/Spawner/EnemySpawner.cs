@@ -167,6 +167,10 @@ public partial class EnemySpawner : Node2D
 
         var enemy = EnemyFactory.Create(GenericEnemyScene, enemyData, EnemyPath.Curve, mult, isElite);
 
+        float fightScaling = 1f + RunState.Instance.FightsCompleted * GameBalance.DifficultyScalingPerFight;
+        if (fightScaling != 1f)
+            enemy.SetModifierMultipliers(fightScaling, fightScaling, 1f);
+
         switch (_currentModifier)
         {
             case WaveModifier.Armored:

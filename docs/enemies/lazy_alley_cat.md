@@ -20,9 +20,9 @@ Mostly because they think it's adorable.
 
 | Stat | Value |
 |------|-------|
-| HP | 300 |
+| HP | 150 |
 | Speed | 12 (very slow) |
-| Gold Reward | 30 |
+| Gold Reward | 10 |
 | Damage to Player | 2 |
 | Type | Heavy — early tank |
 | Tier | 1 — Innocent |
@@ -35,4 +35,4 @@ Mostly because they think it's adorable.
 
 | Tower | TTK Base (35 DPS) | TTK T2 (84 DPS) |
 |-------|-------------------|-----------------|
-| Bread Baker | 8.57s | 3.57s |
+| Bread Baker | 4.29s | 1.79s |

@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_sc")
 UpgradeName = "Cathedral on Wheels"
-Cost = 300
+Cost = 330
 DamageBonus = 35.0
 RangeBonus = 14.0
