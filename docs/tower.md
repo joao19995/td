@@ -13,11 +13,11 @@
 | [Aroma Keeper](towers/aroma_keeper.md) | 100 | 25 | 0.9 | 50 | 22.5 | 133 | 740 | Slow (0.5x, 3s) |
 | [Taste Tester](towers/taste_tester.md) | 120 | 30 | 1.0 | 48 | 30 (+10 poison) | 140 (+10 poison) | 840 | Poison (10/s, 4s) |
 | [Bakery Truck](towers/bakery_truck.md) | 140 | 35 | 0.8 | 44 | 28/target | 104/target | 940 | Splash (r=36) |
-| [Bread Monk](towers/bread_monk.md) | 160 | 30 | 1.0 | 50 | 30 | 75 | 400 | Aura (+10% dmg/rate, r=60) |
-| [Fermentation Sage](towers/fermentation_sage.md) | 180 | 30 | 0.9 | 52 | 27 (+13.5 chain) | 70 (+35 chain) | 430 | Chain (1 bounce, 40r, 50% dmg) |
-| [Crust Crusader](towers/crust_crusader.md) | 220 | 38 | 0.9 | 46 | 34.2 (~39.3 w/ crit) | 88.2 (~101.4 w/ crit) | 510 | Crit (15%, x2) |
-| [Dough Exorcist](towers/dough_exorcist.md) | 260 | 35 | 1.0 | 50 | 35 | 90 | 580 | Execute (<20% HP, 2x, 1.5x vs elite) |
-| [High Prophet of Sourdough](towers/high_prophet.md) | 320 | 40 | 0.9 | 56 | 36 | 91 | 720 | Global Aura (+2% dmg per tower) |
+| [Bread Monk](towers/bread_monk.md) | 160 | 30 | 1.0 | 50 | 30 | 187 | 880 | Aura (+10% dmg/rate, r=60) |
+| [Fermentation Sage](towers/fermentation_sage.md) | 180 | 30 | 0.9 | 52 | 27 (+13.5 chain) | 178.5 (+89.3 chain) | 950 | Chain (1 bounce, 40r, 50% dmg) |
+| [Crust Crusader](towers/crust_crusader.md) | 220 | 38 | 0.9 | 46 | 34.2 (~39.3 w/ crit) | 226.8 (~260.8 w/ crit) | 1,090 | Crit (15%, x2) |
+| [Dough Exorcist](towers/dough_exorcist.md) | 260 | 35 | 1.0 | 50 | 35 | 242 | 1,200 | Execute (<20% HP, 2x, 1.5x vs elite) |
+| [High Prophet of Sourdough](towers/high_prophet.md) | 320 | 40 | 0.9 | 56 | 36 | 241.5 | 1,460 | Global Aura (+2% dmg per tower) |
 
 ### Quick Links
 
