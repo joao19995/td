@@ -8,11 +8,11 @@
 
 | Tower | Cost | Dmg | FR | Range | DPS Base | DPS Full Upgrade | Total Invested | Special |
 |-------|------|-----|----|-------|----------|------------------|----------------|---------|
-| [Bread Baker](towers/bread_baker.md) | 75 | 35 | 1.0 | 48 | 35 | 84 | 235 | — |
-| [Bread Courier](towers/bread_courier.md) | 90 | 28 | 1.5 | 44 | 42 | 91.2 | 290 | Fast projectile |
-| [Aroma Keeper](towers/aroma_keeper.md) | 100 | 25 | 0.9 | 50 | 22.5 | 49 | 300 | Slow (0.5x, 3s) |
-| [Taste Tester](towers/taste_tester.md) | 120 | 30 | 1.0 | 48 | 30 (+10 poison) | 55.9 (+10 poison) | 360 | Poison (10/s, 4s) |
-| [Bakery Truck](towers/bakery_truck.md) | 140 | 35 | 0.8 | 44 | 28/target | 56/target | 420 | Splash (r=36) |
+| [Bread Baker](towers/bread_baker.md) | 75 | 35 | 1.0 | 48 | 35 | 247 | 635 | — |
+| [Bread Courier](towers/bread_courier.md) | 90 | 28 | 1.5 | 44 | 42 | 255.5 | 730 | Fast projectile |
+| [Aroma Keeper](towers/aroma_keeper.md) | 100 | 25 | 0.9 | 50 | 22.5 | 133 | 740 | Slow (0.5x, 3s) |
+| [Taste Tester](towers/taste_tester.md) | 120 | 30 | 1.0 | 48 | 30 (+10 poison) | 140 (+10 poison) | 840 | Poison (10/s, 4s) |
+| [Bakery Truck](towers/bakery_truck.md) | 140 | 35 | 0.8 | 44 | 28/target | 104/target | 940 | Splash (r=36) |
 | [Bread Monk](towers/bread_monk.md) | 160 | 30 | 1.0 | 50 | 30 | 75 | 400 | Aura (+10% dmg/rate, r=60) |
 | [Fermentation Sage](towers/fermentation_sage.md) | 180 | 30 | 0.9 | 52 | 27 (+13.5 chain) | 70 (+35 chain) | 430 | Chain (1 bounce, 40r, 50% dmg) |
 | [Crust Crusader](towers/crust_crusader.md) | 220 | 38 | 0.9 | 46 | 34.2 (~39.3 w/ crit) | 88.2 (~101.4 w/ crit) | 510 | Crit (15%, x2) |

@@ -1,6 +1,6 @@
 # Bread Baker — "The First Disciple"
 
-*"Every loaf begins with two hands."*
+*"Every Master Baker was once an apprentice with flour on their hands."*
 
 No one joins the Order as a hero.
 
@@ -27,11 +27,76 @@ Their motto is simple:
 | Fire Rate | 1.0 |
 | Range | 48 |
 | Base DPS | 35 |
-| T1 DPS | 50 |
-| T2 DPS | 84 |
-| Total Investment | 235g |
-| DPS/Gold Efficiency | 0.467 (base) |
+| Full Upgrade DPS | 247 |
+| Total Investment | 635g |
+| DPS/Gold Efficiency | 0.389 (full upgrade) |
 | Mechanics | Pure direct damage |
+
+## Levels
+
+| Level | Name | Cost | Damage | Fire Rate | Total Damage | Total FR | DPS |
+|-------|------|------|--------|-----------|-------------|----------|-----|
+| I | Apprentice's Hands | — | 35 | 1.0 | 35 | 1.0 | 35 |
+| II | Reinforced Dough | 60g | +15 | — | 50 | 1.0 | 50 |
+| III | Heavy Barrel | 100g | +20 | +0.2 | 70 | 1.2 | 84 |
+| IV | Master Baker | 160g | +25 | +0.3 | 95 | 1.5 | 142.5 |
+| V | Grandmaster of the First Oven | 240g | +35 | +0.4 | 130 | 1.9 | 247 |
+
+### Level I — Apprentice's Hands
+
+*"Every loaf is a prayer."*
+
+The newest member of the Order. Armed with little more than a wooden peel, a faithful starter, and unwavering determination.
+
+### Level II — Reinforced Dough
+
+Cost: 60g — +15 Damage
+
+*"A stronger loaf begins with stronger hands."*
+
+Years of kneading dense rye dough strengthen both body and spirit. Every loaf now lands with greater force, capable of cracking even the toughest industrial crust.
+
+### Level III — Heavy Barrel
+
+Cost: 100g — +20 Damage, +0.2 Fire Rate
+
+*"More dough. More momentum."*
+
+The Baker replaces their humble proofing bowl with a massive oak fermentation barrel. Larger batches mean denser loaves—and less time between bakes.
+
+Veterans jokingly refer to it as portable bakery artillery.
+
+### Level IV — Master Baker
+
+Cost: 160g — +25 Damage, +0.3 Fire Rate
+
+*"The oven obeys before the dough is even mixed."*
+
+After baking ten thousand flawless loaves, the Baker earns the title of Master. Their movements become effortless, every throw perfectly timed, every loaf baked to impossible consistency.
+
+The aroma alone is enough to shake the faith of industrial bread followers.
+
+### Level V — Grandmaster of the First Oven
+
+Cost: 240g — +35 Damage, +0.4 Fire Rate
+
+*"Every loaf remembers their touch."*
+
+Only a handful of Grandmasters have existed throughout history.
+
+Legend says they can awaken dormant starters with a whisper and bake bread so perfect that even the Industrial Bread Dragon hesitates before taking another step.
+
+Their recipes are considered sacred texts throughout the Order.
+
+## Visual Evolution
+
+| Level | Appearance |
+|-------|------------|
+| I | Young baker with a simple apron and wooden peel. |
+| II | Leather gloves, flour-covered clothes, stronger stance. |
+| III | Large oak fermentation barrel strapped to the back, reinforced apron, larger loaves. |
+| IV | Elegant white baker's coat with golden embroidery, sacred sourdough emblem, steam constantly rising from the barrel. |
+| V | Ornate golden robes over the baker's uniform, glowing Mother Dough starter floating beside them, flour particles and warm light surround every attack. |
 
 ## Equipment
 
@@ -42,10 +107,12 @@ Their motto is simple:
 
 ## Upgrades
 
-| Upgrade | Cost | Damage | Fire Rate |
-|---------|------|--------|-----------|
-| Reinforce | 60g | +15 | — |
-| Heavy Barrel | 100g | +20 | +0.2 |
+| Level | Upgrade | Cost | Damage | Fire Rate |
+|-------|---------|------|--------|-----------|
+| I→II | Reinforced Dough | 60g | +15 | — |
+| II→III | Heavy Barrel | 100g | +20 | +0.2 |
+| III→IV | Master Baker | 160g | +25 | +0.3 |
+| IV→V | Grandmaster of the First Oven | 240g | +35 | +0.4 |
 
 ## Synergies
 

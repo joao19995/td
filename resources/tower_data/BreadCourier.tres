@@ -3,8 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://ddukjf2aw6q5u" path="res://scenes/projectiles/projectile_fast.tscn" id="1_4gpsg"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_be44t"]
 [ext_resource type="Script" uid="uid://c6i1yvfl7snxf" path="res://scripts/resources/UpgradeData.cs" id="2_l78ne"]
-[ext_resource type="Resource" path="res://resources/upgrade_data/FastUpgrade1.tres" id="3_fst1"]
-[ext_resource type="Resource" path="res://resources/upgrade_data/FastUpgrade2.tres" id="4_fst2"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/CourierUpgrade1.tres" id="3_cou1"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/CourierUpgrade2.tres" id="4_cou2"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/CourierUpgrade3.tres" id="5_cou3"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/CourierUpgrade4.tres" id="6_cou4"]
 [ext_resource type="Texture2D" path="res://assets/sprites/towers/bread_courier.png" id="1_bread_courier1"]
 
 [resource]
@@ -17,5 +19,5 @@ Range = 44.0
 Cost = 90
 ProjectileScene = ExtResource("1_4gpsg")
 Sprite = ExtResource("1_bread_courier1")
-UpgradePath = Array[ExtResource("2_l78ne")]([ExtResource("3_fst1"), ExtResource("4_fst2")])
-FlavorText = "Swift and tireless. The dough must reach its destination."
+UpgradePath = Array[ExtResource("2_l78ne")]([ExtResource("3_cou1"), ExtResource("4_cou2"), ExtResource("5_cou3"), ExtResource("6_cou4")])
+FlavorText = "Bread delayed is faith denied."

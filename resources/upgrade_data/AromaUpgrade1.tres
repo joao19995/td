@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://aroma_upgrade1"]
+
+[ext_resource type="Script" uid="uid://c6i1yvfl7snxf" path="res://scripts/resources/UpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+UpgradeName = "Cryo Coil"
+Cost = 80
+FireRateBonus = 0.3

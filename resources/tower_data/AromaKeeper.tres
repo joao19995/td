@@ -3,8 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://dbseth78x0jbp" path="res://scenes/projectiles/projectile_ice.tscn" id="1_o66bj"]
 [ext_resource type="Script" uid="uid://c7g3mvd74xsfd" path="res://scripts/resources/TowerData.cs" id="2_4fycm"]
 [ext_resource type="Script" uid="uid://c6i1yvfl7snxf" path="res://scripts/resources/UpgradeData.cs" id="2_od6i1"]
-[ext_resource type="Resource" path="res://resources/upgrade_data/IceUpgrade1.tres" id="3_ice1"]
-[ext_resource type="Resource" path="res://resources/upgrade_data/IceUpgrade2.tres" id="4_ice2"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/AromaUpgrade1.tres" id="3_aro1"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/AromaUpgrade2.tres" id="4_aro2"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/AromaUpgrade3.tres" id="5_aro3"]
+[ext_resource type="Resource" path="res://resources/upgrade_data/AromaUpgrade4.tres" id="6_aro4"]
 [ext_resource type="Texture2D" path="res://assets/sprites/towers/aroma_keeper.png" id="1_aroma_keeper1"]
 
 [resource]
@@ -20,5 +22,5 @@ Sprite = ExtResource("1_aroma_keeper1")
 HasSlow = true
 SlowMultiplier = 0.5
 SlowDuration = 3.0
-UpgradePath = Array[ExtResource("2_od6i1")]([ExtResource("3_ice1"), ExtResource("4_ice2")])
-FlavorText = "The scent of fermentation slows even the most determined heretic."
+UpgradePath = Array[ExtResource("2_od6i1")]([ExtResource("3_aro1"), ExtResource("4_aro2"), ExtResource("5_aro3"), ExtResource("6_aro4")])
+FlavorText = "Even unbelievers cannot outrun the smell of truth."
