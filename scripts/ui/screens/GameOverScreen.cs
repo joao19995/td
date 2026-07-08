@@ -23,7 +23,7 @@ public partial class GameOverScreen : Control
             _waveLabel.Text = $"Wave: {level.Spawner.CurrentWaveDisplay}";
 
         var run = RunState.Instance;
-        int totalFights = SlotManager.Instance != null ? SlotManager.Instance.FightsPerRun : 1;
+        int totalFights = run.EffectiveFightsPerRun;
         int earned = run.PreviewTokenReward(false);
         _tokenLabel.Text = $"+{earned} tokens (will be awarded on return)";
 

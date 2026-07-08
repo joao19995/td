@@ -21,7 +21,7 @@ public partial class SaveManager : Node
     public Array<string> UnlockedTowerIds => _unlockedTowerIds;
     public Array<string> UnlockedActIds => _unlockedActIds;
 
-    private static readonly string[] DefaultTowerIds = { "bread_baker", "bread_courier" };
+    private static readonly string[] DefaultTowerIds = { "bread_baker" };
     private static readonly string[] DefaultActIds = { "act1" };
 
     public override void _EnterTree()

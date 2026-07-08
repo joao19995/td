@@ -7,6 +7,7 @@ public partial class AttackComponent : Node
     private TowerData _data;
     private EquipData _equipData;
     private float _effectiveDamage;
+    private float _lastFiredDamage;
     private float _effectiveFireRate;
     private float _effectiveCritChance;
     private float _effectiveCritMultiplier;
@@ -31,7 +32,6 @@ public partial class AttackComponent : Node
         _data = data;
         _effectiveDamage = data.Damage;
         _effectiveFireRate = data.FireRate;
-        _cooldown = 0f;
     }
 
     public void SetEffectiveStats(float damage, float fireRate)
@@ -97,7 +97,7 @@ public partial class AttackComponent : Node
                 }));
 
             if (_data.HasChain)
-                effects.Add((mainEnemy, hitPosition) => TriggerChain(mainEnemy, _effectiveDamage * _data.ChainBounceDamageMultiplier));
+                effects.Add((mainEnemy, hitPosition) => TriggerChain(mainEnemy, _lastFiredDamage * _data.ChainBounceDamageMultiplier));
         }
 
         _precomputedHitEffects = effects.Count > 0
@@ -143,6 +143,7 @@ public partial class AttackComponent : Node
         if (TryInstaKill(target, wasCrit)) return;
 
         ApplyDamageModifiers(target, ref damage);
+        _lastFiredDamage = damage;
 
         SpawnProjectile(target, towerPos, damage, wasCrit);
         TrySpreadPoison(target, towerPos);
@@ -369,7 +370,7 @@ public partial class AttackComponent : Node
             if (result["collider"].AsGodotObject() is Enemy surroundingEnemy)
             {
                 if (surroundingEnemy == mainEnemy) continue;
-                surroundingEnemy.TakeDamage(_effectiveDamage);
+                surroundingEnemy.TakeDamage(_lastFiredDamage);
             }
         }
     }

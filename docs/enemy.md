@@ -7,7 +7,7 @@
 
 Enemies evolve across tiers as the game progresses:
 
-- **Tier 1 —  **: Tourist, Jogger, Pigeon, Alley Cat. Ordinary victims of convenience.
+- **Tier 1 — Innocents**: Tourist, Jogger, Pigeon, Alley Cat. Ordinary victims of convenience.
 - **Tier 2 — Followers**: Sandwich Man, Microwave Preacher, Frozen Dough. Fully influenced by industrial baking.
 - **Tier 3 — Leaders**: Supermarket Overlord. The corporate face of the heresy.
 - **Tier 4 — Legends**: Industrial Bread Dragon and Gluten Null Bishop. Mythic embodiments of greed and convenience.

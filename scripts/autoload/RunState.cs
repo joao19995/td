@@ -284,6 +284,12 @@ public partial class RunState : Node
         _towerLevels[towerId] = level;
     }
 
+    public void AddSelectedTowerId(string towerId)
+    {
+        if (!SelectedTowerIds.Contains(towerId))
+            SelectedTowerIds.Add(towerId);
+    }
+
     public string GetEquippedItem(string towerId)
     {
         return _equippedItems.ContainsKey(towerId) ? _equippedItems[towerId] : null;
@@ -635,7 +641,7 @@ public partial class RunState : Node
         {
             if (SelectedAct?.FightsPerRunOverride > 0)
                 return SelectedAct.FightsPerRunOverride;
-            return SlotManager.Instance?.FightsPerRun ?? 3;
+            return SlotManager.Instance?.FightsPerRun ?? SlotManager.DefaultFightsPerRun;
         }
     }
 

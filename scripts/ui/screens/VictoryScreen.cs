@@ -20,7 +20,7 @@ public partial class VictoryScreen : Control
         _newRunButton = GetNode<Button>(_newRunButtonPath);
 
         var run = RunState.Instance;
-        int totalFights = SlotManager.Instance?.FightsPerRun ?? 1;
+        int totalFights = run.EffectiveFightsPerRun;
 
         _tokenLabel.Text = $"Tokens earned: +{run.LastTokenReward}";
 

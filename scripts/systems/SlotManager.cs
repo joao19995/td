@@ -5,7 +5,9 @@ public partial class SlotManager : Node
 {
     public static SlotManager Instance { get; private set; }
 
-    [Export] public int FightsPerRun = 3;
+    public const int DefaultFightsPerRun = 3;
+
+    [Export] public int FightsPerRun = DefaultFightsPerRun;
     [Export] public float WeightFight = 35f;
     [Export] public float WeightShop = 20f;
     [Export] public float WeightHeal = 15f;
