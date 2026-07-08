@@ -53,8 +53,8 @@ public partial class MainMenu : CanvasLayer
 
     private void OnStartRunPressed()
     {
-        GD.Print("[MainMenu] Start Run pressed — loading LoadoutScreen.");
-        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/LoadoutScreen.tscn",
+        GD.Print("[MainMenu] Start Run pressed — loading ActSelectScreen.");
+        SceneManager.Instance.LoadLevel("res://scenes/ui/screens/ActSelectScreen.tscn",
             LevelManager.Instance.LevelContainer);
     }
 

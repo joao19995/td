@@ -54,9 +54,9 @@ public partial class FightCompleteScreen : Control
         RunState.Instance.IncrementFights();
         RunState.Instance.SetMiniboss(false);
 
-        if (RunState.Instance.FightsCompleted >= SlotManager.Instance.FightsPerRun)
+        if (RunState.Instance.FightsCompleted >= RunState.Instance.EffectiveFightsPerRun)
         {
-            GD.Print($"[FightComplete] FightsCompleted={RunState.Instance.FightsCompleted} >= FightsPerRun={SlotManager.Instance.FightsPerRun} — forcing BOSS.");
+            GD.Print($"[FightComplete] FightsCompleted={RunState.Instance.FightsCompleted} >= EffectiveFightsPerRun={RunState.Instance.EffectiveFightsPerRun} — forcing BOSS.");
             ShowOutcome("BOSS FIGHT!");
             _spinButton.Text = "Continue";
             _spinButton.Disabled = false;

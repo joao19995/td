@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ActData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ActData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "act2"
+ActName = "The Full Pantry"
+Description = "All enemies appear, including the dreaded Industrial Bread Dragon and the full heretical pantheon."
+Tier1WaveDir = "res://resources/wave_data/tier1/"
+Tier2WaveDir = "res://resources/wave_data/tier2/"
+Tier3WaveDir = "res://resources/wave_data/tier3/"
+FightsPerRunOverride = -1
+RequiredPreviousActId = "act1"

@@ -12,6 +12,7 @@ public partial class RunState : Node
     public Godot.Collections.Array<string> PurchasedItemNames { get; } = new();
     public Godot.Collections.Array<string> PurchasedItemDescriptions { get; } = new();
 
+    public ActData SelectedAct { get; private set; }
     public Array<string> SelectedTowerIds { get; private set; } = new();
 
     public int FightsCompleted { get; private set; } = 0;
@@ -93,6 +94,11 @@ public partial class RunState : Node
         else if (diff < 0)
             TotalGoldSpent -= diff;
         _lastMoney = currentMoney;
+    }
+
+    public void SetAct(ActData act)
+    {
+        SelectedAct = act;
     }
 
     public void StartRun(int gold, int lives, Godot.Collections.Array<string> selectedTowerIds)
@@ -214,12 +220,25 @@ public partial class RunState : Node
         LastGoldEarned = TotalGoldEarned;
         LastGoldSpent = TotalGoldSpent;
         SaveManager.Instance.AddMetaTokens(totalTokens);
+        if (isVictory && SelectedAct != null)
+        {
+            var allActs = ResourceLoaderHelper.LoadFromDir<ActData>("res://resources/act_data/");
+            foreach (var act in allActs)
+            {
+                if (act.RequiredPreviousActId == SelectedAct.Id)
+                {
+                    SaveManager.Instance.UnlockAct(act.Id);
+                    GD.Print($"[RunState] Unlocked next act: {act.Id} ({act.ActName})");
+                }
+            }
+        }
         SaveManager.Instance.DeleteRunState();
         _towerLevels.Clear();
         _equippedItems.Clear();
         _ancientStarterAttackCount.Clear();
         _ancientStarterStacks.Clear();
         SelectedTowerIds.Clear();
+        SelectedAct = null;
         FightsCompleted = 0;
         TotalEnemiesKilled = 0;
         TotalGoldEarned = 0;
@@ -325,6 +344,7 @@ public partial class RunState : Node
     {
         var data = new Godot.Collections.Dictionary
         {
+            { "selected_act_id", SelectedAct?.Id ?? "" },
             { "gold", EconomyManager.Instance.CurrentMoney },
             { "lives", GameManager.Instance.CurrentLives },
             { "fights_completed", FightsCompleted },
@@ -446,6 +466,20 @@ public partial class RunState : Node
         EconomyManager.Instance.SetMoney(GetInt(data, "gold"));
         GameManager.Instance.SetLives(GetInt(data, "lives"));
         FightsCompleted = GetInt(data, "fights_completed");
+
+        string actId = GetString(data, "selected_act_id");
+        if (!string.IsNullOrEmpty(actId))
+        {
+            var allActs = ResourceLoaderHelper.LoadFromDir<ActData>("res://resources/act_data/");
+            foreach (var a in allActs)
+            {
+                if (a.Id == actId)
+                {
+                    SelectedAct = a;
+                    break;
+                }
+            }
+        }
         IsBossFight = data.ContainsKey("is_boss_fight") && (bool)data["is_boss_fight"];
         IsMiniboss = data.ContainsKey("is_miniboss") && (bool)data["is_miniboss"];
         TotalEnemiesKilled = GetInt(data, "total_enemies_killed");
@@ -595,11 +629,21 @@ public partial class RunState : Node
     public int LastGoldEarned { get; private set; }
     public int LastGoldSpent { get; private set; }
 
+    public int EffectiveFightsPerRun
+    {
+        get
+        {
+            if (SelectedAct?.FightsPerRunOverride > 0)
+                return SelectedAct.FightsPerRunOverride;
+            return SlotManager.Instance?.FightsPerRun ?? 3;
+        }
+    }
+
     public int PreviewTokenReward(bool isVictory = false)
     {
         int baseTokens = SaveManager.Instance.MetaTokensPerRun;
         float ratio = SlotManager.Instance != null
-            ? (float)FightsCompleted / Mathf.Max(1, SlotManager.Instance.FightsPerRun)
+            ? (float)FightsCompleted / Mathf.Max(1, EffectiveFightsPerRun)
             : 1f;
         int total = Mathf.RoundToInt(baseTokens * (GameBalance.TokenRewardBaseMultiplier + ratio));
         if (isVictory)

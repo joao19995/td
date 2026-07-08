@@ -22,10 +22,17 @@ public static class WaveGenerator
         return "tier1";
     }
 
-    public static Array<WaveData> PickRunWaves(int fightsCompleted, int fightsPerRun)
+    public static Array<WaveData> PickRunWaves(int fightsCompleted, int fightsPerRun, ActData act = null)
     {
         string tier = GetWaveTier(fightsCompleted, fightsPerRun);
-        string dirPath = $"res://resources/wave_data/{tier}/";
+        string dirPath = act != null
+            ? tier switch
+            {
+                "tier2" => act.Tier2WaveDir,
+                "tier3" => act.Tier3WaveDir,
+                _ => act.Tier1WaveDir
+            }
+            : $"res://resources/wave_data/{tier}/";
         var dir = DirAccess.Open(dirPath);
         if (dir == null)
         {

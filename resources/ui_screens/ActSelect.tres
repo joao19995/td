@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UIScreenData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/UIScreenData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "act_select"
+ScenePath = "res://scenes/ui/screens/ActSelectScreen.tscn"
+PauseGame = false

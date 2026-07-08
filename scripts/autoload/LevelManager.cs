@@ -77,7 +77,7 @@ public partial class LevelManager : Node
         PendingLevelData = Levels[_pendingLevelIndex];
 
         if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
-            PendingRunWaves = WaveGenerator.PickRunWaves(RunState.Instance.FightsCompleted, SlotManager.Instance?.FightsPerRun ?? 0);
+            PendingRunWaves = WaveGenerator.PickRunWaves(RunState.Instance.FightsCompleted, RunState.Instance.EffectiveFightsPerRun, RunState.Instance.SelectedAct);
         else
             PendingRunWaves = null;
 
@@ -101,7 +101,8 @@ public partial class LevelManager : Node
         if (CurrentLevel == null) return;
 
         GD.Print($"[LevelManager] Level loaded: '{CurrentLevel.LevelName}' (WorldSize={CurrentLevel.WorldSize}, Waves={(PendingRunWaves?.Count > 0 ? PendingRunWaves.Count.ToString() : "from LevelData")}).");
-        baseLevel.ConfigureForRun(PendingRunWaves, BossWaveData);
+        var bossWave = RunState.Instance.SelectedAct?.BossWaveData ?? BossWaveData;
+        baseLevel.ConfigureForRun(PendingRunWaves, bossWave);
 
         CameraManager.Instance.Configure(CurrentLevel.WorldSize);
     }

@@ -327,6 +327,7 @@ public partial class LoadoutScreen : CanvasLayer
             if (_selected[i]) ids.Add(_allTowers[i].Id);
 
         GD.Print($"[Loadout] Starting run with {ids.Count} towers: {string.Join(", ", ids)}.");
+        GD.Print($"[Loadout] Selected act: {RunState.Instance.SelectedAct?.ActName ?? "none"}.");
         RunState.Instance.StartRun(EconomyManager.Instance.StartingMoney, GameManager.Instance.StartingLives, ids);
         LevelManager.Instance.PickRandomLevel();
         GD.Print($"[Loadout] Pushing BriefingScreen for level '{LevelManager.Instance.PendingLevelData?.LevelName}'.");

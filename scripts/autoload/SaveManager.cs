@@ -12,14 +12,17 @@ public partial class SaveManager : Node
 
     private int _metaTokens;
     private Array<string> _unlockedTowerIds = new();
+    private Array<string> _unlockedActIds = new();
     private Dictionary<string, int> _metaUpgradeLevels = new();
     private Dictionary<string, bool> _discovered = new();
     private Array<string>[] _loadoutSlots = new Array<string>[3];
 
     public int MetaTokens => _metaTokens;
     public Array<string> UnlockedTowerIds => _unlockedTowerIds;
+    public Array<string> UnlockedActIds => _unlockedActIds;
 
     private static readonly string[] DefaultTowerIds = { "bread_baker", "bread_courier" };
+    private static readonly string[] DefaultActIds = { "act1" };
 
     public override void _EnterTree()
     {
@@ -74,6 +77,14 @@ public partial class SaveManager : Node
             _unlockedTowerIds = new Array<string>();
             foreach (var id in raw)
                 _unlockedTowerIds.Add(id.AsString());
+        }
+
+        if (dict.ContainsKey("unlocked_act_ids") && dict["unlocked_act_ids"].VariantType == Variant.Type.Array)
+        {
+            var raw = dict["unlocked_act_ids"].AsGodotArray();
+            _unlockedActIds = new Array<string>();
+            foreach (var id in raw)
+                _unlockedActIds.Add(id.AsString());
         }
 
         if (dict.ContainsKey("meta_upgrade_levels") && dict["meta_upgrade_levels"].VariantType == Variant.Type.Dictionary)
@@ -133,6 +144,7 @@ public partial class SaveManager : Node
         {
             { "meta_tokens", _metaTokens },
             { "unlocked_tower_ids", _unlockedTowerIds },
+            { "unlocked_act_ids", _unlockedActIds },
             { "meta_upgrade_levels", upgradeLevelsDict },
             { "discovered", discoveredDict },
             { "loadout_slots", loadoutSlotsArray }
@@ -172,6 +184,20 @@ public partial class SaveManager : Node
         if (!_unlockedTowerIds.Contains(towerId))
         {
             _unlockedTowerIds.Add(towerId);
+            SaveGame();
+        }
+    }
+
+    public bool IsActUnlocked(string actId)
+    {
+        return _unlockedActIds.Contains(actId);
+    }
+
+    public void UnlockAct(string actId)
+    {
+        if (!_unlockedActIds.Contains(actId))
+        {
+            _unlockedActIds.Add(actId);
             SaveGame();
         }
     }
@@ -254,6 +280,7 @@ public partial class SaveManager : Node
     {
         _metaTokens = 0;
         _unlockedTowerIds = new Array<string>(DefaultTowerIds);
+        _unlockedActIds = new Array<string>(DefaultActIds);
     }
 
     private void EnsureDefaultUnlocks()
@@ -264,6 +291,14 @@ public partial class SaveManager : Node
             if (!_unlockedTowerIds.Contains(id))
             {
                 _unlockedTowerIds.Add(id);
+                changed = true;
+            }
+        }
+        foreach (var id in DefaultActIds)
+        {
+            if (!_unlockedActIds.Contains(id))
+            {
+                _unlockedActIds.Add(id);
                 changed = true;
             }
         }

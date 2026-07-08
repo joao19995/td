@@ -49,9 +49,12 @@ public partial class BriefingScreen : Control
         else
             _mapPreview.Visible = false;
 
+        string actSuffix = RunState.Instance.SelectedAct != null
+            ? $" — {RunState.Instance.SelectedAct.ActName.ToUpper()}"
+            : "";
         string title = RunState.Instance.IsBossFight
-            ? "BOSS FIGHT!"
-            : hasLevelData ? levelData.LevelName.ToUpper() : "MISSION";
+            ? $"BOSS FIGHT!{actSuffix}"
+            : hasLevelData ? $"{levelData.LevelName.ToUpper()}{actSuffix}" : "MISSION";
         _titleLabel.Text = title;
 
         _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}  Lives: {GameManager.Instance.CurrentLives}";
@@ -86,7 +89,7 @@ public partial class BriefingScreen : Control
     {
         if (RunState.Instance.IsRunActive && !RunState.Instance.IsBossFight)
         {
-            string tier = WaveGenerator.GetWaveTier(RunState.Instance.FightsCompleted, SlotManager.Instance?.FightsPerRun ?? 0);
+            string tier = WaveGenerator.GetWaveTier(RunState.Instance.FightsCompleted, RunState.Instance.EffectiveFightsPerRun);
             string tierName = tier switch
             {
                 "tier1" => "Tier 1",
@@ -123,7 +126,7 @@ public partial class BriefingScreen : Control
 
         if (RunState.Instance.IsBossFight)
         {
-            var bossWave = LevelManager.Instance.BossWaveData;
+            var bossWave = RunState.Instance.SelectedAct?.BossWaveData ?? LevelManager.Instance.BossWaveData;
             if (bossWave?.Entries != null && bossWave.Entries.Count > 0)
             {
                 var parts = new List<string>();

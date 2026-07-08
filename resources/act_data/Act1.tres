@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ActData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ActData.cs" id="1_sc"]
+[ext_resource type="Resource" path="res://resources/wave_data/act1_boss.tres" id="1_boss"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "act1"
+ActName = "The Innocent Herd"
+Description = "Only innocent enemies appear. Face the Supermarket Overlord of White Bread as the final boss."
+Tier1WaveDir = "res://resources/wave_data/tier1/"
+Tier2WaveDir = "res://resources/wave_data/tier1/"
+Tier3WaveDir = "res://resources/wave_data/tier1/"
+BossWaveData = ExtResource("1_boss")
+FightsPerRunOverride = 3
+RequiredPreviousActId = ""
