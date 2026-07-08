@@ -168,7 +168,7 @@ not implementation details.
 
 ## Towers
 
-- **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource — see [`docs/tower.md`](tower.md) for full stats, DPS, upgrades, equipment, synergies, and open questions.
+- **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource — see [`docs/tower.md`](tower.md) for overview or [`docs/towers/`](towers/) for per-tower details (stats, lore, equipment, upgrades, synergies, open questions).
 - **Placement**: towers can only be placed on designated buildable tiles. Already-occupied tiles are blocked.
 - **Selection**: clicking a placed tower selects it. A semi-transparent circle shows its range. Right-click deselects.
 - **Upgrades**: each tower has a fixed upgrade path (2 tiers per tower). Upgrades increase damage, fire rate, and/or range.
@@ -213,7 +213,7 @@ not implementation details.
 
 ## Enemies
 
-- **10 enemy types** — see [`docs/enemy.md`](enemy.md) for full stats, TTK analysis, and counter strategies.
+- **10 enemy types** — see [`docs/enemy.md`](enemy.md) for overview or [`docs/enemies/`](enemies/) for per-enemy details (lore, stats, TTK, counter strategies).
 - Each enemy has configurable health, speed, gold reward, sprite, damage to player, and IsBoss/IsHeavy flags via EnemyData resource.
 - Enemies follow a fixed path defined per level.
 - If an enemy reaches the end, it damages the player's lives and is removed.
