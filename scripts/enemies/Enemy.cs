@@ -153,6 +153,19 @@ public partial class Enemy : Area2D
             _healthLabel.Text = Mathf.RoundToInt(current).ToString();
     }
 
+    /// <summary>
+    /// Dev-only: instantly kills this enemy without granting gold or dealing damage to the player.
+    /// Emits EnemyDied(0) so spawner counters decrement correctly.
+    /// </summary>
+    public void ForceKill()
+    {
+        if (IsDead) return;
+        IsDead = true;
+        RemoveAllAntiBuffEffects();
+        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, 0);
+        ReturnToPool();
+    }
+
     public float GetCurrentHealth() => _health?.GetCurrentHealth() ?? 0f;
     public float MaxHealth => _health?.MaxHealth ?? 1f;
     public float HealthPercent => GetCurrentHealth() / MaxHealth;

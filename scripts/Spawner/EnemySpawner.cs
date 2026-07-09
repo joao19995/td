@@ -12,6 +12,8 @@ public partial class EnemySpawner : Node2D
     private bool _waveInProgress = false;
     private int _activeEnemyCount = 0;
     private bool _allWavesSpawned = false;
+    private bool _cancelCurrentWave;
+    private bool _skipInProgress;
 
     private bool _isBossFight = false;
     private bool _isMiniboss = false;
@@ -56,10 +58,16 @@ public partial class EnemySpawner : Node2D
         }
     }
 
+    public void CancelCurrentSpawn()
+    {
+        _cancelCurrentWave = true;
+    }
+
     public async void StartNextWave()
     {
         if (!CanStartNextWave) return;
 
+        _cancelCurrentWave = false;
         _currentWaveIndex++;
         _waveInProgress = true;
         var wave = Waves[_currentWaveIndex];
@@ -92,7 +100,7 @@ public partial class EnemySpawner : Node2D
         }
 
         int totalSpawned = 0;
-        while (totalSpawned < totalCount)
+        while (totalSpawned < totalCount && !_cancelCurrentWave)
         {
             for (int i = 0; i < spawnList.Count; i++)
             {
@@ -107,6 +115,7 @@ public partial class EnemySpawner : Node2D
 
                 await ToSignal(GetTree().CreateTimer(spawnInterval, false), Timer.SignalName.Timeout);
                 if (!_isActive || !IsInstanceValid(this)) return;
+                if (_cancelCurrentWave) break;
             }
         }
 
@@ -132,6 +141,8 @@ public partial class EnemySpawner : Node2D
 
     private void CheckAllWavesCompleted()
     {
+        if (_skipInProgress) return;
+
         if (_allWavesSpawned && _activeEnemyCount <= 0)
         {
             if (GameManager.Instance.CurrentLives <= 0)
@@ -140,6 +151,47 @@ public partial class EnemySpawner : Node2D
                 return;
             }
             EventBus.Instance?.EmitSignal(EventBus.SignalName.AllWavesCompleted);
+        }
+    }
+
+    /// <summary>
+    /// Dev-only: kills all active enemies and advances to the next wave or completes the level.
+    /// Safe to call at any time (mid-spawn, between waves, after all waves).
+    /// </summary>
+    public async void SkipCurrentWave()
+    {
+        if (!_isActive || _skipInProgress) return;
+
+        _skipInProgress = true;
+        _cancelCurrentWave = true;
+
+        // Kill all alive enemies in the container
+        var container = GetEnemiesContainer();
+        foreach (var child in container.GetChildren())
+        {
+            if (child is Enemy enemy && !enemy.IsDead && IsInstanceValid(enemy))
+                enemy.ForceKill();
+        }
+
+        // Wait 2 frames for the spawn loop to process cancellation and for
+        // EnemyDied -> CallDeferred(ReturnToPool) chain to settle
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        // Force-clean spawner state (old spawn loop may still be mid-cleanup)
+        _waveInProgress = false;
+        _activeEnemyCount = 0;
+
+        _skipInProgress = false;
+
+        if (_currentWaveIndex + 1 >= Waves.Count)
+        {
+            _allWavesSpawned = true;
+            CheckAllWavesCompleted();
+        }
+        else
+        {
+            StartNextWave();
         }
     }
 

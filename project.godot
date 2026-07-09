@@ -32,6 +32,7 @@ RunState="*res://scripts/autoload/RunState.cs"
 SaveManager="*res://scripts/autoload/SaveManager.cs"
 SynergyManager="*res://scripts/systems/SynergyManager.cs"
 SlotManager="*res://scripts/systems/SlotManager.cs"
+DevTools="*res://scripts/autoload/DevTools.cs"
 
 [display]
 

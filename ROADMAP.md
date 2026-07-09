@@ -186,7 +186,7 @@ the game feels dead regardless of visual polish.
 
 ### Fase 7 — Playtesting iterativo + ferramenta de dev
 
-- Método de debug em `RunState`/`SlotManager` para pular fights (`OS.IsDebugBuild()`)
+- ~~Método de debug em `RunState`/`SlotManager` para pular fights (`OS.IsDebugBuild()`)~~ **→ Feito como autoload `DevTools` com S (Skip Wave). Ver GAME_STATUS.md § Dev Tools.**
 - Ciclo: correr → ler logs → ajustar um parâmetro de cada vez
 
 ---

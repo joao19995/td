@@ -92,6 +92,7 @@ public partial class LoadoutScreen : CanvasLayer
         }
 
         _allTowers = LoadAllTowers();
+        _allTowers.RemoveAll(t => !SaveManager.Instance.IsTowerUnlocked(t.Id));
         _allSynergies = LoadAllSynergies();
         _selected = new bool[_allTowers.Count];
         _towerButtons = new List<Button>();

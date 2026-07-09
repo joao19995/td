@@ -326,6 +326,13 @@ Shown before every fight in a run. Displays:
 
 ---
 
+## Dev Tools
+
+- All dev tools are **debug-build only** (`OS.IsDebugBuild()` guard) — no effect in release builds.
+- **Skip Wave (S)**: Press S during a fight to instantly kill all active enemies and advance to the next wave. If it's the last wave, the fight completes normally. Works at any time (mid-spawn, between waves, after all waves). No gold or player damage from skipped enemies.
+
+---
+
 ## Configurability (No-Code Changes)
 
 The following can be modified by editing resource files (`.tres`) in the project's `resources/` folder — no programming required:

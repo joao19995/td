@@ -118,6 +118,7 @@ public partial class SaveManager : Node
         }
 
         EnsureDefaultUnlocks();
+        SanitizeLoadoutSlots();
     }
 
     public void SaveGame()
@@ -266,9 +267,32 @@ public partial class SaveManager : Node
     {
         if (slot >= 0 && slot < 3)
         {
-            _loadoutSlots[slot] = new Array<string>(ids);
+            var filtered = new Array<string>();
+            foreach (var id in ids)
+                if (_unlockedTowerIds.Contains(id))
+                    filtered.Add(id);
+            _loadoutSlots[slot] = filtered;
             SaveGame();
         }
+    }
+
+    private void SanitizeLoadoutSlots()
+    {
+        bool changed = false;
+        for (int s = 0; s < 3; s++)
+        {
+            if (_loadoutSlots[s] == null) continue;
+            var filtered = new Array<string>();
+            foreach (var id in _loadoutSlots[s])
+                if (_unlockedTowerIds.Contains(id))
+                    filtered.Add(id);
+            if (filtered.Count != _loadoutSlots[s].Count)
+            {
+                _loadoutSlots[s] = filtered;
+                changed = true;
+            }
+        }
+        if (changed) SaveGame();
     }
 
     public void SaveRunState(Godot.Collections.Dictionary data)
