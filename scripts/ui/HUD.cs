@@ -521,12 +521,31 @@ public partial class HUD : CanvasLayer
         {
             _upgradeButton.Text = "MAX";
             _upgradeButton.Disabled = true;
+            _upgradeButton.TooltipText = "";
+        }
+        else if (!tower.CanUpgrade())
+        {
+            string metaId = $"unlock_{tower.Data.Id}_upgrades";
+            int unlockedLevels = SaveManager.Instance.GetMetaUpgradeLevel(metaId);
+            int neededLevel = tower.CurrentUpgradeLevel + 1;
+            if (unlockedLevels <= 0)
+            {
+                _upgradeButton.Text = "Buy in Meta Shop";
+                _upgradeButton.TooltipText = $"Upgrades for {tower.Data.TowerName} are locked. Unlock them in the Meta Shop (Upgrades tab) to spend gold on upgrades.";
+            }
+            else
+            {
+                _upgradeButton.Text = "Upgrades Locked";
+                _upgradeButton.TooltipText = $"Need Meta Shop upgrade level {neededLevel} (currently {unlockedLevels}) to reach this tier.";
+            }
+            _upgradeButton.Disabled = true;
         }
         else
         {
             var next = tower.Data.UpgradePath[tower.CurrentUpgradeLevel];
             _upgradeButton.Text = $"Upgrade ({next.Cost}g)";
             _upgradeButton.Disabled = !EconomyManager.Instance.CanAfford(next.Cost);
+            _upgradeButton.TooltipText = "";
         }
 
         _towerActionPanel.Show();
@@ -596,6 +615,7 @@ public partial class HUD : CanvasLayer
     {
         var tower = TowerSelectionManager.Instance.SelectedTower;
         if (tower == null || tower.CurrentUpgradeLevel >= tower.MaxUpgradeLevel) return;
+        if (!tower.CanUpgrade()) return;
 
         var next = tower.Data.UpgradePath[tower.CurrentUpgradeLevel];
         if (!EconomyManager.Instance.SpendMoney(next.Cost)) return;

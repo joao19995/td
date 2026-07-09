@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
+Id = "unlock_shop_discounted_starter_yeast"
+Name = "Unlock Shop: Discounted Starter Yeast"
+Description = "Allows buying first-purchase -30% discount in in-run shops"
+CostTokens = 10
 MaxLevel = 1
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "ShopItem"

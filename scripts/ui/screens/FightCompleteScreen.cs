@@ -20,6 +20,11 @@ public partial class FightCompleteScreen : Control
     private State _state = State.Spin;
     private SlotOutcome _pendingOutcome;
 
+    public override void _ExitTree()
+    {
+        EventBus.Instance.MoneyChanged -= OnMoneyChanged;
+    }
+
     public override void _Ready()
     {
         _outcomeLabel = GetNode<Label>(_outcomeLabelPath);
@@ -36,6 +41,8 @@ public partial class FightCompleteScreen : Control
         _rerollButton.Pressed += OnRerollPressed;
         _rerollButton.Visible = false;
         _endRunButton.Pressed += OnEndRunPressed;
+
+        EventBus.Instance.MoneyChanged += OnMoneyChanged;
     }
 
     private void OnSpinPressed()
@@ -114,7 +121,6 @@ public partial class FightCompleteScreen : Control
         if (!EconomyManager.Instance.CanAfford(cost)) return;
 
         EconomyManager.Instance.SpendMoney(cost);
-        _goldLabel.Text = $"Gold: {EconomyManager.Instance.CurrentMoney}";
 
         SlotManager.Instance.ApplySkew(_pendingOutcome);
         ShowOutcome(SlotManager.Instance.Reroll());
@@ -165,6 +171,11 @@ public partial class FightCompleteScreen : Control
                 UIManager.Instance.PushScreen(UIManager.Instance.BriefingData);
                 break;
         }
+    }
+
+    private void OnMoneyChanged(int newAmount)
+    {
+        _goldLabel.Text = $"Gold: {newAmount}";
     }
 
     private void ShowOutcome(string text)

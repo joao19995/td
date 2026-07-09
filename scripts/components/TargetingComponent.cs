@@ -1,14 +1,9 @@
 using Godot;
 using System.Collections.Generic;
 
-/// <summary>
-/// Selects an attack target from enemies currently inside the tower's detection area.
-/// Strategy is configurable via the exported property.
-/// Parent must be a Node2D.
-/// </summary>
 public enum TargetingStrategy
 {
-    First,     // First enemy to enter range (FIFO)
+    First,     // Furthest along the path (closest to finish)
     Closest,   // Enemy closest to the tower
     Strongest, // Enemy with the most remaining health
     Last       // Enemy that entered range most recently (LIFO)
@@ -47,11 +42,11 @@ public partial class TargetingComponent : Node
 
         return Strategy switch
         {
-            TargetingStrategy.First    => _enemiesInRange[0],
+            TargetingStrategy.First    => GetFurthestEnemy(),
             TargetingStrategy.Last     => _enemiesInRange[_enemiesInRange.Count - 1],
             TargetingStrategy.Closest  => GetClosestEnemy(),
             TargetingStrategy.Strongest => GetStrongestEnemy(),
-            _                          => _enemiesInRange[0],
+            _                          => GetFurthestEnemy(),
         };
     }
 
@@ -95,6 +90,25 @@ public partial class TargetingComponent : Node
         }
 
         return strongest;
+    }
+
+    private Enemy GetFurthestEnemy()
+    {
+        Enemy furthest = null;
+        float maxProgress = -1f;
+
+        foreach (var enemy in _enemiesInRange)
+        {
+            var movement = enemy.GetNodeOrNull<MovementComponent>("MovementComponent");
+            float progress = movement != null ? movement.GetProgressRatio() : 0f;
+            if (progress > maxProgress)
+            {
+                maxProgress = progress;
+                furthest = enemy;
+            }
+        }
+
+        return furthest;
     }
 
     private void OnAreaEntered(Area2D area)

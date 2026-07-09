@@ -52,7 +52,7 @@ not implementation details.
   - **Miniboss** (10%): harder fight with 1.5x enemy stats on a random map
   - **Treasure** (20%): pick 1 of 3 random trinkets (run-wide charms)
 - After 8 fights, a **boss fight** triggers automatically using a dedicated boss wave (Boss enemy + minions).
-- Enemy stats scale +20% per fight completed (`DifficultyScalingPerFight = 0.20`), multiplicative with wave-internal curve (0.9x → 1.2x).
+- Enemy stats scale +30% per fight completed (`DifficultyScalingPerFight = 0.30`), multiplicative with wave-internal curve (0.9x → 1.2x).
 - Defeating the boss ends the run with a **Victory** screen and awards meta tokens.
 - The shop sells run-wide bonuses (damage, fire rate, heavy damage, first-purchase discount) **and** tower-specific equipment that can be equipped per tower type.
 - All weights, heal amount, miniboss multiplier, fights-per-run, reroll cost, and skew factor are exported on SlotManager — no code changes needed to tweak.
@@ -100,9 +100,10 @@ not implementation details.
 - **Persistence**: meta-progression data (tokens, unlocked towers, discoveries) is saved to `user://save_data.json` using `FileAccess` + JSON — no `.tres` resources for save data (avoids documented security vector of `ResourceLoader.Load` on untrusted files).
 - **Meta tokens**: awarded at the end of every run (win or lose). Token reward scales: `base × (1 + fightsCompleted / totalFights)`. Victory bonus: +50% tokens if the boss was defeated.
 - **Unlocked towers**: Bread Baker and Bread Courier start unlocked. All other 8 towers are purchased with tokens in the Meta Shop.
-- **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
-- **16 meta-upgrades** organized into Tower Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`docs/meta_upgrade.md`](meta_upgrade.md) for full list.
+- **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Upgrades**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
+- **26 meta-upgrades** organized into Tower Unlocks, Tower Upgrade Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`docs/meta_upgrade.md`](meta_upgrade.md) for full list.
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens x 1`, level 2 costs `CostTokens x 2`, etc. Each level grants the configured bonus.
+- **Tower upgrades locked by default**: each tower's upgrade path (4 tiers) is locked until the corresponding "Unlock [Tower] Upgrades" meta-upgrade is purchased. Purchase is per-tower, 15 tokens each, in a new **Upgrades** tab. Once unlocked, upgrades work as normal (gold cost in-run). The Seasoned Recruits meta-upgrade (starting at level 1) is independent and still works even without the per-tower upgrade unlock — you get the free starting level but cannot upgrade further until unlocked.
 - **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold/lives bonuses are added before the run begins. Shop discount reduces displayed costs in the shop UI. Reroll cost reduction applies at the slot machine. Enemy gold bonus multiplies all enemy gold rewards. Starter Gear Voucher picks a random equipment for a random loadout tower at run start. Seasoned Recruits sets all loadout towers to level 1 at run start.
 - **Corruption handling**: save file corruption or incompatible schema triggers a clean default reset with a warning — the game never crashes on broken save data.
 - **Migration**: if new default towers are added in a future update, existing save files automatically include them on first load after the update.
@@ -159,8 +160,8 @@ not implementation details.
 - **Difficulty scaling** applies to each wave within the fight:
   - `DifficultyMultiplier` ranges from **0.9x** (first wave) to **1.2x** (last wave)
   - Affects: **enemy HP** (×multiplier), **spawn interval** (÷√multiplier → faster at high difficulty)
-- **Per-fight scaling**: enemy stats (HP, damage) increase by **20% per fight** via `DifficultyScalingPerFight`, multiplicative with the internal wave curve.
-  - Fight 1: 1.00× | Fight 4: 1.60× | Fight 8: 2.40×
+- **Per-fight scaling**: enemy stats (HP, damage) increase by **30% per fight** via `DifficultyScalingPerFight`, multiplicative with the internal wave curve.
+  - Fight 1: 1.00× | Fight 4: 1.90× | Fight 8: 3.10×
 - **Final stretch**: the last 3 waves get **1.5× enemy count**.
 - **Modifier assignment**: waves 1-2 have no modifier (use wave's base). Waves 3+ get random modifiers from the pool. Last 2 waves draw from a harder pool (Horde, Armored). Consecutive same-modifier is avoided.
 - **Wave data is cloned at generation** — templates `.tres` are never mutated. Runtime fields (`DifficultyMultiplier`, `IsFinalStretch`) are set on the clone.
@@ -346,6 +347,6 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Wave entries (per-type counts) | `WaveEntry` sub-resource inside each `WaveData` | Enemy type + count per entry |
 | Wave modifiers | `WaveModifier` enum on `WaveData` | `None`, `Horde` (2× enemies, 0.5× interval), `Armored` (2× HP), `Swift` (1.5× speed), `GoldRush` (2× gold) |
 | Wave generation (run mode) | `RunState.PickRunWaves()` | 4-7 waves per fight, `DifficultyMultiplier` 0.9x-1.2x scaling, per-fight scaling +20%, final stretch (last 3 waves ×1.5 count), random modifiers on waves 3+ |
-| Difficulty scaling (runtime) | `WaveData.DifficultyMultiplier` / `WaveData.IsFinalStretch` / `GameBalance.DifficultyScalingPerFight` | Non-exported fields set on clone per fight. HP × mult, spawn ÷√mult, count ×1.5 on final stretch. +20% per fight to HP/damage |
+| Difficulty scaling (runtime) | `WaveData.DifficultyMultiplier` / `WaveData.IsFinalStretch` / `GameBalance.DifficultyScalingPerFight` | Non-exported fields set on clone per fight. HP × mult, spawn ÷√mult, count ×1.5 on final stretch. +30% per fight to HP/damage |
 | Bestiary discovery | `SaveManager` JSON | Towers/enemies/equip/trinkets/synergies auto-discovered when first encountered |
 | Meta-progression | `MetaUpgradeData` resource | Item ID, name, cost tokens, max level, IsTowerUnlock, TowerId, StatType, BonusPerLevel, Category (Unlocks/Stats/Economy) |

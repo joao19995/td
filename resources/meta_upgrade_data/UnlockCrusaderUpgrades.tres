@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MetaUpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/MetaUpgradeData.cs" id="1_sc"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "unlock_crust_crusader_upgrades"
+Name = "Unlock Crust Crusader Upgrades"
+Description = "Allows upgrading Crust Crusader in runs (unlocks 1 upgrade tier per level)"
+CostTokens = 15
+MaxLevel = 4
+IsTowerUnlock = false
+TowerId = "crust_crusader"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Upgrades"

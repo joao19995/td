@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
+Id = "unlock_equip_silver_tray"
+Name = "Unlock Silver Tray"
+Description = "Allows buying Silver Tray in in-run shops"
+CostTokens = 8
 MaxLevel = 1
 IsTowerUnlock = false
-TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+TowerId = "taste_tester"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Equip"

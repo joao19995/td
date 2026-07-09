@@ -42,6 +42,9 @@ public partial class ShopScreen : Control
         foreach (var item in items)
         {
             bool alreadyOwned = RunState.Instance?.PurchasedShopItemIds.Contains(item.ItemId) == true;
+            string unlockId = $"unlock_shop_{item.ItemId}";
+            bool unlockOwned = SaveManager.Instance.GetMetaUpgradeLevel(unlockId) > 0;
+            if (!unlockOwned) continue;
 
             var vbox = new VBoxContainer();
             var hbox = new HBoxContainer();
@@ -58,10 +61,15 @@ public partial class ShopScreen : Control
             desc.Text = item.Description;
             desc.Modulate = new Color(0.7f, 0.7f, 0.7f);
             var buyBtn = new Button();
-            buyBtn.Text = alreadyOwned ? "✓ Owned" : "Buy";
-            buyBtn.Disabled = alreadyOwned || !EconomyManager.Instance.CanAfford(effectiveCost);
-            if (!alreadyOwned)
+            if (alreadyOwned)
             {
+                buyBtn.Text = "✓ Owned";
+                buyBtn.Disabled = true;
+            }
+            else
+            {
+                buyBtn.Text = "Buy";
+                buyBtn.Disabled = !EconomyManager.Instance.CanAfford(effectiveCost);
                 var captured = item;
                 buyBtn.Pressed += () => OnBuyItem(captured, buyBtn);
             }
@@ -123,9 +131,12 @@ public partial class ShopScreen : Control
 
         foreach (var equip in allEquips)
         {
-
             bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
             if (!inLoadout) continue;
+
+            string unlockId = $"unlock_equip_{equip.Id}";
+            bool unlockOwned = SaveManager.Instance.GetMetaUpgradeLevel(unlockId) > 0;
+            if (!unlockOwned) continue;
 
             string equippedId = RunState.Instance?.GetEquippedItem(equip.TargetTowerId);
             bool alreadyEquipped = equippedId == equip.Id;

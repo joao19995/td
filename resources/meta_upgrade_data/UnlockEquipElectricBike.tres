@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
+Id = "unlock_equip_electric_bike"
+Name = "Unlock Electric Bike"
+Description = "Allows buying Electric Bike in in-run shops"
+CostTokens = 8
 MaxLevel = 1
 IsTowerUnlock = false
-TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+TowerId = "bread_courier"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Equip"

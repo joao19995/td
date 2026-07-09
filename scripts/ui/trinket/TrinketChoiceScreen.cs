@@ -140,7 +140,9 @@ public partial class TrinketChoiceScreen : Control
     {
         var alreadyApplied = RunState.Instance?.AppliedTrinketIds;
         var all = ResourceLoaderHelper.LoadFromDir<TrinketData>("res://resources/trinket_data/");
-        all.RemoveAll(t => alreadyApplied != null && alreadyApplied.Contains(t.Id));
+        all.RemoveAll(t =>
+            (alreadyApplied != null && alreadyApplied.Contains(t.Id))
+            || SaveManager.Instance.GetMetaUpgradeLevel($"unlock_trinket_{t.Id}") <= 0);
         return all;
     }
 

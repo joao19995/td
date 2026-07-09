@@ -13,4 +13,4 @@ IsTowerUnlock = false
 TowerId = ""
 StatType = "StartWithEquipment"
 BonusPerLevel = 0.0
-Category = "Unlocks"
+Category = "SpecialItem"

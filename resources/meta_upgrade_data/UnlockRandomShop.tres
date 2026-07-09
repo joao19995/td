@@ -4,13 +4,14 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
-MaxLevel = 1
+Id = "unlock_random_shop"
+Name = "Unlock New Shop Item"
+Description = "Unlocks a random shop item (available to buy in-run)"
+CostTokens = 10
+MaxLevel = 5
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Boosts"
+

@@ -4,13 +4,14 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
-MaxLevel = 1
+Id = "unlock_random_economy"
+Name = "Unlock New Economy Upgrade"
+Description = "Unlocks a random permanent economy upgrade (gold, reroll cost, etc)"
+CostTokens = 12
+MaxLevel = 4
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Boosts"
+

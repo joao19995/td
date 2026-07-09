@@ -33,13 +33,16 @@ public partial class Enemy : Area2D
         _healthBar.Name = "HealthBar";
         AddChild(_healthBar);
 
-        _healthLabel = new Label();
-        _healthLabel.Name = "HealthLabel";
-        _healthLabel.LabelSettings = new LabelSettings { FontSize = 5, OutlineSize = 1, OutlineColor = Colors.Black };
-        _healthLabel.HorizontalAlignment = HorizontalAlignment.Center;
-        _healthLabel.Position = new Vector2(-8f, -20f);
-        _healthLabel.CustomMinimumSize = new Vector2(16f, 0f);
-        AddChild(_healthLabel);
+        if (OS.IsDebugBuild())
+        {
+            _healthLabel = new Label();
+            _healthLabel.Name = "HealthLabel";
+            _healthLabel.LabelSettings = new LabelSettings { FontSize = 5, OutlineSize = 1, OutlineColor = Colors.Black };
+            _healthLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            _healthLabel.Position = new Vector2(-8f, -20f);
+            _healthLabel.CustomMinimumSize = new Vector2(16f, 0f);
+            AddChild(_healthLabel);
+        }
 
         ConnectSignals();
 

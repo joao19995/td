@@ -4,13 +4,14 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
+Id = "unlock_random_stats"
+Name = "Unlock New Stats"
+Description = "Unlocks a random permanent stat upgrade (damage, lives, etc)"
 CostTokens = 15
-MaxLevel = 1
+MaxLevel = 2
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Boosts"
+

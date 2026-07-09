@@ -4,8 +4,6 @@ public partial class EconomyManager : Node
 {
     public static EconomyManager Instance { get; private set; }
 
-    [Export] public int StartingMoney = 1000;
-
     private int _currentMoney;
     public int CurrentMoney => _currentMoney;
 
@@ -16,7 +14,7 @@ public partial class EconomyManager : Node
 
     public override void _Ready()
     {
-        _currentMoney = StartingMoney;
+        _currentMoney = 0;
         EventBus.Instance.EnemyDied += OnEnemyDied;
     }
 

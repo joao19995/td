@@ -4,13 +4,14 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
-MaxLevel = 1
+Id = "unlock_random_trinket"
+Name = "Unlock New Trinket"
+Description = "Unlocks a random trinket (appears in treasure choices)"
+CostTokens = 8
+MaxLevel = 10
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "Boosts"
+

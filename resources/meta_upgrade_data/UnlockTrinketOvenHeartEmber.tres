@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_sc")
-Id = "starting_lives"
-Name = "Extra Loaves"
-Description = "Start each run with 2 additional lives per level"
-CostTokens = 15
+Id = "unlock_trinket_oven_heart_ember"
+Name = "Unlock Oven Heart Ember"
+Description = "Allows Oven Heart Ember to appear in treasure choices"
+CostTokens = 8
 MaxLevel = 1
 IsTowerUnlock = false
 TowerId = ""
-StatType = "StartingLives"
-BonusPerLevel = 2
-Category = "StatsItem"
+StatType = ""
+BonusPerLevel = 0.0
+Category = "TrinketItem"

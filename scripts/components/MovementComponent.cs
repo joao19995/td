@@ -53,6 +53,11 @@ public partial class MovementComponent : Node
             parent.GlobalPosition = _curve.SampleBaked(_distanceTraveled);
     }
 
+    public float GetProgressRatio()
+    {
+        return _pathLength > 0f ? _distanceTraveled / _pathLength : 0f;
+    }
+
     public void SetBaseSpeedMultiplier(float multiplier)
     {
         _baseSpeedMultiplier = multiplier;
