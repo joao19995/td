@@ -15,11 +15,11 @@ public partial class StatusEffectComponent : Node
         public float TickCooldown;
     }
 
-    public override void _Ready()
+    public void Setup(Health health, Sprite2D sprite, MovementComponent movement)
     {
-        _health = GetParent().GetNode<Health>("Health");
-        _sprite = GetParent().GetNode<Sprite2D>("Sprite2D");
-        _movement = GetParent().GetNode<MovementComponent>("MovementComponent");
+        _health = health;
+        _sprite = sprite;
+        _movement = movement;
     }
 
     public void ApplyEffect(StatusEffectData data)

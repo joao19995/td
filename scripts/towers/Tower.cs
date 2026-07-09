@@ -119,8 +119,7 @@ public partial class Tower : Node2D
         if (_currentUpgradeLevel >= MaxUpgradeLevel) return false;
         if (RunState.Instance != null && RunState.Instance.IsRunActive)
         {
-            string metaId = $"unlock_{_data.Id}_upgrades";
-            int unlockedLevels = SaveManager.Instance.GetMetaUpgradeLevel(metaId);
+            int unlockedLevels = SaveManager.Instance.GetMetaUpgradeLevelForTower(_data.Id, "Upgrades");
             if (unlockedLevels < _currentUpgradeLevel + 1)
                 return false;
         }

@@ -279,12 +279,7 @@ public partial class AttackComponent : Node
 
     private static void ApplyEffect(Enemy enemy, object effectData)
     {
-        var ec = enemy.GetNode<StatusEffectComponent>("StatusEffectComponent");
-        if (ec == null) return;
-        if (effectData is PoisonEffectData p)
-            ec.ApplyEffect(p);
-        else if (effectData is SlowEffectData s)
-            ec.ApplyEffect(s);
+        enemy.ApplyStatusEffect(effectData);
     }
 
     private void TriggerChain(Enemy mainEnemy, float chainDamage)

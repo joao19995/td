@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public enum TargetingStrategy
 {
-    First,     // Furthest along the path (closest to finish)
+    Furthest,  // Furthest along the path (closest to finish)
     Closest,   // Enemy closest to the tower
     Strongest, // Enemy with the most remaining health
     Last       // Enemy that entered range most recently (LIFO)
@@ -14,7 +14,7 @@ public partial class TargetingComponent : Node
     /// <summary>NodePath to the Area2D that tracks enemies in range.</summary>
     [Export] public NodePath DetectionAreaPath { get; set; } = "../DetectionArea";
 
-    [Export] public TargetingStrategy Strategy { get; set; } = TargetingStrategy.First;
+    [Export] public TargetingStrategy Strategy { get; set; } = TargetingStrategy.Furthest;
 
     private readonly List<Enemy> _enemiesInRange = new();
 
@@ -42,11 +42,11 @@ public partial class TargetingComponent : Node
 
         return Strategy switch
         {
-            TargetingStrategy.First    => GetFurthestEnemy(),
-            TargetingStrategy.Last     => _enemiesInRange[_enemiesInRange.Count - 1],
-            TargetingStrategy.Closest  => GetClosestEnemy(),
+            TargetingStrategy.Furthest  => GetFurthestEnemy(),
+            TargetingStrategy.Last      => _enemiesInRange[_enemiesInRange.Count - 1],
+            TargetingStrategy.Closest   => GetClosestEnemy(),
             TargetingStrategy.Strongest => GetStrongestEnemy(),
-            _                          => GetFurthestEnemy(),
+            _                           => GetFurthestEnemy(),
         };
     }
 
@@ -99,8 +99,7 @@ public partial class TargetingComponent : Node
 
         foreach (var enemy in _enemiesInRange)
         {
-            var movement = enemy.GetNodeOrNull<MovementComponent>("MovementComponent");
-            float progress = movement != null ? movement.GetProgressRatio() : 0f;
+            float progress = enemy.GetProgressRatio();
             if (progress > maxProgress)
             {
                 maxProgress = progress;

@@ -9,6 +9,7 @@ public partial class Enemy : Area2D
     private StatusEffectComponent _statusEffects;
     private HealthBar _healthBar;
     private Label _healthLabel;
+    private Sprite2D _sprite;
     private Curve2D _pendingCurve;
     private bool _signalsConnected;
     private bool _returningToPool;
@@ -29,6 +30,8 @@ public partial class Enemy : Area2D
         _health = GetNode<Health>("Health");
         _movement = GetNode<MovementComponent>("MovementComponent");
         _statusEffects = GetNode<StatusEffectComponent>("StatusEffectComponent");
+        _sprite = GetNode<Sprite2D>("Sprite2D");
+        _statusEffects.Setup(_health, _sprite, _movement);
         _healthBar = new HealthBar();
         _healthBar.Name = "HealthBar";
         AddChild(_healthBar);
@@ -133,8 +136,8 @@ public partial class Enemy : Area2D
 
         _movement?.SetBaseSpeedMultiplier(_speedMultiplier);
 
-        if (_data.Sprite != null)
-            GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
+        if (_data.Sprite != null && _sprite != null)
+            _sprite.Texture = _data.Sprite;
 
         Visible = true;
         SetProcess(true);
@@ -153,6 +156,19 @@ public partial class Enemy : Area2D
     public float GetCurrentHealth() => _health?.GetCurrentHealth() ?? 0f;
     public float MaxHealth => _health?.MaxHealth ?? 1f;
     public float HealthPercent => GetCurrentHealth() / MaxHealth;
+    public float GetProgressRatio() => _movement?.GetProgressRatio() ?? 0f;
+
+    public void ApplyStatusEffect(object effectData)
+    {
+        if (effectData is StatusEffectData sd)
+            _statusEffects?.ApplyEffect(sd);
+    }
+
+    public void ResetForPool()
+    {
+        _statusEffects?.ClearEffects();
+        _healthBar?.Reset();
+    }
 
     private void OnDamageTaken(float amount)
     {

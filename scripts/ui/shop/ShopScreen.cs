@@ -42,8 +42,7 @@ public partial class ShopScreen : Control
         foreach (var item in items)
         {
             bool alreadyOwned = RunState.Instance?.PurchasedShopItemIds.Contains(item.ItemId) == true;
-            string unlockId = $"unlock_shop_{item.ItemId}";
-            bool unlockOwned = SaveManager.Instance.GetMetaUpgradeLevel(unlockId) > 0;
+            bool unlockOwned = SaveManager.Instance.GetMetaUpgradeLevelForContent("shop", item.ItemId) > 0;
             if (!unlockOwned) continue;
 
             var vbox = new VBoxContainer();
@@ -134,8 +133,7 @@ public partial class ShopScreen : Control
             bool inLoadout = RunState.Instance?.SelectedTowerIds.Contains(equip.TargetTowerId) == true;
             if (!inLoadout) continue;
 
-            string unlockId = $"unlock_equip_{equip.Id}";
-            bool unlockOwned = SaveManager.Instance.GetMetaUpgradeLevel(unlockId) > 0;
+            bool unlockOwned = SaveManager.Instance.GetMetaUpgradeLevelForContent("equip", equip.Id) > 0;
             if (!unlockOwned) continue;
 
             string equippedId = RunState.Instance?.GetEquippedItem(equip.TargetTowerId);

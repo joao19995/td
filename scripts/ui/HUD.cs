@@ -146,7 +146,7 @@ public partial class HUD : CanvasLayer
         {
             if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && mb.Pressed && _selectedTower?.Targeting != null)
             {
-                var strategies = new[] { TargetingStrategy.First, TargetingStrategy.Closest, TargetingStrategy.Strongest, TargetingStrategy.Last };
+                var strategies = new[] { TargetingStrategy.Furthest, TargetingStrategy.Closest, TargetingStrategy.Strongest, TargetingStrategy.Last };
                 int currentIdx = System.Array.IndexOf(strategies, _selectedTower.Targeting.Strategy);
                 int next = (currentIdx + 1) % strategies.Length;
                 _selectedTower.Targeting.Strategy = strategies[next];
@@ -525,8 +525,7 @@ public partial class HUD : CanvasLayer
         }
         else if (!tower.CanUpgrade())
         {
-            string metaId = $"unlock_{tower.Data.Id}_upgrades";
-            int unlockedLevels = SaveManager.Instance.GetMetaUpgradeLevel(metaId);
+            int unlockedLevels = SaveManager.Instance.GetMetaUpgradeLevelForTower(tower.Data.Id, "Upgrades");
             int neededLevel = tower.CurrentUpgradeLevel + 1;
             if (unlockedLevels <= 0)
             {

@@ -207,6 +207,36 @@ public partial class SaveManager : Node
         return _metaUpgradeLevels.ContainsKey(upgradeId) ? _metaUpgradeLevels[upgradeId] : 0;
     }
 
+    public int GetMetaUpgradeLevelForTower(string towerId, string category)
+    {
+        var all = LoadAllMetaUpgrades();
+        foreach (var mu in all)
+        {
+            if (mu.Category == category && mu.TowerId == towerId)
+                return GetMetaUpgradeLevel(mu.Id);
+        }
+        return 0;
+    }
+
+    public int GetMetaUpgradeLevelForContent(string resourceType, string resourceId)
+    {
+        return GetMetaUpgradeLevel($"unlock_{resourceType}_{resourceId}");
+    }
+
+    private static System.Collections.Generic.List<MetaUpgradeData> _cachedMetaUpgrades;
+
+    private static System.Collections.Generic.List<MetaUpgradeData> LoadAllMetaUpgrades()
+    {
+        if (_cachedMetaUpgrades == null)
+            _cachedMetaUpgrades = ResourceLoaderHelper.LoadFromDir<MetaUpgradeData>("res://resources/meta_upgrade_data/");
+        return _cachedMetaUpgrades;
+    }
+
+    public static void ClearMetaUpgradeCache()
+    {
+        _cachedMetaUpgrades = null;
+    }
+
     public void SetMetaUpgradeLevel(string upgradeId, int level)
     {
         _metaUpgradeLevels[upgradeId] = level;

@@ -77,10 +77,7 @@ public partial class PoolManager : Node
         }
         else if (node is Enemy enemy)
         {
-            var statusEffects = enemy.GetNode<StatusEffectComponent>("StatusEffectComponent");
-            statusEffects?.ClearEffects();
-            var healthBar = enemy.GetNode<HealthBar>("HealthBar");
-            healthBar?.Reset();
+            enemy.ResetForPool();
         }
     }
 }

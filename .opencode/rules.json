@@ -1,0 +1,60 @@
+{
+  "$comment": "Regras de pós-edição para este projecto (Godot 4 C# / Sourdough Siege). Ajusta as chaves ao schema real da tua versão de opencode — este ficheiro documenta a INTENÇÃO das verificações; se o teu opencode não suportar 'onEditComplete' com comandos shell, usa pre-build.ps1 manualmente ou via git pre-commit hook.",
+  "version": 1,
+  "project": "sourdough-siege",
+  "runOn": ["afterFileEdit", "beforeTaskComplete"],
+  "filePatterns": ["scripts/**/*.cs"],
+  "rules": [
+    {
+      "id": "no-deep-node-paths",
+      "description": "GetNode<T>/GetNodeOrNull<T> com string literal fora do próprio dono do nó viola Regra #6 (CLAUDE.md).",
+      "pattern": "Get(NodeOrNull|Node)<\\s*\\w+\\s*>\\s*\\(\\s*\"[^\"]+\"\\s*\\)",
+      "excludePathPatterns": ["scripts/levels/.*", "scripts/autoload/.*"],
+      "severity": "error",
+      "message": "Expõe um método público no nó dono em vez de aceder ao componente por path literal. Ver CLAUDE_ADDENDUM.md secção Regra #6."
+    },
+    {
+      "id": "no-hardcoded-gameplay-numbers",
+      "description": "Valores de gameplay (dano, HP, custo) devem vir de Resources [Export], nunca literais no .cs.",
+      "pattern": "(damage|health|hp|cost)\\s*(\\*=|\\+=|=)\\s*[0-9]+(\\.[0-9]+)?f?\\b",
+      "excludeIfContains": ["_data.", "_equipData.", "RunState.", "GameBalance.", "Data."],
+      "severity": "error",
+      "message": "Move este valor para um [Export] em TowerData/EnemyData/EquipData/GameBalanceData/etc. Ver Regra #1."
+    },
+    {
+      "id": "no-hardcoded-resource-arrays",
+      "description": "Conteúdo novo deve ser descoberto por directory scan (ResourceLoaderHelper.LoadFromDir), nunca array de nomes de ficheiro.",
+      "pattern": "new\\s*\\[\\]\\s*\\{[^}]*\\.tres",
+      "severity": "error",
+      "message": "Usa ResourceLoaderHelper.LoadFromDir<T>() ou DirAccess.Open() + GetFiles(). Ver Regra #4."
+    },
+    {
+      "id": "no-shared-resource-mutation",
+      "description": "Resources injectados (TowerData/EnemyData/EquipData) são partilhados por referência entre instâncias — nunca mutar directamente.",
+      "pattern": "(_data|_equipData|enemyData|towerData)\\.\\w+\\s*(\\*=|\\+=|-=)",
+      "severity": "error",
+      "message": "Cria uma nova instância (new PoisonEffectData{...}) ou usa .Duplicate() em vez de mutar o Resource partilhado. Ver Regra #8 / CLAUDE.md 'shared-sub-resource-mutation'."
+    },
+    {
+      "id": "no-copy-paste-subtypes",
+      "description": "Enemy e Tower são genéricos por design — variantes são .tres, não subclasses novas.",
+      "pattern": "class\\s+\\w+\\s*:\\s*(Enemy|Tower)\\b",
+      "severity": "error",
+      "message": "Cria um novo .tres (EnemyData/TowerData) em vez de subclassificar. Ver Regra #2/#3."
+    },
+    {
+      "id": "async-void-missing-guard",
+      "description": "async void em spawner/level code deve ter guarda IsInstanceValid após cada await.",
+      "pattern": "await\\s+ToSignal\\(",
+      "requiresNearbyPattern": "IsInstanceValid\\(this\\)",
+      "windowLines": 5,
+      "severity": "warning",
+      "message": "Adiciona 'if (!_isActive || !IsInstanceValid(this)) return;' logo após o await. Ver known-issue EnemySpawner.StartNextWave."
+    }
+  ],
+  "onViolation": {
+    "action": "blockTaskCompletion",
+    "requireExplicitOverride": true,
+    "overrideMessage": "Só ignora esta regra se explicitamente justificado inline com um comentário // RULE-OVERRIDE(<id>): <motivo>."
+  }
+}
