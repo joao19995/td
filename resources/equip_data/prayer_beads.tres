@@ -7,10 +7,10 @@
 script = ExtResource("1_sc")
 Id = "prayer_beads"
 Name = "Prayer Beads of Gluten"
-Description = "Buffs +5% stronger, Monk não ataca"
+Description = "Aura buffs doubled, Monk does not attack"
 Cost = 150
 TargetTowerId = "bread_monk"
 Icon = ExtResource("1_prayer_beads1")
-AuraPotencyMultiplier = 1.05
+AuraPotencyMultiplier = 2.0
 DisablesAttack = true
 FlavorText = "TODO: lore text"

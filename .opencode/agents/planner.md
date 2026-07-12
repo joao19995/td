@@ -1,5 +1,6 @@
----
+﻿---
 description: Analyzes the codebase and plans features for Sourdough Siege without editing files or running commands.
+model: opencode-go/glm-5.2
 mode: subagent
 permission:
   edit: deny

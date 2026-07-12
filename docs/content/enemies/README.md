@@ -45,5 +45,5 @@ Enemies evolve across tiers as the game progresses:
 ## Open Questions
 
 1. Pigeon: lore promises flyer but follows normal path — placeholder until Layer 2 (flying enemy targeting), already in ROADMAP.md.
-2. Plastic Wrapped Sandwich Man: name implies resistance but has no `IsHeavy = true`. Consider adding.
-3. Lazy Alley Cat: missing FlavorText — needs a line reinforcing "fat lazy cat" to justify high HP.
+2. Lazy Alley Cat: missing FlavorText — needs a line reinforcing "fat lazy cat" to justify high HP.
+3. Plastic Wrapped Sandwich Man: now has `IsHeavy = true` (added V0). May need HP/speed adjustment after data collection.

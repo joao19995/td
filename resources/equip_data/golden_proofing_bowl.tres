@@ -7,9 +7,10 @@
 script = ExtResource("1_sc")
 Id = "golden_proofing_bowl"
 Name = "Golden Proofing Bowl"
-Description = "+15% effect duration"
+Description = "+1 chain bounce"
 Cost = 100
 TargetTowerId = "fermentation_sage"
 Icon = ExtResource("1_golden_proofing_bowl1")
-StatusDurationPercentBonus = 0.15
+StatusDurationPercentBonus = 0.0
+ExtraChainBounces = 1
 FlavorText = "TODO: lore text"

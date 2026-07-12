@@ -1,5 +1,6 @@
----
+﻿---
 description: Updates Sourdough Siege documentation after validated and approved changes. Uses docs/README.md as the context router to find relevant documents.
+model: opencode/deepseek-v4-flash-free
 mode: subagent
 permission:
   edit: allow

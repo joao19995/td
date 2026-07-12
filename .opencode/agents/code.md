@@ -1,5 +1,6 @@
----
+﻿---
 description: Implements C#/Godot changes in Sourdough Siege following the approved plan and running mandatory validation.
+model: opencode-go/kimi-k2.7-code
 mode: subagent
 permission:
   edit: allow

@@ -1,5 +1,6 @@
----
+﻿---
 description: Lead Game Designer / Creative Director for Sourdough Siege. Analyzes new game design proposals for role, balance, economy, theme, and complexity. Read-only.
+model: opencode-go/qwen3.7-max
 mode: subagent
 permission:
   edit: deny

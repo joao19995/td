@@ -3,5 +3,10 @@
   "instructions": [
     "CLAUDE.md",
     "CLAUDE_ADDENDUM.md"
-  ]
+  ],
+  "agent": {
+    "explore": {
+      "model": "opencode/deepseek-v4-flash-free"
+    }
+  }
 }

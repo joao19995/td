@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SynergyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/synergies/one_whiff_one_bite.png" id="1_icon"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "humble_crust_order"
+DisplayName = "Humble Crust Order"
+Description = "Bread Baker + Bread Monk: +10% damage, +5% fire rate to both"
+RequiredTowerIds = Array[String](["bread_baker", "bread_monk"])
+AppliesToTowerIds = Array[String](["bread_baker", "bread_monk"])
+DamageBonusPercent = 0.10
+FireRateBonusPercent = 0.05
+Icon = ExtResource("1_icon")
+FlavorText = "TODO: lore text"

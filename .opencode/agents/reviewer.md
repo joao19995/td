@@ -1,5 +1,6 @@
----
+﻿---
 description: Independently reviews Sourdough Siege changes, checking architecture, regressions, scope, and correspondence with the request.
+model: opencode-go/glm-5.2
 mode: subagent
 permission:
   edit: deny

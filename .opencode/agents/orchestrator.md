@@ -1,5 +1,6 @@
----
+﻿---
 description: Main orchestrator for Sourdough Siege. Coordinates planning, implementation, review, and documentation without writing code directly.
+model: opencode-go/deepseek-v4-pro
 mode: primary
 permission:
   edit: deny

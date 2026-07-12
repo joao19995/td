@@ -8,10 +8,10 @@
 | Feature implementation | `../AGENTS.md` + relevant design doc |
 | New tower | `content/towers/README.md` + `design/TOWER_ROLES.md` (planned) |
 | New enemy | `content/enemies/README.md` + `design/ENEMY_SCALING.md` (planned) |
-| Economy / shop change | `balance/ECONOMY.md` (planned) + `balance/SHOP_BALANCING.md` |
+| Economy / shop change | `balance/ECONOMY_BASELINE.md` + `balance/SHOP_BALANCING.md` |
 | Lore / content design | relevant `lore/` + `content/` doc |
 | Visual asset | `art/SPRITE_GUIDELINES.md` (planned) |
-| Playtest / balance adjustment | `playtests/` + `balance/` |
+| Playtest / balance adjustment | `playtests/` + `balance/` (start with `DEMO_CONTRACT.md`) |
 
 ## Index
 
@@ -46,10 +46,13 @@ Numbers, economy, and tuning models.
 
 | File | Purpose |
 |---|---|
+| [`balance/DEMO_CONTRACT.md`](balance/DEMO_CONTRACT.md) | Demo V0 design targets and success criteria |
+| [`balance/TOWER_BASELINE.md`](balance/TOWER_BASELINE.md) | All 10 towers: stats, DPS, DPS/Gold, hypotheses |
+| [`balance/ENEMY_BASELINE.md`](balance/ENEMY_BASELINE.md) | All 10 enemies: stats, pressure, gold efficiency |
+| [`balance/ECONOMY_BASELINE.md`](balance/ECONOMY_BASELINE.md) | Gold pacing model for 5 fights + 1 boss |
 | `balance/BALANCE_OVERVIEW.md` (planned) | Principles and methodology |
 | `balance/TOWER_ROLES.md` (planned) | Tower identity, niche, role analysis |
 | `balance/ENEMY_SCALING.md` (planned) | HP/gold/damage curves by tier |
-| `balance/ECONOMY.md` (planned) | Gold, tokens, costs |
 | [`balance/SHOP_BALANCING.md`](balance/SHOP_BALANCING.md) | Shop item costs and effects |
 
 ### Content
@@ -62,7 +65,7 @@ Per-entity documentation (identity, role, lore, strategy).
 | [`content/maps/`](content/maps/) | Map catalog |
 | `content/equipment/` | (planned — 20 items) |
 | `content/trinkets/` | (planned — 10 trinkets) |
-| `content/synergies/` | (planned — 4 synergies) |
+| `content/synergies/` | (planned — 6 synergies) |
 
 ### Lore
 Narrative canon and world-building.

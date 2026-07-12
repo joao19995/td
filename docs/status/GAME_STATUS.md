@@ -13,7 +13,7 @@ not implementation details.
 - **Continue Run** (between Start Run and Meta Shop) resumes a saved run from the last safe point.
 - The run begins on a random map (Map1 or Map2). After placing towers and defeating all waves (all enemies must be killed, not just spawned), a **Fight Complete** screen appears.
 - From Fight Complete the player clicks **"Continue"** to spin the slot machine, which determines the next step (next fight, shop, heal, treasure, miniboss, or boss). Gold/lives/tower upgrades are preserved across the run.
-- After the configured number of fights (8 in Act 1), the slot machine automatically triggers a **Boss Fight** instead of rolling. Defeating the boss ends the run with Victory.
+- After the configured number of fights (5 + 1 boss in Act 1), the slot machine automatically triggers a **Boss Fight** instead of rolling. Defeating the boss ends the run with Victory.
 - The player can always choose **"End Run"** from Fight Complete to end early and receive meta tokens.
 - Pressing **ESC** pauses the game at any time. Enemies stop spawning and all game ticks freeze. Pressing again resumes.
 - Running out of lives shows a **Game Over** screen with Menu buttons.
@@ -51,7 +51,7 @@ not implementation details.
   - **Heal** (15%): restores 5 lives (configurable) without a fight
   - **Miniboss** (10%): harder fight with 1.5x enemy stats on a random map
   - **Treasure** (20%): pick 1 of 3 random trinkets (run-wide charms)
-- After 8 fights, a **boss fight** triggers automatically using a dedicated boss wave (Boss enemy + minions).
+- After 5 fights, a **boss fight** triggers automatically using a dedicated boss wave.
 - Enemy stats scale +30% per fight completed (`DifficultyScalingPerFight = 0.30`), multiplicative with wave-internal curve (0.9x → 1.2x).
 - Defeating the boss ends the run with a **Victory** screen and awards meta tokens.
 - The shop sells run-wide bonuses (damage, fire rate, heavy damage, first-purchase discount) **and** tower-specific equipment that can be equipped per tower type.
@@ -99,9 +99,9 @@ not implementation details.
 
 - **Persistence**: meta-progression data (tokens, unlocked towers, discoveries) is saved to `user://save_data.json` using `FileAccess` + JSON — no `.tres` resources for save data (avoids documented security vector of `ResourceLoader.Load` on untrusted files).
 - **Meta tokens**: awarded at the end of every run (win or lose). Token reward scales: `base × (1 + fightsCompleted / totalFights)`. Victory bonus: +50% tokens if the boss was defeated.
-- **Unlocked towers**: Bread Baker and Bread Courier start unlocked. All other 8 towers are purchased with tokens in the Meta Shop.
+- **Unlocked towers**: Bread Baker, Bread Courier, and Aroma Keeper start unlocked by default. All other 7 towers are purchased with tokens in the Meta Shop.
 - **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Upgrades**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
-- **26 meta-upgrades** organized into Tower Unlocks, Tower Upgrade Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`design/META_PROGRESSION.md`](../design/META_PROGRESSION.md) for full list.
+- **24 meta-upgrades** organized into Tower Unlocks, Tower Upgrade Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`design/META_PROGRESSION.md`](../design/META_PROGRESSION.md) for full list.
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens x 1`, level 2 costs `CostTokens x 2`, etc. Each level grants the configured bonus.
 - **Tower upgrades locked by default**: each tower's upgrade path (4 tiers) is locked until the corresponding "Unlock [Tower] Upgrades" meta-upgrade is purchased. Purchase is per-tower, 15 tokens each, in a new **Upgrades** tab. Once unlocked, upgrades work as normal (gold cost in-run). The Seasoned Recruits meta-upgrade (starting at level 1) is independent and still works even without the per-tower upgrade unlock — you get the free starting level but cannot upgrade further until unlocked.
 - **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold/lives bonuses are added before the run begins. Shop discount reduces displayed costs in the shop UI. Reroll cost reduction applies at the slot machine. Enemy gold bonus multiplies all enemy gold rewards. Starter Gear Voucher picks a random equipment for a random loadout tower at run start. Seasoned Recruits sets all loadout towers to level 1 at run start.
@@ -112,7 +112,7 @@ not implementation details.
 
 - **Type-combination bonuses**: synergies activate based on which tower types are on the board. No adjacency or positioning logic — only type presence matters.
 - **Active synergies** are automatically evaluated whenever a tower is placed or removed.
-- **4 synergies shipped** — see [`content/towers/README.md`](../content/towers/README.md#synergies) for full list with requirements, effects, and strategy notes.
+- **6 synergies shipped** — see [`content/towers/README.md`](../content/towers/README.md#synergies) for full list with requirements, effects, and strategy notes.
 - **Stat bonuses** are additive with equip bonuses: `EffectiveX = (base + upgradeFlat) * (1 + synergy + equip) * (1 + shop) * (1 + meta) * (1 + trinket)`. Damage, fire rate, and range all follow the same formula.
 - **Visual feedback**: towers affected by any synergy show a green tint. The HUD lists active synergy names at the top of the screen.
 - **Data-driven**: synergies are defined in `SynergyData` resource files under `resources/synergy_data/`. Adding a new `.tres` file in that folder is enough to register it — no code changes needed.
@@ -161,7 +161,7 @@ not implementation details.
   - `DifficultyMultiplier` ranges from **0.9x** (first wave) to **1.2x** (last wave)
   - Affects: **enemy HP** (×multiplier), **spawn interval** (÷√multiplier → faster at high difficulty)
 - **Per-fight scaling**: enemy stats (HP, damage) increase by **30% per fight** via `DifficultyScalingPerFight`, multiplicative with the internal wave curve.
-  - Fight 1: 1.00× | Fight 4: 1.90× | Fight 8: 3.10×
+  - Fight 1: 1.00× | Fight 4: 1.90× | Fight 5: 2.20×
 - **Final stretch**: the last 3 waves get **1.5× enemy count**.
 - **Modifier assignment**: waves 1-2 have no modifier (use wave's base). Waves 3+ get random modifiers from the pool. Last 2 waves draw from a harder pool (Horde, Armored). Consecutive same-modifier is avoided.
 - **Wave data is cloned at generation** — templates `.tres` are never mutated. Runtime fields (`DifficultyMultiplier`, `IsFinalStretch`) are set on the clone.
@@ -200,7 +200,7 @@ not implementation details.
 - **Blessed Crunch Seal**: on crit hit, triggers TriggerSplashAt with 30px radius. Uses same splash system as Bakery Truck.
 - **Judgment Seal**: if target <15% HP and cooldown <= 0, instakill with 9999 damage. 5s cooldown.
 - **First Starter Relic**: GetFirstStarterBonus() scans towers group, counts those within 40px, returns `_data.Damage * (0.05 * count)` as raw damage.
-- **Prayer Beads**: `_auraOnly = true` means Tower._Process skips attack. Aura DamageBonusPercent and FireRateBonusPercent are multiplied by 1.05 in ApplyData.
+- **Prayer Beads**: `_auraOnly = true` means Tower._Process skips attack. Aura DamageBonusPercent and FireRateBonusPercent are multiplied by 2.0 in ApplyData (aura doubled).
 
 ---
 

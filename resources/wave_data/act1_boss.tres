@@ -1,15 +1,39 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
-[ext_resource type="Resource" path="res://resources/enemy_data/SupermarketOverlord.tres" id="1_overlord"]
-[ext_resource type="Script" path="res://scripts/resources/WaveData.cs" id="1_script"]
+[ext_resource type="Script" path="res://scripts/resources/WaveData.cs" id="1_sc"]
+[ext_resource type="Resource" path="res://resources/enemy_data/SlicedBreadTourist.tres" id="1_tourist"]
+[ext_resource type="Resource" path="res://resources/enemy_data/BaguettePigeon.tres" id="2_pigeon"]
+[ext_resource type="Resource" path="res://resources/enemy_data/AlleyCat.tres" id="3_cat"]
+[ext_resource type="Resource" path="res://resources/enemy_data/BreadDragon.tres" id="4_dragon"]
+[ext_resource type="Resource" path="res://resources/enemy_data/GlutenNullBishop.tres" id="5_bishop"]
 [ext_resource type="Script" path="res://scripts/resources/WaveEntry.cs" id="1_we_script"]
 
-[sub_resource type="Resource" id="entry_overlord"]
+[sub_resource type="Resource" id="entry_tourist"]
 script = ExtResource("1_we_script")
-Enemy = ExtResource("1_overlord")
+Enemy = ExtResource("1_tourist")
+Count = 8
+
+[sub_resource type="Resource" id="entry_pigeon"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("2_pigeon")
+Count = 4
+
+[sub_resource type="Resource" id="entry_cat"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("3_cat")
+Count = 3
+
+[sub_resource type="Resource" id="entry_dragon"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("4_dragon")
 Count = 2
 
+[sub_resource type="Resource" id="entry_bishop"]
+script = ExtResource("1_we_script")
+Enemy = ExtResource("5_bishop")
+Count = 1
+
 [resource]
-script = ExtResource("1_script")
-Entries = Array[Object]([SubResource("entry_overlord")])
-SpawnInterval = 2.0
+script = ExtResource("1_sc")
+Entries = Array[Object]([SubResource("entry_tourist"), SubResource("entry_pigeon"), SubResource("entry_cat"), SubResource("entry_dragon"), SubResource("entry_bishop")])
+SpawnInterval = 1.0

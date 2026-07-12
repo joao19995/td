@@ -6,14 +6,13 @@ Permanent upgrades purchased with tokens between runs.
 
 | Upgrade | Cost (Tokens) | Unlocks |
 |---------|--------------|---------|
-| Hire the Aroma Keeper | 20 | Aroma Keeper |
-| Learn the Taste-Test Ritual | 30 | Taste Tester |
-| Buy the Bakery Truck | 50 | Bakery Truck |
-| Recruit the Bread Monk | 70 | Bread Monk |
-| Find the Fermentation Sage | 80 | Fermentation Sage |
-| Arm the Crust Crusader | 100 | Crust Crusader |
-| Train the Dough Exorcist | 120 | Dough Exorcist |
-| Convert the High Prophet | 150 | High Prophet of Sourdough |
+| Learn the Taste-Test Ritual | 20 | Taste Tester |
+| Buy the Bakery Truck | 30 | Bakery Truck |
+| Recruit the Bread Monk | 40 | Bread Monk |
+| Find the Fermentation Sage | 50 | Fermentation Sage |
+| Arm the Crust Crusader | 60 | Crust Crusader |
+| Train the Dough Exorcist | 80 | Dough Exorcist |
+| Convert the High Prophet | 100 | High Prophet of Sourdough |
 
 ## Feature Unlocks
 

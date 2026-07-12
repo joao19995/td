@@ -38,6 +38,8 @@
 
 | Synergy | Requirement | Effect | Towers |
 |---------|-------------|--------|--------|
+| Daily Proof | Bread Baker + Bread Courier | +10% damage to both | [`bread-baker.md`](bread-baker.md), [`bread-courier.md`](bread-courier.md) |
+| Humble Crust Order | Bread Baker + Bread Monk | +10% damage, +5% fire rate to both | [`bread-baker.md`](bread-baker.md), [`bread-monk.md`](bread-monk.md) |
 | One Whiff, One Bite | Aroma Keeper + Taste Tester | +15% damage to both | [`aroma_keeper.md`](aroma-keeper.md), [`taste_tester.md`](taste-tester.md) |
 | Holy Fermentation Network | Aroma Keeper + Fermentation Sage | Slow/chain spread +30% further | [`aroma_keeper.md`](aroma-keeper.md), [`fermentation_sage.md`](fermentation-sage.md) |
 | Grand Opening Rush | 3+ tower types on map | +10% fire rate to all | All towers |
@@ -49,6 +51,20 @@
 - **Effect**: +15% damage to both
 - **Synergy**: Slow keeps targets in range longer, increasing poison ticks applied.
 - **Strong vs**: Grocery Run Jogger, Pigeon (fast), and tanks (Alley Cat, Abomination) via poison sustain.
+
+### Daily Proof (`daily_proof`)
+
+- **Requires**: Bread Baker + Bread Courier
+- **Effect**: +10% damage to both
+- **Synergy**: Combines the two most cost-efficient towers. Strong early-game backbone that falls off as special mechanics outscale raw DPS.
+- **Strong vs**: Early fights (1–3) where raw damage efficiency matters most.
+
+### Humble Crust Order (`humble_crust_order`)
+
+- **Requires**: Bread Baker + Bread Monk
+- **Effect**: +10% damage, +5% fire rate to both
+- **Synergy**: Gives Bread Monk an early damage boost while Baker benefits from the Monk's aura. Encourages pairing the aura buffer with a cheap DPS tower.
+- **Strong vs**: Mid-game fights where aura value accumulates across multiple towers.
 
 ### Grand Opening Rush (`grand_opening_rush`)
 
@@ -100,7 +116,7 @@ Where `buffMultiplier = 0.5` if affected by Gluten Null Bishop's anti-buff aura.
 3. High Prophet: 720g for fixed +10% global dmg cap. Is value in personal DPS? (See [`high_prophet.md`](high-prophet.md))
 4. Dough Exorcist: x3 vs bosses <20% HP. Do boss HP pools survive without trivializing? (See [`dough_exorcist.md`](dough-exorcist.md))
 5. Crit vs Anti-Buff Aura: Gluten Null Bishop does NOT debuff Crit Chance/Multiplier. Makes Crust Crusader a hard counter. Intentional? (See [`crust_crusader.md`](crust-crusader.md))
-6. Prayer Beads (Bread Monk): unbalanced trade-off. (See [`bread_monk.md`](bread-monk.md))
+6. Prayer Beads (Bread Monk): aura now doubled (2.0×) but monk cannot attack. Trade-off still questionable — is losing 30 DPS worth +10–20% aura on 2–3 towers? (See [`bread_monk.md`](bread-monk.md))
 7. Golden Staff (High Prophet): +10% on 3 stats for 120g vs single-stat at same price. (See [`high_prophet.md`](high-prophet.md))
-8. Golden Proofing Bowl (Fermentation Sage): currently broken. (See [`fermentation_sage.md`](fermentation-sage.md))
+8. Golden Proofing Bowl (Fermentation Sage): fixed V0 — now +1 chain bounce instead of status duration. (See [`fermentation_sage.md`](fermentation-sage.md))
 9. Double Sampling Plates (Taste Tester): spread radius from tower position, not target. (See [`taste_tester.md`](taste-tester.md))

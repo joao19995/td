@@ -7,10 +7,10 @@
 script = ExtResource("1_sc")
 Id = "act1"
 ActName = "The Innocent Herd"
-Description = "Only innocent enemies appear. Face the Supermarket Overlord of White Bread as the final boss."
+Description = "Face the Industrial Bread Dragon and the Gluten Null Bishop as the final bosses of The Innocent Herd."
 Tier1WaveDir = "res://resources/wave_data/tier1/"
 Tier2WaveDir = "res://resources/wave_data/tier1/"
 Tier3WaveDir = "res://resources/wave_data/tier1/"
 BossWaveData = ExtResource("1_boss")
-FightsPerRunOverride = 8
+FightsPerRunOverride = 5
 RequiredPreviousActId = ""

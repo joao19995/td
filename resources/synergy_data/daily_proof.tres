@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SynergyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/SynergyData.cs" id="1_sc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/synergies/grand_opening_rush.png" id="1_icon"]
+
+[resource]
+script = ExtResource("1_sc")
+Id = "daily_proof"
+DisplayName = "Daily Proof"
+Description = "Bread Baker + Bread Courier: +10% damage to both"
+RequiredTowerIds = Array[String](["bread_baker", "bread_courier"])
+AppliesToTowerIds = Array[String](["bread_baker", "bread_courier"])
+DamageBonusPercent = 0.10
+Icon = ExtResource("1_icon")
+FlavorText = "TODO: lore text"
