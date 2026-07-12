@@ -94,7 +94,16 @@ public partial class StatusEffectComponent : Node
                 effect.TickCooldown -= (float)delta;
                 if (effect.TickCooldown <= 0f)
                 {
-                    _health?.TakeDamage(poison.DamagePerTick);
+                    var poisonCtx = new DamageContext(
+                        poison.DamagePerTick,
+                        poison.SourceTowerId,
+                        (DamageType)poison.DamageType
+                    );
+                    var enemy = GetParent<Enemy>();
+                    if (enemy != null)
+                        enemy.TakeDamage(poisonCtx);
+                    else
+                        _health?.TakeDamage(poisonCtx);
                     if (_activeEffects.Count == 0) break;
                     effect.TickCooldown = poison.TickInterval;
                 }

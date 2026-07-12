@@ -112,6 +112,7 @@ public partial class TowerPlacementManager : Node
         _placedTowerIds.Add(_selectedTowerData.Id);
 
         EventBus.Instance?.EmitSignal(EventBus.SignalName.TowerPlaced, _selectedTowerData.Cost);
+        RunState.Instance?.Analytics?.RecordGoldSpent("tower", _selectedTowerData.Cost);
 
         var tower = TowerFactory.Create(GenericTowerScene, _selectedTowerData, position);
         var towerId = _selectedTowerData.Id;

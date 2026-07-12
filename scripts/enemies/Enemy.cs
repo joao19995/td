@@ -20,6 +20,7 @@ public partial class Enemy : Area2D
     private bool _isElite;
     private float _antiBuffScanTimer;
     private readonly HashSet<Tower> _affectedTowers = new();
+    private DamageContext _lastDamageContext;
     public bool IsDead { get; private set; }
     public bool IsBoss => _data?.IsBoss ?? false;
     public bool IsHeavy => _data?.IsHeavy ?? false;
@@ -144,7 +145,17 @@ public partial class Enemy : Area2D
         SetPhysicsProcess(true);
     }
 
-    public void TakeDamage(float amount) => _health?.TakeDamage(amount);
+    public DamageResult TakeDamage(in DamageContext ctx)
+    {
+        _lastDamageContext = ctx;
+        return _health?.TakeDamage(ctx) ?? new DamageResult(ctx.Amount, 0f, false);
+    }
+
+    /// <summary>Backward-compatible overload. Damage is anonymous (no source).</summary>
+    public void TakeDamage(float amount)
+    {
+        TakeDamage(new DamageContext(amount, null, DamageType.Direct));
+    }
 
     private void OnHealthChanged(float current, float max)
     {
@@ -181,6 +192,7 @@ public partial class Enemy : Area2D
     {
         _statusEffects?.ClearEffects();
         _healthBar?.Reset();
+        _lastDamageContext = default;
     }
 
     private void OnDamageTaken(float amount)
@@ -261,6 +273,7 @@ public partial class Enemy : Area2D
         RemoveAllAntiBuffEffects();
         float eliteDmgMult = _isElite ? GameBalance.EliteDamageMultiplier : 1f;
         EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyReachedEnd, Mathf.RoundToInt(_data.DamageToPlayer * _dmgMultiplier * eliteDmgMult));
+        RunState.Instance?.Analytics?.RecordLeak(_data.Id);
         ReturnToPool();
     }
 
@@ -269,7 +282,17 @@ public partial class Enemy : Area2D
         IsDead = true;
         RemoveAllAntiBuffEffects();
         float eliteGoldMult = _isElite ? GameBalance.EliteGoldMultiplier : 1f;
-        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, Mathf.RoundToInt(_data.RewardGold * _goldMultiplier * eliteGoldMult));
+        int reward = Mathf.RoundToInt(_data.RewardGold * _goldMultiplier * eliteGoldMult);
+        EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyDied, reward);
+
+        // Emit attributed kill for telemetry/on-kill effects
+        if (!string.IsNullOrEmpty(_lastDamageContext.SourceTowerId))
+        {
+            EventBus.Instance.EmitSignal(EventBus.SignalName.EnemyKilledAttributed,
+                reward, _lastDamageContext.SourceTowerId, (int)_lastDamageContext.Type);
+            CombatLog.RecordKill(_lastDamageContext.SourceTowerId);
+        }
+
         ReturnToPool();
     }
 

@@ -22,6 +22,8 @@ public partial class RunState : Node
     public bool IsBossFight { get; private set; } = false;
     public bool IsMiniboss { get; private set; } = false;
 
+    public RunAnalytics Analytics { get; private set; }
+
     public float ShopDamageBonusPercent { get; set; } = 0f;
     public float ShopFireRateBonusPercent { get; set; } = 0f;
     public float ShopRangeBonusPercent { get; set; } = 0f;
@@ -92,7 +94,10 @@ public partial class RunState : Node
     {
         int diff = currentMoney - _lastMoney;
         if (diff > 0)
+        {
             TotalGoldEarned += diff;
+            Analytics?.RecordGoldEarned(diff);
+        }
         else if (diff < 0)
             TotalGoldSpent -= diff;
         _lastMoney = currentMoney;
@@ -144,6 +149,11 @@ public partial class RunState : Node
         TrinketRangeFlatBonus = 0f;
         TrinketBasicDamagePercentBonus = 0f;
         _passiveGoldEffects.Clear();
+
+        CombatLog.Reset();
+        Analytics?.Dispose();
+        Analytics = new RunAnalytics();
+        Analytics?.StartFight(0);
 
         int damageLevel = SaveManager.Instance.GetMetaUpgradeLevel("secret_recipe");
         MetaDamageBonusPercent = damageLevel * GameBalance.MetaDamagePercentPerLevel;
@@ -204,7 +214,9 @@ public partial class RunState : Node
         float sinceStart = (now - _runStartTimeMs) / 1000f;
         GD.Print($"[RunState] Fight {FightsCompleted + 1} start. SinceLastFight={sinceLast:F1}s, SinceRunStart={sinceStart:F1}s");
         _lastFightTimeMs = now;
+        Analytics?.EndFight();
         FightsCompleted++;
+        Analytics?.StartFight(FightsCompleted);
     }
 
     public void SetBossFight(bool value)
@@ -220,6 +232,16 @@ public partial class RunState : Node
     public void EndRun(bool isVictory = false)
     {
         if (!IsRunActive) return;
+
+        if (Analytics != null)
+        {
+            // For boss fight: end the fight tracking before exporting
+            Analytics.EndFight();
+            Analytics.ExportJson(isVictory);
+            Analytics.Dispose();
+            Analytics = null;
+        }
+
         IsRunActive = false;
 
         ulong elapsed = Time.GetTicksMsec() - _runStartTimeMs;
@@ -623,6 +645,10 @@ public partial class RunState : Node
         MetaRerollCostReductionPercent = rerollLevel * GameBalance.MetaRerollCostReductionPerLevel;
         int goldBonusLevel = SaveManager.Instance.GetMetaUpgradeLevel("enemy_gold_bonus");
         MetaEnemyGoldBonusPercent = goldBonusLevel * GameBalance.MetaEnemyGoldBonusPerLevel;
+
+        CombatLog.Reset();
+        Analytics = new RunAnalytics();
+        Analytics?.StartFight(FightsCompleted);
 
         return true;
     }

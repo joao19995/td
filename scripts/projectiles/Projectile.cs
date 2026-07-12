@@ -4,11 +4,10 @@ using System;
 public partial class Projectile : Area2D
 {
     [Export] public float Speed = 300f;
-    [Export] public float Damage = 5f;
 
     public Enemy Target { get; set; }
     public Action<Enemy, Vector2> OnHitEffect { get; set; }
-    public bool WasCrit { get; set; }
+    public DamageContext Context { get; set; }
     public int PierceCount { get; set; }
     private bool _returningToPool;
     private const int _enemyCollisionMask = 1;
@@ -22,11 +21,10 @@ public partial class Projectile : Area2D
         _collisionShape = GetNode<CollisionShape2D>(_collisionShapePath);
     }
 
-    public void Initialize(Enemy target, float damage)
+    public void Initialize(Enemy target, DamageContext context)
     {
         Target = target;
-        Damage = damage;
-        WasCrit = false;
+        Context = context;
         PierceCount = 0;
         _returningToPool = false;
         Visible = true;
@@ -60,7 +58,7 @@ public partial class Projectile : Area2D
     protected virtual void OnHitTarget(Enemy mainEnemy)
     {
         SetPhysicsProcess(false);
-        mainEnemy.TakeDamage(Damage);
+        var result = mainEnemy.TakeDamage(Context);
         OnHitEffect?.Invoke(mainEnemy, mainEnemy.GlobalPosition);
 
         if (PierceCount > 0)

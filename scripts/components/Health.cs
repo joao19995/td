@@ -14,18 +14,33 @@ public partial class Health : Node
         _currentHealth = MaxHealth;
     }
 
-    public void TakeDamage(float amount)
+    public DamageResult TakeDamage(in DamageContext ctx)
     {
-        if (_currentHealth <= 0f) return; // já está morto, ignora dano extra
-
-        _currentHealth = Mathf.Max(0f, _currentHealth - amount);
-        EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
-        EmitSignal(SignalName.DamageTaken, amount);
-
         if (_currentHealth <= 0f)
+            return new DamageResult(ctx.Amount, 0f, false);
+
+        float hpBefore = _currentHealth;
+        _currentHealth = Mathf.Max(0f, _currentHealth - ctx.Amount);
+        float actualDamage = hpBefore - _currentHealth;
+        bool wasKilled = _currentHealth <= 0f;
+
+        EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
+        EmitSignal(SignalName.DamageTaken, ctx.Amount);
+
+        if (wasKilled)
         {
             EmitSignal(SignalName.Died);
         }
+
+        var result = new DamageResult(ctx.Amount, actualDamage, wasKilled);
+        CombatLog.RecordDamage(ctx, result);
+        return result;
+    }
+
+    /// <summary>Backward-compatible overload. Damage is anonymous (no source).</summary>
+    public void TakeDamage(float amount)
+    {
+        TakeDamage(new DamageContext(amount, null, DamageType.Direct));
     }
 
     public void Heal(float amount)

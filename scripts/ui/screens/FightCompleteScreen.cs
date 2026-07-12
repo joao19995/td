@@ -121,6 +121,7 @@ public partial class FightCompleteScreen : Control
         if (!EconomyManager.Instance.CanAfford(cost)) return;
 
         EconomyManager.Instance.SpendMoney(cost);
+        RunState.Instance?.Analytics?.RecordGoldSpent("reroll", cost);
 
         SlotManager.Instance.ApplySkew(_pendingOutcome);
         ShowOutcome(SlotManager.Instance.Reroll());
@@ -149,6 +150,7 @@ public partial class FightCompleteScreen : Control
 
     private void ResolveOutcome()
     {
+        RunState.Instance?.Analytics?.RecordSlotOutcome(_pendingOutcome.ToString());
         RunState.Instance?.SaveCurrentRun();
         UIManager.Instance.PopScreen();
 

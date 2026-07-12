@@ -94,6 +94,7 @@ public partial class ShopScreen : Control
         if (!EconomyManager.Instance.CanAfford(cost)) return;
 
         EconomyManager.Instance.SpendMoney(cost);
+        RunState.Instance?.Analytics?.RecordGoldSpent("equipment", cost);
         if (hasPendingDiscount)
             RunState.Instance.FirstPurchaseDiscountPercent = 0f;
         RunState.Instance?.PurchasedShopItemIds.Add(item.ItemId);
@@ -194,6 +195,7 @@ public partial class ShopScreen : Control
         if (!EconomyManager.Instance.CanAfford(equipCost)) return;
 
         EconomyManager.Instance.SpendMoney(equipCost);
+        RunState.Instance?.Analytics?.RecordGoldSpent("equipment", equipCost);
         RunState.Instance.SetEquippedItem(equip.TargetTowerId, equip.Id);
         UpdateMoney();
 

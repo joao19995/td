@@ -5,6 +5,7 @@ public partial class EventBus : Node
     public static EventBus Instance { get; private set; }
 
     [Signal] public delegate void EnemyDiedEventHandler(int reward);
+    [Signal] public delegate void EnemyKilledAttributedEventHandler(int reward, string sourceTowerId, int damageType);
     [Signal] public delegate void EnemyReachedEndEventHandler(int damage);
     [Signal] public delegate void TowerPlacedEventHandler(int cost);
     [Signal] public delegate void GameOverEventHandler();

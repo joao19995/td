@@ -82,6 +82,8 @@ public partial class AttackComponent : Node
                     DamagePerTick = _data.PoisonDamagePerTick
                         * (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)
                                + (_equipData?.PoisonDamagePercentBonus ?? 0f)),
+                    SourceTowerId = _data?.Id ?? "",
+                    DamageType = (int)DamageType.Poison,
                 }));
 
             if (_data.HasSlow)
@@ -90,6 +92,7 @@ public partial class AttackComponent : Node
                     Duration = _data.SlowDuration * _slowDurationMultiplier,
                     SpeedMultiplier = _data.SlowMultiplier
                         / (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)),
+                    SourceTowerId = _data?.Id ?? "",
                 }));
         }
 
@@ -155,7 +158,8 @@ public partial class AttackComponent : Node
             && SynergyManager.Instance?.IsSynergyActive("crust_judgment_protocol") == true
             && target.HealthPercent <= 0.5f)
         {
-            target.TakeDamage(9999f);
+            var executeCtx = new DamageContext(9999f, _data?.Id, DamageType.Execute, wasExecute: true);
+            target.TakeDamage(executeCtx);
             _judgmentProtocolCooldown = GameBalance.JudgmentProtocolCooldown;
             return true;
         }
@@ -163,7 +167,8 @@ public partial class AttackComponent : Node
         float execThreshold = _equipData?.ExecuteThresholdPercent ?? 0f;
         if (execThreshold > 0f && _judgmentSealCooldown <= 0f && target.HealthPercent <= execThreshold)
         {
-            target.TakeDamage(9999f);
+            var executeCtx = new DamageContext(9999f, _data?.Id, DamageType.Execute, wasExecute: true);
+            target.TakeDamage(executeCtx);
             _judgmentSealCooldown = _equipData.ExecuteCooldownSeconds > 0f ? _equipData.ExecuteCooldownSeconds : GameBalance.JudgmentSealCooldown;
             return true;
         }
@@ -194,8 +199,8 @@ public partial class AttackComponent : Node
 
     private void SpawnProjectile(Enemy target, Vector2 towerPos, float damage, bool wasCrit)
     {
-        var projectile = ProjectileFactory.Create(_data.ProjectileScene, damage, target, towerPos);
-        projectile.WasCrit = wasCrit;
+        var ctx = new DamageContext(damage, _data?.Id, DamageType.Direct, wasCrit);
+        var projectile = ProjectileFactory.Create(_data.ProjectileScene, ctx, target, towerPos);
         projectile.PierceCount = _equipData?.PierceBonus ?? 0;
 
         Action<Enemy, Vector2> hitEffects = _precomputedHitEffects;
@@ -229,7 +234,7 @@ public partial class AttackComponent : Node
             hitEffects = (mainEnemy, hitPosition) =>
             {
                 prev?.Invoke(mainEnemy, hitPosition);
-                if (projectile.WasCrit)
+                if (projectile.Context.WasCrit)
                     TriggerSplashAt(mainEnemy, hitPosition, capturedRadius, capturedDamage);
             };
         }
@@ -274,6 +279,8 @@ public partial class AttackComponent : Node
         {
             Duration = _data.PoisonDuration * _poisonDurationMultiplier,
             DamagePerTick = _data.PoisonDamagePerTick * strengthMult,
+            SourceTowerId = _data?.Id ?? "",
+            DamageType = (int)DamageType.Poison,
         });
     }
 
@@ -319,7 +326,8 @@ public partial class AttackComponent : Node
 
             if (nearest == null) break;
 
-            nearest.TakeDamage(chainDamage);
+            var chainCtx = new DamageContext(chainDamage, _data?.Id, DamageType.Chain);
+            nearest.TakeDamage(chainCtx);
             current = nearest;
 
             if (_data.HasPoison)
@@ -330,6 +338,8 @@ public partial class AttackComponent : Node
                 {
                     Duration = _data.PoisonDuration * _poisonDurationMultiplier,
                     DamagePerTick = _data.PoisonDamagePerTick * strengthMult,
+                    SourceTowerId = _data?.Id ?? "",
+                    DamageType = (int)DamageType.Poison,
                 });
             }
             if (_data.HasSlow)
@@ -338,6 +348,7 @@ public partial class AttackComponent : Node
                     Duration = _data.SlowDuration * _slowDurationMultiplier,
                     SpeedMultiplier = _data.SlowMultiplier
                         / (1f + (RunState.Instance?.TrinketStatusStrengthBonusPercent ?? 0f)),
+                    SourceTowerId = _data?.Id ?? "",
                 });
         }
     }
@@ -380,7 +391,8 @@ public partial class AttackComponent : Node
             if (result["collider"].AsGodotObject() is Enemy surroundingEnemy)
             {
                 if (surroundingEnemy == mainEnemy) continue;
-                surroundingEnemy.TakeDamage(damage);
+                var splashCtx = new DamageContext(damage, _data?.Id, DamageType.Splash);
+                surroundingEnemy.TakeDamage(splashCtx);
             }
         }
     }
