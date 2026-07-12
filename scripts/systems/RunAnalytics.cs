@@ -5,12 +5,15 @@ using System.Collections.Generic;
 
 public class RunAnalytics : IDisposable
 {
+    private const string Version = "v1";
+
     private readonly DateTime _runStartTime;
     private DateTime _fightStartTime;
     private int _currentFightNumber;
     private bool _disposed;
 
     private readonly System.Collections.Generic.Dictionary<string, int> _leaksByEnemy = new();
+    private readonly System.Collections.Generic.Dictionary<string, int> _leaksByEnemyThisFight = new();
     private readonly List<Dictionary> _fightSnapshots = new();
     private readonly List<string> _slotOutcomes = new();
 
@@ -21,8 +24,15 @@ public class RunAnalytics : IDisposable
     private int _goldSpentUpgrades;
     private int _goldSpentEquipment;
     private int _goldSpentRerolls;
+    private int _goldSpentTowersThisFight;
+    private int _goldSpentUpgradesThisFight;
+    private int _goldSpentEquipmentThisFight;
+    private int _goldSpentRerollsThisFight;
     private int _livesLostThisFight;
     private int _livesLostTotal;
+
+    private readonly List<Dictionary> _upgradesPurchased = new();
+    private readonly List<Dictionary> _equipmentPurchased = new();
 
     public RunAnalytics()
     {
@@ -46,6 +56,11 @@ public class RunAnalytics : IDisposable
         _livesLostThisFight = 0;
         _goldEarnedThisFight = 0;
         _goldSpentThisFight = 0;
+        _goldSpentTowersThisFight = 0;
+        _goldSpentUpgradesThisFight = 0;
+        _goldSpentEquipmentThisFight = 0;
+        _goldSpentRerollsThisFight = 0;
+        _leaksByEnemyThisFight.Clear();
     }
 
     public void EndFight()
@@ -60,10 +75,18 @@ public class RunAnalytics : IDisposable
             { "lives_lost", _livesLostThisFight },
             { "gold_earned", _goldEarnedThisFight },
             { "gold_spent", _goldSpentThisFight },
+            { "gold_spent_breakdown", new Dictionary
+                {
+                    { "towers", _goldSpentTowersThisFight },
+                    { "upgrades", _goldSpentUpgradesThisFight },
+                    { "equipment", _goldSpentEquipmentThisFight },
+                    { "rerolls", _goldSpentRerollsThisFight }
+                }
+            },
             { "gold_remaining", goldRemaining },
             { "damage_by_tower", ToGodotDict(CombatLog.GetDamageByTower()) },
             { "kills_by_tower", ToGodotDict(CombatLog.GetKillsByTower()) },
-            { "leaks_by_enemy", ToGodotDict(_leaksByEnemy) }
+            { "leaks_by_enemy", ToGodotDict(_leaksByEnemyThisFight) }
         };
         _fightSnapshots.Add(snapshot);
         CombatLog.ResetDamageKills();
@@ -80,19 +103,41 @@ public class RunAnalytics : IDisposable
         _goldSpentThisFight += amount;
         switch (category)
         {
-            case "tower": _goldSpentTowers += amount; break;
-            case "upgrade": _goldSpentUpgrades += amount; break;
-            case "equipment": _goldSpentEquipment += amount; break;
-            case "reroll": _goldSpentRerolls += amount; break;
+            case "tower": _goldSpentTowers += amount; _goldSpentTowersThisFight += amount; break;
+            case "upgrade": _goldSpentUpgrades += amount; _goldSpentUpgradesThisFight += amount; break;
+            case "equipment": _goldSpentEquipment += amount; _goldSpentEquipmentThisFight += amount; break;
+            case "reroll": _goldSpentRerolls += amount; _goldSpentRerollsThisFight += amount; break;
         }
     }
 
     public void RecordSlotOutcome(string outcome) => _slotOutcomes.Add(outcome);
 
+    public void RecordUpgradePurchase(string towerId, int tier, int cost)
+    {
+        _upgradesPurchased.Add(new Dictionary
+        {
+            { "tower", towerId },
+            { "tier", tier },
+            { "cost", cost }
+        });
+    }
+
+    public void RecordEquipPurchase(string towerId, string equipId, int cost)
+    {
+        _equipmentPurchased.Add(new Dictionary
+        {
+            { "tower", towerId },
+            { "equip", equipId },
+            { "cost", cost }
+        });
+    }
+
     public void RecordLeak(string enemyId)
     {
         _leaksByEnemy.TryGetValue(enemyId, out int current);
         _leaksByEnemy[enemyId] = current + 1;
+        _leaksByEnemyThisFight.TryGetValue(enemyId, out int currentThisFight);
+        _leaksByEnemyThisFight[enemyId] = currentThisFight + 1;
     }
 
     public Dictionary Serialize(bool isVictory)
@@ -102,7 +147,7 @@ public class RunAnalytics : IDisposable
 
         return new Dictionary
         {
-            { "version", "v0" },
+            { "version", Version },
             { "timestamp", DateTime.UtcNow.ToString("o") },
             { "run_id", Guid.NewGuid().ToString("N")[..8] },
             { "selected_act", runState?.SelectedAct?.Id ?? "unknown" },
@@ -125,7 +170,9 @@ public class RunAnalytics : IDisposable
                             { "rerolls", _goldSpentRerolls }
                         }
                     },
-                    { "lives_lost", _livesLostTotal }
+                    { "lives_lost", _livesLostTotal },
+                    { "upgrades_purchased", ToGodotArray(_upgradesPurchased) },
+                    { "equipment_purchased", ToGodotArray(_equipmentPurchased) }
                 }
             },
             { "items", new Dictionary
@@ -237,10 +284,10 @@ public class RunAnalytics : IDisposable
     {
         var dict = Serialize(isVictory);
         var json = Json.Stringify(dict, "\t");
-        DirAccess.MakeDirRecursiveAbsolute("user://analytics");
+        DirAccess.MakeDirRecursiveAbsolute($"user://analytics/{Version}");
         string timestamp = DateTime.UtcNow.ToString("yyyyMMddTHHmmssZ");
         string id = Guid.NewGuid().ToString("N")[..8];
-        string path = $"user://analytics/run_{timestamp}_{id}.json";
+        string path = $"user://analytics/{Version}/run_{timestamp}_{id}.json";
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file != null)
             file.StoreString(json);

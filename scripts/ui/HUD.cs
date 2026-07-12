@@ -176,6 +176,11 @@ public partial class HUD : CanvasLayer
             TowerSelectionManager.Instance.TowerSelected -= OnTowerSelected;
             TowerSelectionManager.Instance.TowerDeselected -= OnTowerDeselected;
         }
+
+        if (SynergyManager.Instance != null)
+        {
+            SynergyManager.Instance.SynergiesChanged -= OnSynergiesChanged;
+        }
     }
 
     private void ShowTooltip(string text)
@@ -619,6 +624,7 @@ public partial class HUD : CanvasLayer
         var next = tower.Data.UpgradePath[tower.CurrentUpgradeLevel];
         if (!EconomyManager.Instance.SpendMoney(next.Cost)) return;
         RunState.Instance?.Analytics?.RecordGoldSpent("upgrade", next.Cost);
+        RunState.Instance?.Analytics?.RecordUpgradePurchase(tower.Data.Id, tower.CurrentUpgradeLevel + 1, next.Cost);
 
         tower.Upgrade();
         OnTowerSelected(tower);

@@ -63,6 +63,13 @@ public partial class LevelManager : Node
         _currentLevelIndex = index;
         if (container != null)
             _levelContainer = container;
+
+        if (string.IsNullOrEmpty(Levels[index].ScenePath))
+        {
+            GD.PrintErr($"LevelManager: Level '{Levels[index].LevelName}' has an empty ScenePath.");
+            return;
+        }
+
         SceneManager.Instance.LoadLevel(Levels[index].ScenePath, _levelContainer);
     }
 

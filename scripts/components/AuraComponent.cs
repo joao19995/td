@@ -55,6 +55,19 @@ public partial class AuraComponent : Node2D
         if (_scanTimer > 0f) return;
         _scanTimer = GameBalance.AuraScanInterval;
 
+        // Remove freed towers from tracking to avoid accessing invalid instances.
+        var invalidTowers = new List<Tower>();
+        foreach (var tower in _affectedTowers)
+        {
+            if (!GodotObject.IsInstanceValid(tower))
+                invalidTowers.Add(tower);
+        }
+        foreach (var tower in invalidTowers)
+        {
+            _affectedTowers.Remove(tower);
+            _activeBuffs.Remove(tower);
+        }
+
         var myPos = GlobalPosition;
         var allTowers = GetTree().GetNodesInGroup("towers");
         var currentInRange = new HashSet<Tower>();

@@ -20,6 +20,7 @@ public partial class SlotManager : Node
     [Export] public float SkewReductionFactor = 0.5f;
 
     private Dictionary<SlotOutcome, float> _weightMultipliers = new();
+    private SlotOutcome? _forcedOutcome;
 
     public int CurrentRerollCount { get; private set; } = 0;
 
@@ -47,6 +48,13 @@ public partial class SlotManager : Node
 
     public SlotOutcome Spin()
     {
+        if (_forcedOutcome.HasValue)
+        {
+            var outcome = _forcedOutcome.Value;
+            _forcedOutcome = null;  // Auto-clear after one use
+            return outcome;
+        }
+
         float wFight = WeightFight * _weightMultipliers.GetValueOrDefault(SlotOutcome.Fight, 1f);
         float wShop = WeightShop * _weightMultipliers.GetValueOrDefault(SlotOutcome.Shop, 1f);
         float wHeal = WeightHeal * _weightMultipliers.GetValueOrDefault(SlotOutcome.Heal, 1f);
@@ -75,6 +83,12 @@ public partial class SlotManager : Node
     public void ApplySkew(SlotOutcome outcome)
     {
         _weightMultipliers[outcome] = _weightMultipliers.GetValueOrDefault(outcome, 1f) * SkewReductionFactor;
+    }
+
+    public void SetForcedOutcomeForDebug(SlotOutcome outcome)
+    {
+        if (!OS.IsDebugBuild()) return;
+        _forcedOutcome = outcome;
     }
 
 }

@@ -163,6 +163,7 @@ public partial class SaveManager : Node
 
     public void AddMetaTokens(int amount)
     {
+        if (RunState.Instance != null && RunState.Instance.IsDebugRun) return;
         _metaTokens += amount;
         SaveGame();
     }
@@ -251,6 +252,7 @@ public partial class SaveManager : Node
 
     public void MarkDiscovered(string key)
     {
+        if (RunState.Instance != null && RunState.Instance.IsDebugRun) return;
         if (_discovered.ContainsKey(key)) return;
         _discovered[key] = true;
         SaveGame();
@@ -335,6 +337,7 @@ public partial class SaveManager : Node
         _metaTokens = 0;
         _unlockedTowerIds = new Array<string>(DefaultTowerIds);
         _unlockedActIds = new Array<string>(DefaultActIds);
+        EnsureDefaultUnlocks();
     }
 
     private void EnsureDefaultUnlocks()
@@ -356,6 +359,18 @@ public partial class SaveManager : Node
                 changed = true;
             }
         }
+
+        // Give tier 1 upgrade access for default towers (no meta cost)
+        foreach (var id in DefaultTowerIds)
+        {
+            string upgradeKey = $"unlock_{id}_upgrades";
+            if (!_metaUpgradeLevels.ContainsKey(upgradeKey) || _metaUpgradeLevels[upgradeKey] < 1)
+            {
+                _metaUpgradeLevels[upgradeKey] = 1;
+                changed = true;
+            }
+        }
+
         if (changed) SaveGame();
     }
 }

@@ -196,6 +196,7 @@ public partial class ShopScreen : Control
 
         EconomyManager.Instance.SpendMoney(equipCost);
         RunState.Instance?.Analytics?.RecordGoldSpent("equipment", equipCost);
+        RunState.Instance?.Analytics?.RecordEquipPurchase(equip.TargetTowerId, equip.Id, equipCost);
         RunState.Instance.SetEquippedItem(equip.TargetTowerId, equip.Id);
         UpdateMoney();
 

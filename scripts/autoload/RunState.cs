@@ -21,6 +21,7 @@ public partial class RunState : Node
     public int TotalGoldSpent { get; private set; } = 0;
     public bool IsBossFight { get; private set; } = false;
     public bool IsMiniboss { get; private set; } = false;
+    public bool IsDebugRun { get; set; }
 
     public RunAnalytics Analytics { get; private set; }
 
@@ -108,8 +109,9 @@ public partial class RunState : Node
         SelectedAct = act;
     }
 
-    public void StartRun(int gold, int lives, Godot.Collections.Array<string> selectedTowerIds)
+    public void StartRun(int gold, int lives, Godot.Collections.Array<string> selectedTowerIds, bool isDebugRun = false)
     {
+        IsDebugRun = isDebugRun;
         _runStartTimeMs = Time.GetTicksMsec();
         _lastFightTimeMs = _runStartTimeMs;
         _towerLevels.Clear();
@@ -219,6 +221,21 @@ public partial class RunState : Node
         Analytics?.StartFight(FightsCompleted);
     }
 
+    public void SetFightsCompletedForDebug(int n)
+    {
+        if (!OS.IsDebugBuild()) return;
+        if (Analytics != null)
+        {
+            // End current fight tracking before jumping
+            Analytics.EndFight();
+        }
+        FightsCompleted = n;
+        if (Analytics != null && IsRunActive)
+        {
+            Analytics.StartFight(n);
+        }
+    }
+
     public void SetBossFight(bool value)
     {
         IsBossFight = value;
@@ -237,7 +254,8 @@ public partial class RunState : Node
         {
             // For boss fight: end the fight tracking before exporting
             Analytics.EndFight();
-            Analytics.ExportJson(isVictory);
+            if (!IsDebugRun)
+                Analytics.ExportJson(isVictory);
             Analytics.Dispose();
             Analytics = null;
         }
@@ -247,6 +265,14 @@ public partial class RunState : Node
         ulong elapsed = Time.GetTicksMsec() - _runStartTimeMs;
         float durationSeconds = elapsed / 1000f;
         int totalTokens = PreviewTokenReward(isVictory);
+
+        // Convert unspent gold to bonus meta-tokens
+        const int GoldPerToken = 100;
+        int goldTokens = EconomyManager.Instance.CurrentMoney / GoldPerToken;
+        totalTokens += goldTokens;
+        if (goldTokens > 0)
+            GD.Print($"[RunState] Gold→Token conversion: {EconomyManager.Instance.CurrentMoney}g → +{goldTokens} tokens");
+
         LastTokenReward = totalTokens;
         LastFightsCompleted = FightsCompleted;
         LastEnemiesKilled = TotalEnemiesKilled;
@@ -254,19 +280,23 @@ public partial class RunState : Node
         LastGoldSpent = TotalGoldSpent;
 
         GD.Print($"[RunState] Run ended. Duration={durationSeconds:F1}s, FightsCompleted={FightsCompleted}, Victory={isVictory}, TokensAwarded={totalTokens}");
-        SaveManager.Instance.AddMetaTokens(totalTokens);
-        if (isVictory && SelectedAct != null)
+        if (!IsDebugRun)
         {
-            var allActs = ResourceLoaderHelper.LoadFromDir<ActData>("res://resources/act_data/");
-            foreach (var act in allActs)
+            SaveManager.Instance.AddMetaTokens(totalTokens);
+            if (isVictory && SelectedAct != null)
             {
-                if (act.RequiredPreviousActId == SelectedAct.Id)
+                var allActs = ResourceLoaderHelper.LoadFromDir<ActData>("res://resources/act_data/");
+                foreach (var act in allActs)
                 {
-                    SaveManager.Instance.UnlockAct(act.Id);
-                    GD.Print($"[RunState] Unlocked next act: {act.Id} ({act.ActName})");
+                    if (act.RequiredPreviousActId == SelectedAct.Id)
+                    {
+                        SaveManager.Instance.UnlockAct(act.Id);
+                        GD.Print($"[RunState] Unlocked next act: {act.Id} ({act.ActName})");
+                    }
                 }
             }
         }
+        IsDebugRun = false;  // Reset flag at end
         SaveManager.Instance.DeleteRunState();
         _towerLevels.Clear();
         _equippedItems.Clear();

@@ -51,7 +51,11 @@ public partial class Projectile : Area2D
     private void OnAreaEntered(Area2D area)
     {
         if (_returningToPool || area != Target) return;
-
+        if (Target.IsDead)
+        {
+            ReturnToPool();
+            return;
+        }
         OnHitTarget(Target);
     }
 
