@@ -1,60 +1,58 @@
-{
-  "$comment": "Regras de pós-edição para este projecto (Godot 4 C# / Sourdough Siege). Ajusta as chaves ao schema real da tua versão de opencode — este ficheiro documenta a INTENÇÃO das verificações; se o teu opencode não suportar 'onEditComplete' com comandos shell, usa pre-build.ps1 manualmente ou via git pre-commit hook.",
-  "version": 1,
+﻿{
+  "$comment": "THIS FILE IS NOT ENFORCED BY THE CURRENT OPENCODE VERSION. It serves as documentation of intended violation patterns. The official quality gate is ./pre-build.ps1 -Build. The schema at https://opencode.ai/config.json has no 'rules', 'runOn', 'beforeTaskComplete', 'requiresNearbyPattern', or 'onViolation' properties. These were included speculatively and are ignored by opencode.",
+  "version": 3,
   "project": "sourdough-siege",
-  "runOn": ["afterFileEdit", "beforeTaskComplete"],
-  "filePatterns": ["scripts/**/*.cs"],
+  "_note": "All patterns below match the corresponding checks in pre-build.ps1. Keep them in sync.",
   "rules": [
     {
-      "id": "no-deep-node-paths",
-      "description": "GetNode<T>/GetNodeOrNull<T> com string literal fora do próprio dono do nó viola Regra #6 (CLAUDE.md).",
-      "pattern": "Get(NodeOrNull|Node)<\\s*\\w+\\s*>\\s*\\(\\s*\"[^\"]+\"\\s*\\)",
-      "excludePathPatterns": ["scripts/levels/.*", "scripts/autoload/.*"],
-      "severity": "error",
-      "message": "Expõe um método público no nó dono em vez de aceder ao componente por path literal. Ver CLAUDE_ADDENDUM.md secção Regra #6."
-    },
-    {
-      "id": "no-hardcoded-gameplay-numbers",
-      "description": "Valores de gameplay (dano, HP, custo) devem vir de Resources [Export], nunca literais no .cs.",
+      "id": "r1-hardcoded-value",
+      "description": "R1 (partial) — Data-Driven: literal gameplay value detected. Move to [Export] in a Resource .tres. See CLAUDE_ADDENDUM.md R1.",
       "pattern": "(damage|health|hp|cost)\\s*(\\*=|\\+=|=)\\s*[0-9]+(\\.[0-9]+)?f?\\b",
       "excludeIfContains": ["_data.", "_equipData.", "RunState.", "GameBalance.", "Data."],
-      "severity": "error",
-      "message": "Move este valor para um [Export] em TowerData/EnemyData/EquipData/GameBalanceData/etc. Ver Regra #1."
-    },
-    {
-      "id": "no-hardcoded-resource-arrays",
-      "description": "Conteúdo novo deve ser descoberto por directory scan (ResourceLoaderHelper.LoadFromDir), nunca array de nomes de ficheiro.",
-      "pattern": "new\\s*\\[\\]\\s*\\{[^}]*\\.tres",
-      "severity": "error",
-      "message": "Usa ResourceLoaderHelper.LoadFromDir<T>() ou DirAccess.Open() + GetFiles(). Ver Regra #4."
-    },
-    {
-      "id": "no-shared-resource-mutation",
-      "description": "Resources injectados (TowerData/EnemyData/EquipData) são partilhados por referência entre instâncias — nunca mutar directamente.",
-      "pattern": "(_data|_equipData|enemyData|towerData)\\.\\w+\\s*(\\*=|\\+=|-=)",
-      "severity": "error",
-      "message": "Cria uma nova instância (new PoisonEffectData{...}) ou usa .Duplicate() em vez de mutar o Resource partilhado. Ver Regra #8 / CLAUDE.md 'shared-sub-resource-mutation'."
-    },
-    {
-      "id": "no-copy-paste-subtypes",
-      "description": "Enemy e Tower são genéricos por design — variantes são .tres, não subclasses novas.",
-      "pattern": "class\\s+\\w+\\s*:\\s*(Enemy|Tower)\\b",
-      "severity": "error",
-      "message": "Cria um novo .tres (EnemyData/TowerData) em vez de subclassificar. Ver Regra #2/#3."
-    },
-    {
-      "id": "async-void-missing-guard",
-      "description": "async void em spawner/level code deve ter guarda IsInstanceValid após cada await.",
-      "pattern": "await\\s+ToSignal\\(",
-      "requiresNearbyPattern": "IsInstanceValid\\(this\\)",
-      "windowLines": 5,
       "severity": "warning",
-      "message": "Adiciona 'if (!_isActive || !IsInstanceValid(this)) return;' logo após o await. Ver known-issue EnemySpawner.StartNextWave."
+      "message": "Partial: this regex only catches obvious patterns. R1 requires reviewer for full coverage."
+    },
+    {
+      "id": "r2-subclass",
+      "description": "R2 (partial) — Composition Over Inheritance: class X : Enemy|Tower detected. Create a .tres instead of subclassing. See CLAUDE_ADDENDUM.md R2.",
+      "pattern": "class\\s+\\w+\\s*:\\s*(Enemy|Tower)\\b",
+      "severity": "warning",
+      "message": "Partial: R2 also covers copy-paste (R3) which requires reviewer judgment."
+    },
+    {
+      "id": "r4-hardcoded-list",
+      "description": "R4 (partial) — Zero-Code-Change Content: hardcoded array of .tres filenames. Use ResourceLoaderHelper.LoadFromDir<T>() or DirAccess. See CLAUDE_ADDENDUM.md R4.",
+      "pattern": "new\\s*\\[\\]\\s*\\{[^}]*\\.tres",
+      "severity": "warning",
+      "message": "Partial: does not detect List.Add() patterns, procedural builds, or single-load cases."
+    },
+    {
+      "id": "r6-deep-node-path",
+      "description": "R6 (partial) — No Deep Node Paths: GetNode<T>() called on another object (obj.GetNode<T>), not self-access. Expose a public method on the owning node. See CLAUDE_ADDENDUM.md R6.",
+      "pattern": "\\w+\\s*\\.\\s*Get(NodeOrNull|Node)<\\s*\\w+\\s*>\\s*\\(",
+      "severity": "warning",
+      "message": "Partial: detects external GetNode<> calls but not all god-object patterns. Self-access (plain GetNode<T>) is not flagged."
+    },
+    {
+      "id": "r8-shared-mutation",
+      "description": "R8 (partial) — Never Mutate Shared Resources: direct mutation of known Resource field (_data.X *= V). Use .Duplicate() or a new instance. See CLAUDE_ADDENDUM.md R8.",
+      "pattern": "(_data|_equipData|enemyData|towerData)\\.\\w+\\s*(\\*=|\\+=|-=)",
+      "severity": "warning",
+      "message": "Partial: only detects mutations on known field names. Method-based mutations and differently-named variables are not caught."
+    },
+    {
+      "id": "r10-suspect-spawn",
+      "description": "R10 (partial) — Spawn Under Active Level Containers: GetTree().CurrentScene detected. Use BaseLevel.*Container instead. See CLAUDE_ADDENDUM.md R10.",
+      "pattern": "GetTree\\(\\)\\s*\\.\\s*CurrentScene",
+      "severity": "warning",
+      "message": "Partial: flags all CurrentScene usage. Reviewer must determine if it is spawn-related or legitimate non-spawning use."
+    },
+    {
+      "id": "async-guard",
+      "description": "Best practice (warning, not a numbered rule): await ToSignal(...) should have a nearby IsInstanceValid(this) guard in spawner/level code.",
+      "pattern": "await\\s+ToSignal\\(",
+      "severity": "info",
+      "message": "Heuristic: check if an IsInstanceValid(this) guard exists within 5 lines of this await."
     }
-  ],
-  "onViolation": {
-    "action": "blockTaskCompletion",
-    "requireExplicitOverride": true,
-    "overrideMessage": "Só ignora esta regra se explicitamente justificado inline com um comentário // RULE-OVERRIDE(<id>): <motivo>."
-  }
+  ]
 }

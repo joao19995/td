@@ -1,33 +1,25 @@
----
+﻿---
 name: doc-update
-description: Actualiza documentação do projecto (GAME_STATUS.md, ROADMAP.md) após completar uma feature. Carrega quando a tarefa menciona docs, documentação, game status, ou roadmap.
+description: Updates project documentation (docs/status/GAME_STATUS.md, ROADMAP.md) after completing a feature. Loads when the task mentions docs, documentation, game status, or roadmap.
 ---
-# Actualização de Documentação — Sourdough Siege
 
-## Que ficheiros actualizar
+# Documentation Update — Sourdough Siege
 
-### `docs/GAME_STATUS.md`
-**Quando**: SEMPRE que o comportamento observável do jogo muda.
-- Novo mecanismo (ex: slot machine, synergies, bestiary)
-- Novo ecrã (ex: BriefingScreen, MetaShopScreen)
-- Nova feature de torre/enemy (ex: poison stacking, aura system)
-- Novo outcome ou estado de jogo
+## Files you may update
 
-**Formato**: Segue as secções existentes. Adiciona entrada na categoria certa.
-NÃO reescreves o ficheiro inteiro — edita só a secção relevante.
+### `docs/status/docs/status/GAME_STATUS.md`
+When: observable game behavior changed (new mechanic, screen, tower, enemy,
+equip, trinket, synergy, outcome). Keep existing structure and terminology.
+Minimal changesets only — do not rewrite the entire file.
 
 ### `ROADMAP.md`
-**Quando**: Um item da checklist foi completado.
-- Marca `[x]` no item completado.
-- Se precisas de adicionar item novo, usa o mesmo formato `[ ]`.
-- Se um item mudou de escopo, actualiza a descrição.
+When: an item was completed or changed state. Do not invent new roadmap items
+from implementation alone. If no clear match exists, do not change it.
 
-### `CLAUDE.md` / `CLAUDE_ADDENDUM.md`
-**Quando**: SÓ com aprovação explícita do utilizador.
-- Nova regra de arquitectura.
-- Novo exemplo certo/errado para regra existente.
+## Files requiring explicit user instruction
 
-## O que NUNCA tocar
-- `AGENTS.md` sem aprovação explícita
-- `README.md` sem aprovação explícita
-- Qualquer ficheiro fora de `docs/` ou raiz do projecto
+`CLAUDE.md`, `CLAUDE_ADDENDUM.md`, `AGENTS.md`, `README.md`.
+
+## Never touch
+
+`.cs`, `.tres`, `.tscn`, config files, or any file outside docs/ and project root.

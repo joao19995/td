@@ -1,39 +1,27 @@
----
+﻿---
 name: td-rules
-description: Regras de arquitectura e verificação do projecto Sourdough Siege (Godot 4.7 C#). Carrega quando a tarefa envolve escrever ou alterar código .cs/.tres neste repo.
+description: Project context and tooling reference for Sourdough Siege (Godot 4.7 C#). Loads when the task involves writing or modifying .cs/.tres code in this repo.
 ---
-# Sourdough Siege — Regras Compactas
 
-## As 8 Regras (CLAUDE.md)
+# Sourdough Siege — Project Context
 
-| # | Regra | Verificação |
-|---|-------|-------------|
-| 1 | **Data-driven**: zero valores de gameplay em .cs | Grep por `float`/`int` com valor literal que afecta gameplay |
-| 2 | **Composição**: nunca `class X : Enemy` ou `: Tower` | Grep por `: Enemy` ou `: Tower` |
-| 3 | **Zero copy-paste**: abstrai duplicação | Revisão manual |
-| 4 | **Zero-code-change content**: directory scan, não array hardcoded | Grep por arrays de strings com nomes de .tres |
-| 6 | **No deep node paths**: `GetNode<T>()` só no dono do nó | Grep por `GetNode<` / `GetNodeOrNull<` fora de `_Ready` |
-| 7 | **Autoloads = infraestrutura**: zero gameplay state em singletons | Verificar se novo campo em autoload é coordenação ou gameplay |
-| 8 | **Sub-resource copy**: `.Duplicate()` antes de mutar Resource | Grep por atribuição directa a campo de Data Resource |
+**Rules**: read `CLAUDE.md` (R1-R10) and `CLAUDE_ADDENDUM.md` (right/wrong examples).
+They are the single source of truth. This skill does NOT duplicate them.
 
-## Processo de verificação
+## Stack
+Godot 4.7, .NET 8, GL Compatibility, 320x190, C# only (zero GDScript).
+
+## Mandatory validation
 
 ```powershell
-# Validar + compilar (tudo)
+# Validate + compile (everything)
 ./pre-build.ps1 -Build
 
-# Validar + compilar (só uma pasta)
+# Validate + compile (single folder)
 ./pre-build.ps1 -Build -Path "scripts/towers"
 ```
 
-Exit codes: 0=OK, 1=violações, 2=erro de compilação
+Exit codes: 0 = OK, 1 = violations, 2 = build failure.
 
-## Checklist pós-código
-1. `GetNode<T>` / `GetNodeOrNull<T>` fora do dono? → método público no dono.
-2. Número mágico em .cs? → `[Export]` no Resource.
-3. Nova subclasse de Enemy/Tower? → `.tres` novo.
-4. Mutação directa de Resource? → `.Duplicate()` ou instância nova.
-5. Funciona com 20 towers + 30 enemies sem tocar em C#? → data-driven.
-
-## Stack
-Godot 4.7, .NET 8, GL Compatibility, 320×190, C# only (zero GDScript)
+`pre-build.ps1` automatically checks R1, R2, R4, R6, R8.
+R3, R5, R7, R9, R10 require reviewer judgment.

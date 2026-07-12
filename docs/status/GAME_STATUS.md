@@ -1,4 +1,4 @@
-# Game Status
+﻿# Game Status
 
 Factual description of what the game currently does, organized by system.
 Target audience: managers and designers. Focus is on features and configurability,
@@ -67,7 +67,7 @@ not implementation details.
 - **Swap**: buying a new equipment for a tower that already has one replaces it (no refund). The entire equip list is rebuilt after purchase.
 - **Tower panel**: when selecting a tower during gameplay, the action panel shows the equipped item's **name**, **icon**, and **stat bonuses** (e.g. `+15% DMG | +20% POISON`) derived from the `EquipData` fields. Hovering the name shows a tooltip with description.
 - **Stat bonuses** are multiplicative-percent and stack additively with synergy bonuses in the EffectiveDamage formula.
-- **20 equipment items shipped** (2 per tower type) — see [`docs/tower.md`](tower.md) for full list with costs, effects, and trade-offs.
+- **20 equipment items shipped** (2 per tower type) — see [`content/towers/README.md`](../content/towers/README.md) for full list with costs, effects, and trade-offs.
 
 ## Trinkets (Run-Wide Charms)
 
@@ -78,7 +78,7 @@ not implementation details.
   - Rarity-colored border — **Common** (gray), **Rare** (gold)
   - Hover highlight and sequential fade-in animation (0.15s stagger)
 - **Skip button**: "Skip" advances without applying a trinket
-- Trinkets apply **run-wide** effects that last for the rest of the run — see [`docs/trinket.md`](trinket.md) for full list with effects, rarity, and scope.
+- Trinkets apply **run-wide** effects that last for the rest of the run — see [`design/TRINKETS.md`](../design/TRINKETS.md) for full list with effects, rarity, and scope.
 - **10 trinkets total** (9 Common, 1 Rare). Rarity determined by `TrinketData.Rarity` enum field.
 - Passive gold uses a timer in RunState._Process. Crit damage is multiplicative to the base crit multiplier. Trade-off trinkets use negative values in existing stat fields.
 - Trinkets are single-use per run — once chosen, the effect is applied.
@@ -86,7 +86,7 @@ not implementation details.
 
 ## Shop Items (Run-Wide Purchases)
 
-- **5 items** available in the run Shop — see [`docs/shop_item.md`](shop_item.md) for full list with costs and effects.
+- **5 items** available in the run Shop — see [`balance/SHOP_BALANCING.md`](../balance/SHOP_BALANCING.md) for full list with costs and effects.
 - Shop items are loaded dynamically from `resources/run_data/` — no code changes needed.
 - Each item shows its **icon** (16x16 TextureRect), **name + cost**, and **description**.
 - Purchase feedback: button flashes green via Tween, text changes to "✓ Owned".
@@ -101,7 +101,7 @@ not implementation details.
 - **Meta tokens**: awarded at the end of every run (win or lose). Token reward scales: `base × (1 + fightsCompleted / totalFights)`. Victory bonus: +50% tokens if the boss was defeated.
 - **Unlocked towers**: Bread Baker and Bread Courier start unlocked. All other 8 towers are purchased with tokens in the Meta Shop.
 - **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Upgrades**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
-- **26 meta-upgrades** organized into Tower Unlocks, Tower Upgrade Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`docs/meta_upgrade.md`](meta_upgrade.md) for full list.
+- **26 meta-upgrades** organized into Tower Unlocks, Tower Upgrade Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`design/META_PROGRESSION.md`](../design/META_PROGRESSION.md) for full list.
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens x 1`, level 2 costs `CostTokens x 2`, etc. Each level grants the configured bonus.
 - **Tower upgrades locked by default**: each tower's upgrade path (4 tiers) is locked until the corresponding "Unlock [Tower] Upgrades" meta-upgrade is purchased. Purchase is per-tower, 15 tokens each, in a new **Upgrades** tab. Once unlocked, upgrades work as normal (gold cost in-run). The Seasoned Recruits meta-upgrade (starting at level 1) is independent and still works even without the per-tower upgrade unlock — you get the free starting level but cannot upgrade further until unlocked.
 - **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold/lives bonuses are added before the run begins. Shop discount reduces displayed costs in the shop UI. Reroll cost reduction applies at the slot machine. Enemy gold bonus multiplies all enemy gold rewards. Starter Gear Voucher picks a random equipment for a random loadout tower at run start. Seasoned Recruits sets all loadout towers to level 1 at run start.
@@ -112,14 +112,14 @@ not implementation details.
 
 - **Type-combination bonuses**: synergies activate based on which tower types are on the board. No adjacency or positioning logic — only type presence matters.
 - **Active synergies** are automatically evaluated whenever a tower is placed or removed.
-- **4 synergies shipped** — see [`docs/tower.md`](tower.md#synergies) for full list with requirements, effects, and strategy notes.
+- **4 synergies shipped** — see [`content/towers/README.md`](../content/towers/README.md#synergies) for full list with requirements, effects, and strategy notes.
 - **Stat bonuses** are additive with equip bonuses: `EffectiveX = (base + upgradeFlat) * (1 + synergy + equip) * (1 + shop) * (1 + meta) * (1 + trinket)`. Damage, fire rate, and range all follow the same formula.
 - **Visual feedback**: towers affected by any synergy show a green tint. The HUD lists active synergy names at the top of the screen.
 - **Data-driven**: synergies are defined in `SynergyData` resource files under `resources/synergy_data/`. Adding a new `.tres` file in that folder is enough to register it — no code changes needed.
 
 ## Levels
 
-- The game ships with **2 maps** (Map1, Map2) — see [`docs/level.md`](level.md).
+- The game ships with **2 maps** (Map1, Map2) — see [`content/maps/README.md`](../content/maps/README.md).
 - Adding a new map requires only a new scene and a **LevelData** resource file — no code changes.
 - Levels can configure:
   - Starting money and lives (or use global defaults)
@@ -142,7 +142,7 @@ not implementation details.
   - If another level exists, a **"Next Level"** button appears.
   - If it was the final level, the **Victory** screen is shown.
 - During a run, all waves completed shows the **Fight Complete** screen instead.
-- See [`docs/wave.md`](wave.md) for full wave compositions by tier.
+- See [`design/WAVES.md`](../design/WAVES.md) for full wave compositions by tier.
 
 ### Wave Decoupling (Run Mode)
 
@@ -171,7 +171,7 @@ not implementation details.
 
 ## Towers
 
-- **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource — see [`docs/tower.md`](tower.md) for overview or [`docs/towers/`](towers/) for per-tower details (stats, lore, equipment, upgrades, synergies, open questions).
+- **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource — see [`content/towers/README.md`](../content/towers/README.md) for overview or [`content/towers/`](../content/towers/) for per-tower details (stats, lore, equipment, upgrades, synergies, open questions).
 - **Placement**: towers can only be placed on designated buildable tiles. Already-occupied tiles are blocked.
 - **Selection**: clicking a placed tower selects it. A semi-transparent circle shows its range. Right-click deselects.
 - **Upgrades**: each tower has a fixed upgrade path (2 tiers per tower). Upgrades increase damage, fire rate, and/or range.
@@ -216,7 +216,7 @@ not implementation details.
 
 ## Enemies
 
-- **10 enemy types** — see [`docs/enemy.md`](enemy.md) for overview or [`docs/enemies/`](enemies/) for per-enemy details (lore, stats, TTK, counter strategies).
+- **10 enemy types** — see [`content/enemies/README.md`](../content/enemies/README.md) for overview or [`content/enemies/`](../content/enemies/) for per-enemy details (lore, stats, TTK, counter strategies).
 - Each enemy has configurable health, speed, gold reward, sprite, damage to player, and IsBoss/IsHeavy flags via EnemyData resource.
 - Enemies follow a fixed path defined per level.
 - If an enemy reaches the end, it damages the player's lives and is removed.

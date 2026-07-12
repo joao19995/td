@@ -1,4 +1,4 @@
-# CLAUDE.md — Project Guide for AI Assistant
+﻿# CLAUDE.md — Project Guide for AI Assistant
 
 ## Project Overview
 
@@ -29,7 +29,7 @@ them one by one and restoring the true faith of the mother dough.
 ### Tech Stack
 
 Godot 4.7 (.NET 8) tower defense, expanding into a roguelite hybrid
-(Darkest Dungeon / Slay the Spire inspired run structure). 320×190 pixel
+(Darkest Dungeon / Slay the Spire inspired run structure). 320x190 pixel
 resolution, GL Compatibility renderer, integer scaling. C# only — no GDScript.
 
 **State: Camada 0 + roguelite run layer complete (run engine, loadout, shop,
@@ -41,43 +41,106 @@ Next: expanded content (more maps, enemies, meta items).**
 
 ## Architecture — The Non-Negotiables
 
-### Data-Driven, Not Hardcoded
-All gameplay values come from `.tres` Resources. If you're typing a number that affects
-gameplay, you're doing it wrong. EnemyData, TowerData, UpgradeData, WaveData,
-LevelData — every stat belongs in a Resource file. The `.tres` files under
-`resources/` are the single source of truth.
+These 10 rules are the single source of truth for all code in this project.
+`CLAUDE_ADDENDUM.md` contains concrete right/wrong examples for each rule.
 
-### Composition Over Inheritance
-No `FastEnemy : Enemy`, `BossEnemy : Enemy` garbage. Enemy has HealthComponent,
-MovementComponent, StatusEffectComponent as children. Tower has TargetingComponent,
-AttackComponent. Behavior emerges from composition, not inheritance chains.
-`BaseLevel` is the one accepted abstract base (zero gameplay logic in `Map1`/
-`Map2`), required for zero-code-change map addition.
+### R1 — Data-Driven, Not Hardcoded
 
-### Concrete-Necessity Test (Apply Before Any Refactor)
-Before proposing a change, identify the actual bug, duplication, or scaling
-wall it fixes. "Cleaner in the abstract" is not a justification.
+All gameplay values come from `.tres` Resources. If you are typing a number
+that affects gameplay, you are doing it wrong. EnemyData, TowerData,
+UpgradeData, WaveData, LevelData — every stat belongs in a Resource file.
+The `.tres` files under `resources/` are the single source of truth.
 
-### Autoloads Are Infrastructure, Not Gameplay
-Autoloads (singletons) exist for: EventBus, LevelManager, SceneManager, UIManager,
-PoolManager, CameraManager, EconomyManager, GameManager, TowerSelectionManager,
-TowerPlacementManager, GameBalance, SaveManager. They coordinate systems. They do NOT contain gameplay logic.
-If you're tempted to put game logic in an autoload, stop — put it in a component
-on the relevant entity.
+Quick test: if you delete the `.tres`, does the number still appear in any
+`.cs`? If yes, it is a violation.
 
-### EventBus for Decoupling, Not Everything
-EventBus is for global communication (enemy died → gold, reached end → damage).
-Don't use it for every local interaction. Direct method calls or signals between
-parent/child are fine for tight coupling within an entity.
+### R2 — Composition Over Inheritance
 
-### Pool Everything That Spawns Often
+No `FastEnemy : Enemy`, `BossEnemy : Enemy`. Enemy has HealthComponent,
+MovementComponent, StatusEffectComponent as children. Tower has
+TargetingComponent, AttackComponent. Behavior emerges from composition,
+not inheritance chains.
+
+`BaseLevel` is the one accepted abstract base (zero gameplay logic in
+`Map1`/`Map2`), required for zero-code-change map addition.
+
+### R3 — Zero Copy-Paste
+
+No duplicate code. Abstract, generalize, componentize. If you find yourself
+copying a block of logic, extract it into a shared method, component, or
+helper before committing.
+
+### R4 — Zero-Code-Change Content Addition
+
+Adding a new tower, enemy, equip, trinket, synergy, wave, or meta-upgrade
+must never require C# code changes. Use directory scans (e.g.
+`ResourceLoaderHelper.LoadFromDir<T>()`) instead of hardcoded arrays of
+filenames. Content is discovered, not registered.
+
+### R5 — Pool High-Frequency Objects
+
 Projectiles, enemies, effects — all go through PoolManager. Factories
 (ProjectileFactory, EnemyFactory) handle pool transparently with Instantiate
 fallback. No direct `Instantiate`/`QueueFree` for high-frequency objects.
 
-### Direct Singleton Access Is the Pattern
-Autoloads expose a static `Instance` property (set in `_EnterTree`). This is the
-established pattern — don't propose DI wrappers without a concrete
+Pool key is scene ResourcePath. Nodes store `_pool_key` metadata for correct
+return queue. Returns are always deferred via `CallDeferred` to avoid physics
+callback violations. `_returningToPool` flag prevents duplicate calls.
+
+### R6 — No Deep Node Paths
+
+`GetNode<T>()` and `GetNodeOrNull<T>()` with a string literal path are only
+allowed in the `_Ready()` of the node that owns the target child. Anywhere
+else, the owner must expose a public method, and callers must use that
+public API — they must never know the internal node hierarchy.
+
+### R7 — Autoloads Are Infrastructure, Not Gameplay
+
+Autoloads (singletons) exist for: EventBus, LevelManager, SceneManager,
+UIManager, PoolManager, CameraManager, EconomyManager, GameManager,
+TowerSelectionManager, TowerPlacementManager, GameBalance, SaveManager.
+They coordinate systems. They do NOT contain gameplay logic.
+
+If you are tempted to put game logic in an autoload, stop — put it in a
+component on the relevant entity.
+
+### R8 — Never Mutate Shared Resources
+
+Resources loaded from `.tres` or shared in `.tscn` are shared by reference
+across all instances. Never mutate them directly. Always call `.Duplicate()`
+before per-instance mutation, or create a new instance (e.g.
+`new PoisonEffectData { ... }`).
+
+Upgrades never mutate shared TowerData. Effective stats are computed at
+runtime in Tower properties (`EffectiveDamage`, `EffectiveFireRate`,
+`EffectiveRange`) and applied via `SetEffectiveStats`.
+
+### R9 — EventBus for Global Communication Only
+
+EventBus is for global communication (enemy died → gold, reached end →
+damage). Do not use it for every local interaction. Direct method calls or
+signals between parent/child are fine for tight coupling within an entity.
+
+### R10 — Spawn Under Active Level Containers
+
+All runtime instances (towers, enemies, projectiles, effects) must be added
+to the active level container (`BaseLevel.TowersContainer`,
+`BaseLevel.EnemiesContainer`, `BaseLevel.ProjectilesContainer`). Never use
+`GetTree().CurrentScene` for instantiation.
+
+---
+
+## Design Principles (Not Numbered Rules, Still Mandatory)
+
+### Concrete-Necessity Test
+
+Before proposing any change, identify the actual bug, duplication, or scaling
+wall it fixes. "Cleaner in the abstract" is not a justification.
+
+### Direct Singleton Access
+
+Autoloads expose a static `Instance` property (set in `_EnterTree`). This is
+the established pattern — do not propose DI wrappers without a concrete
 reuse/testability problem that actually exists.
 
 ---
@@ -89,13 +152,12 @@ reuse/testability problem that actually exists.
 - **No direct struct mutation**: `Position = new Vector2(x, y)` not `Position.X += 1`
 - **Resources use `[GlobalClass]`**, never `class_name`
 - **Class name = file name**, public partial class always
-- **No hardcoded gameplay values** — read from Resources
-- **No deep node paths** — use `[Export] NodePath` with conventional defaults
-- **No duplicate code** — abstract, generalize, componentize
-- **Sub-resources in `.tscn` are shared by reference** — call `.Duplicate()`
-  before per-instance mutation (or you'll modify the source)
-- **Spawn under the active level container** (`BaseLevel.TowersContainer/
-  EnemiesContainer/ProjectilesContainer`), never `GetTree().CurrentScene`
+- **Multi-hit protection** has 3 layers: `Monitoring = false` (deferred) on hit,
+  `_returningToPool` flag, `Target.IsDead` check in `_PhysicsProcess`
+- **Slow and Poison stack only by refreshing duration.** No intensity stacking.
+  Slow uses fixed `SpeedMultiplier` value
+- **LevelManager only swaps `_levelContainer` when a non-null container is
+  passed** — required so Retry/MainMenu transitions do not break
 
 ---
 
@@ -149,7 +211,8 @@ resources/
 
 ## Current State
 
-See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP plan.
+See `docs/status/GAME_STATUS.md` for detailed feature descriptions.
+See `ROADMAP.md` for MVP plan.
 
 ### Works
 - 10 tower types with unique behaviors (Bread Baker, Bread Courier, Aroma Keeper, Taste Tester, Bakery Truck, Bread Monk, Fermentation Sage, Crust Crusader, Dough Exorcist, High Prophet of Sourdough)
@@ -184,29 +247,6 @@ See `GAME_STATUS.md` for detailed feature descriptions. See `ROADMAP.md` for MVP
 
 ---
 
-## Key Design Decisions (Read Before Coding)
-
-**Upgrades never mutate shared TowerData.** Effective stats are computed at runtime
-in Tower properties (`EffectiveDamage`, `EffectiveFireRate`, `EffectiveRange`) and
-applied via `SetEffectiveStats`.
-
-**Pool key is scene ResourcePath.** Nodes store `_pool_key` metadata for correct
-return queue. PoolManager stores pools by scene path.
-
-**Returns are always deferred** via `CallDeferred` to avoid physics callback
-violations. `_returningToPool` flag prevents duplicate calls.
-
-**Multi-hit protection** has 3 layers: `Monitoring = false` (deferred) on hit,
-`_returningToPool` flag, `Target.IsDead` check in `_PhysicsProcess`.
-
-**Slow and Poison stack only by refreshing duration.** No intensity stacking.
-Slow uses fixed `SpeedMultiplier` value.
-
-**LevelManager only swaps `_levelContainer` when a non-null container is
-passed** — required so Retry/MainMenu transitions don't break.
-
----
-
 ## What To Ask Before Implementing
 
 1. Does this belong in a Resource file (data-driven)?
@@ -215,4 +255,4 @@ passed** — required so Retry/MainMenu transitions don't break.
 4. Is this global enough for EventBus or local enough for a direct signal?
 5. Is there an actual problem this solves, or is it cleaner only in the abstract?
 6. Will this still make sense once the roguelite run layer sits on top of it?
-7. Does this add coupling I'll regret in 6 months?
+7. Does this add coupling I will regret in 6 months?
