@@ -30,6 +30,7 @@ public partial class Tower : Node2D
     private AttackComponent _attack;
     private AuraComponent _aura;
     private GlobalAuraComponent _globalAura;
+    private Sprite2D _sprite;
 
     public TowerData Data => _data;
     public int CurrentUpgradeLevel => _currentUpgradeLevel;
@@ -45,6 +46,7 @@ public partial class Tower : Node2D
     {
         _targeting = GetNode<TargetingComponent>("TargetingComponent");
         _attack = GetNode<AttackComponent>("AttackComponent");
+        _sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 
         var selectionArea = GetNode<Area2D>("SelectionArea");
         selectionArea.InputEvent += (viewport, ev, shapeIdx) =>
@@ -227,18 +229,30 @@ public partial class Tower : Node2D
         ApplyData();
     }
 
+    public void SetSpriteTexture(Texture2D texture)
+    {
+        if (texture == null) return;
+        var sprite = _sprite ?? GetNodeOrNull<Sprite2D>("Sprite2D");
+        if (sprite != null) sprite.Texture = texture;
+    }
+
     private void ApplyData()
     {
         if (_data == null) return;
-        var detectionArea = GetNode<Area2D>("DetectionArea");
-        var shape = detectionArea.GetNode<CollisionShape2D>("CollisionShape2D");
-        var currentShape = shape.Shape as CircleShape2D;
-        var circle = currentShape != null ? (CircleShape2D)currentShape.Duplicate() : new CircleShape2D();
-        circle.Radius = EffectiveRange;
-        shape.Shape = circle;
+        var detectionArea = GetNodeOrNull<Area2D>("DetectionArea");
+        var shape = detectionArea?.GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
+        if (shape != null)
+        {
+            var currentShape = shape.Shape as CircleShape2D;
+            var circle = currentShape != null
+                ? (CircleShape2D)currentShape.Duplicate()
+                : new CircleShape2D();
+            circle.Radius = EffectiveRange;
+            shape.Shape = circle;
+        }
 
-        if (_data.Sprite != null)
-            GetNode<Sprite2D>("Sprite2D").Texture = _data.Sprite;
+        if (_data.Sprite != null && _sprite != null)
+            _sprite.Texture = _data.Sprite;
 
         _attack.Setup(_data);
         _attack.SetEquipData(_equipData);

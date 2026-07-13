@@ -39,6 +39,8 @@ public partial class FightCompleteScreen : Control
 
         _spinButton.Pressed += OnSpinPressed;
         _rerollButton.Pressed += OnRerollPressed;
+        _rerollButton.MouseEntered += OnRerollHover;
+        _rerollButton.MouseExited += OnRerollLeave;
         _rerollButton.Visible = false;
         _endRunButton.Pressed += OnEndRunPressed;
 
@@ -139,14 +141,16 @@ public partial class FightCompleteScreen : Control
         _rerollButton.Text = $"Reroll ({cost}g)";
         _rerollButton.Disabled = !EconomyManager.Instance.CanAfford(cost);
         _rerollButton.Visible = true;
-
-        _rerollButton.MouseEntered += () =>
-        {
-            if (_rerollButton.Disabled && !EconomyManager.Instance.CanAfford(cost))
-                TooltipHelper.ShowTooltip(this, "Not enough gold to reroll");
-        };
-        _rerollButton.MouseExited += () => TooltipHelper.HideTooltip(this);
     }
+
+    private void OnRerollHover()
+    {
+        int cost = SlotManager.Instance.GetRerollCost();
+        if (_rerollButton.Disabled && !EconomyManager.Instance.CanAfford(cost))
+            TooltipHelper.ShowTooltip(this, "Not enough gold to reroll");
+    }
+
+    private void OnRerollLeave() => TooltipHelper.HideTooltip(this);
 
     private void ResolveOutcome()
     {

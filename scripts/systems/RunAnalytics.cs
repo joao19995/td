@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 public class RunAnalytics : IDisposable
 {
-    private const string Version = "v1";
-
     private readonly DateTime _runStartTime;
     private DateTime _fightStartTime;
     private int _currentFightNumber;
@@ -147,7 +145,6 @@ public class RunAnalytics : IDisposable
 
         return new Dictionary
         {
-            { "version", Version },
             { "timestamp", DateTime.UtcNow.ToString("o") },
             { "run_id", Guid.NewGuid().ToString("N")[..8] },
             { "selected_act", runState?.SelectedAct?.Id ?? "unknown" },
@@ -284,10 +281,12 @@ public class RunAnalytics : IDisposable
     {
         var dict = Serialize(isVictory);
         var json = Json.Stringify(dict, "\t");
-        DirAccess.MakeDirRecursiveAbsolute($"user://analytics/{Version}");
-        string timestamp = DateTime.UtcNow.ToString("yyyyMMddTHHmmssZ");
+        var now = DateTime.UtcNow;
+        string dateDir = now.ToString("yyyyMMdd");
+        DirAccess.MakeDirRecursiveAbsolute($"user://analytics/{dateDir}");
+        string timePart = now.ToString("HHmmss") + "Z";
         string id = Guid.NewGuid().ToString("N")[..8];
-        string path = $"user://analytics/{Version}/run_{timestamp}_{id}.json";
+        string path = $"user://analytics/{dateDir}/run_{timePart}_{id}.json";
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file != null)
             file.StoreString(json);

@@ -80,8 +80,8 @@ public partial class TowerPlacementManager : Node
         _previewInstance = GenericTowerScene.Instantiate<Node2D>();
         _previewInstance.Modulate = new Color(1, 1, 1, 0.5f);
 
-        if (towerData.Sprite != null)
-            _previewInstance.GetNode<Sprite2D>("Sprite2D").Texture = towerData.Sprite;
+        if (_previewInstance is Tower towerPreview)
+            towerPreview.SetSpriteTexture(towerData.Sprite);
 
         GetTowersContainer().AddChild(_previewInstance);
     }

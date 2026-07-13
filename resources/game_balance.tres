@@ -6,7 +6,8 @@
 script = ExtResource("1_gb")
 MinWaves = 4
 MaxWaves = 7
-StartingGold = 250
+StartingGold = 275
+EnemyCollisionMask = 1
 DifficultyScalingPerFight = 0.30
 DifficultyCurveMin = 0.9
 DifficultyCurveRange = 0.3

@@ -10,7 +10,6 @@ public partial class Projectile : Area2D
     public DamageContext Context { get; set; }
     public int PierceCount { get; set; }
     private bool _returningToPool;
-    private const int _enemyCollisionMask = 1;
     private CollisionShape2D _collisionShape;
 
     [Export] private NodePath _collisionShapePath = new NodePath("CollisionShape2D");
@@ -121,7 +120,7 @@ public partial class Projectile : Area2D
             Transform = new Transform2D(0, GlobalPosition),
             CollideWithAreas = true,
             CollideWithBodies = false,
-            CollisionMask = _enemyCollisionMask,
+            CollisionMask = GameBalance.EnemyCollisionMask,
         };
     }
 

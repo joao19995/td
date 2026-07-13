@@ -203,8 +203,7 @@ public partial class Enemy : Area2D
 
         if (container == null) return;
 
-        var popup = new DamagePopup();
-        popup.GlobalPosition = GlobalPosition;
+        var popup = DamagePopupFactory.Create(GlobalPosition);
         container.AddChild(popup);
         popup.ShowDamage(amount, Colors.White);
     }

@@ -255,7 +255,7 @@ public partial class AttackComponent : Node
         query.Transform = new Transform2D(0, towerPos);
         query.CollideWithAreas = true;
         query.CollideWithBodies = false;
-        query.CollisionMask = 1;
+        query.CollisionMask = GameBalance.EnemyCollisionMask;
         var results = spaceState.IntersectShape(query);
         Enemy spreadTarget = null;
         float nearestDist = float.MaxValue;
@@ -305,7 +305,7 @@ public partial class AttackComponent : Node
             query.Transform = new Transform2D(0, current.GlobalPosition);
             query.CollideWithAreas = true;
             query.CollideWithBodies = false;
-            query.CollisionMask = 1;
+            query.CollisionMask = GameBalance.EnemyCollisionMask;
 
             var results = spaceState.IntersectShape(query);
             Enemy nearest = null;
@@ -377,7 +377,7 @@ public partial class AttackComponent : Node
         query.Transform = new Transform2D(0, hitPosition);
         query.CollideWithAreas = true;
         query.CollideWithBodies = false;
-        query.CollisionMask = 1;
+        query.CollisionMask = GameBalance.EnemyCollisionMask;
 
         var results = spaceState.IntersectShape(query);
 
