@@ -8,7 +8,7 @@ Gold pacing model for Act 1 (5 fights + 1 boss) at V0 state.
 
 | Economy property | Value |
 |---|---|
-| Starting gold | 250 |
+| Starting gold | 275 |
 | Starting lives | 20 |
 | DifficultyScalingPerFight | 0.30 (not affecting gold) |
 | Average gold per enemy (tier 1) | ~5.5g |
@@ -40,14 +40,14 @@ Average: (3 + 5 + 6 + 10) / 4 = 6.0. Weighted average (by typical wave compositi
 ### Cumulative Gold by Fight
 
 | Fight | Cumulative Gold (avg) | Typical Spending | Remaining |
-|---|---|---|---|
-| Start | 250 | — | 250 |
-| Fight 1 | ~454 (250 + 204) | 2–3 tower placements (~200g) | ~254 |
-| Fight 2 | ~658 | +1 tower + upgrades (~200g) | ~458 |
-| Fight 3 | ~862 | Upgrades (~200g) | ~662 |
-| Fight 4 | ~1,066 | Equipment + upgrades (~200g) | ~866 |
-| Fight 5 | ~1,270 | Final upgrades (~200g) | ~1,070 |
-| Boss | ~1,270 (no new gold during boss) | ~100–300g unspent | ~1,070 |
+|---|---|---|---|---|
+| Start | 275 | — | 275 |
+| Fight 1 | ~479 (275 + 204) | 2–3 tower placements (~200g) | ~279 |
+| Fight 2 | ~683 | +1 tower + upgrades (~200g) | ~483 |
+| Fight 3 | ~887 | Upgrades (~200g) | ~687 |
+| Fight 4 | ~1,091 | Equipment + upgrades (~200g) | ~891 |
+| Fight 5 | ~1,295 | Final upgrades (~200g) | ~1,095 |
+| Boss | ~1,295 (no new gold during boss) | ~100–300g unspent | ~1,095 |
 
 ### Spending Breakdown (typical run)
 
@@ -69,7 +69,7 @@ Average: (3 + 5 + 6 + 10) / 4 = 6.0. Weighted average (by typical wave compositi
 | Gold should be tight but sufficient | Leftover 100–300g at boss is healthy — player can afford last-minute upgrades if needed |
 | 5 fights fixes old 8-fight oversupply | With 8 fights, gold overshot by fight 6 — players had nothing meaningful to spend on. 5 fights keeps scarcity through fight 4–5. |
 | Rerolls are expensive | At 50g base (~25% of a fight's income), rerolls should be used sparingly — meaningful trade-off between gambling and guaranteed upgrades. |
-| First tower choice matters most | Player must place 2–3 towers immediately. With 250g starting gold, they can afford: Baker (75) + Courier (90) + Keeper (100) = 265g (short 15g). Most common start: Baker + Courier (165g, 85g spare for upgrades mid-fight). |
+| First tower choice matters most | Player must place 2–3 towers immediately. With 275g starting gold, they can afford: Baker (75) + Courier (90) + Keeper (100) = 265g (10g spare). Most common start: Baker + Courier (165g, 110g spare for upgrades mid-fight). |
 | Equipment competes with upgrades | At fight 4 (~1,066g), spending 100–150g on equipment delays upgrade by 1 tier. Trade-off between immediate power and scaling. |
 | Expensive towers are lategame purchases | High Prophet (320g) is 1.6× a full fight's income. Player must save for 1–2 fights to afford it, making it a commitment pick. |
 

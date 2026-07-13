@@ -62,7 +62,7 @@ No mandatory tutorial pop-ups. Discovery is organic.
 1. **All 10 towers should have an identifiable strategic niche.** No tower should feel like a strict upgrade or downgrade of another.
 2. **Zero intentionally useless choices.** Every loadout combination, equipment, and trinket should be viable in some context.
 3. **Difficulty scaling of 30% per fight** is a placeholder — to be tuned after telemetry data shows where players lose most often.
-4. **Starting resources**: 250 gold, 20 lives.
+4. **Starting resources**: 275 gold, 20 lives.
 5. **Default unlocks**: Bread Baker, Bread Courier, Aroma Keeper. Remaining 7 towers unlocked via meta-progression tokens.
 
 ---

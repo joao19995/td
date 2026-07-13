@@ -57,20 +57,22 @@ Higher = more gold per unit of threat.
 | IndustrialBreadDragon | 0.00625 | 9 |
 | GlutenNullBishop | 0.00571 | 10 |
 
-### Fight 5 Scaling (2.5× HP at DifficultyScalingPerFight = 0.30)
+### Fight 5 Scaling (2.2× HP at DifficultyScalingPerFight = 0.30)
+
+Formula: `1 + FightsCompleted × 0.30`. At Fight 5 (FightsCompleted = 4): `1 + 4 × 0.30 = 2.2×`.
 
 | Enemy | Base HP | Fight 5 HP |
 |---|---|---|
-| GroceryJogger | 35 | 88 |
-| BaguettePigeon | 40 | 100 |
-| SlicedBreadTourist | 50 | 125 |
-| LazyAlleyCat | 150 | 375 |
-| PlasticWrappedSandwichMan | 180 | 450 |
-| MicrowaveMealPreacher | 200 | 500 |
-| FrozenDoughAbomination | 400 | 1,000 |
-| SupermarketOverlord | 900 | 2,250 |
-| IndustrialBreadDragon | 1,000 | 2,500 |
-| GlutenNullBishop | 1,500 | 3,750 |
+| GroceryJogger | 35 | 77 |
+| BaguettePigeon | 40 | 88 |
+| SlicedBreadTourist | 50 | 110 |
+| LazyAlleyCat | 150 | 330 |
+| PlasticWrappedSandwichMan | 180 | 396 |
+| MicrowaveMealPreacher | 200 | 440 |
+| FrozenDoughAbomination | 400 | 880 |
+| SupermarketOverlord | 900 | 1,980 |
+| IndustrialBreadDragon | 1,000 | 2,200 |
+| GlutenNullBishop | 1,500 | 3,300 |
 
 ---
 
@@ -97,7 +99,7 @@ SpawnInterval: 1.0 (down from 2.0).
 ### Tier 2 / 3 (future Acts — not used in Act 1 demo)
 
 Tier 2 adds PlasticWrappedSandwichMan, MicrowaveMealPreacher, FrozenDoughAbomination.
-Tier 3 includes SupermarketOverlord.
+Tier 3 includes FrozenDoughAbomination and SupermarketOverlord.
 
 ---
 

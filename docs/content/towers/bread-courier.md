@@ -104,8 +104,8 @@ Some believe they have delivered so many loaves that time itself now makes room 
 
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
-| Electric Bike | 88g | +20% fire rate | *Blessed by the Patron Saint of Deliveries and rumored to coast uphill.* |
-| Messenger Crate Upgrade | 132g | Attacks pierce +1 enemy, -10% fire rate (trade-off) | *A reinforced bread crate that lets loaves continue through multiple heretics before stopping.* |
+| Electric Bike | 80g | +20% fire rate | *Blessed by the Patron Saint of Deliveries and rumored to coast uphill.* |
+| Messenger Crate Upgrade | 120g | Attacks pierce +1 enemy, -10% fire rate (trade-off) | *A reinforced bread crate that lets loaves continue through multiple heretics before stopping.* |
 
 ## Upgrades
 

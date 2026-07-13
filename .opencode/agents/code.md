@@ -97,7 +97,7 @@ Do not hide or ignore violations.
 Do NOT update documentation on your own initiative.
 
 Do not change:
-- `docs/status/GAME_STATUS.md`;
+- `docs/`;
 - `ROADMAP.md`;
 - `CLAUDE.md`;
 - `CLAUDE_ADDENDUM.md`;
@@ -105,7 +105,14 @@ Do not change:
 
 unless the received task explicitly requests that change.
 
-In the final report, indicate whether documentation should be updated.
+In the final report, indicate docs that need updating using the format below.
+List concrete paths — not just YES/NO. Use the decision matrix from
+`.opencode/skills/doc-update/SKILL.md` to determine which docs are affected by
+each changed file.
+
+If you are unsure whether a doc needs updating, mention it anyway — the
+orchestrator will delegate to `@docs` for the final decision. Prefer false
+positives over false negatives.
 
 ---
 
@@ -139,8 +146,11 @@ List only the relevant `CLAUDE.md` rules that were verified.
 
 ## Documentation
 
-- GAME_STATUS update required: `YES` / `NO`
-- ROADMAP update required: `YES` / `NO`
+- Docs update required: `YES` / `NO`
+- Suspected doc paths (per doc-update matrix):
+  - `docs/path/to/doc.md` — reason
+  - `docs/status/GAME_STATUS.md` — section: reason
+  - (list ALL affected paths, or `None`)
 
 ## Notes
 

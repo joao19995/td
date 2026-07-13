@@ -109,7 +109,7 @@ No sermon was ever needed.
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
 | Sacred Robes | 110g | +15% aura range | *Woven from flour sacks used in the oldest monastery.* |
-| Prayer Beads of Gluten | 150g | Aura potency ×1.05 (10% → 10.5%), but tower **stops attacking** (extreme trade-off) | *Each bead represents a year of silent fermentation. The monk becomes so focused that they stop fighting entirely.* |
+| Prayer Beads of Gluten | 150g | Aura potency **×2.0** (10% → 20%, fire rate também duplicado), tower **stops attacking** (extreme trade-off) | *Each bead represents a year of silent fermentation. The monk becomes so focused that they stop fighting entirely.* |
 
 ## Upgrades
 
@@ -135,4 +135,4 @@ The Order celebrates new bakeries with a chaotic festival involving monks, couri
 ## Open Questions
 
 1. Upgrades only buff personal attack, never aura %. Intentional?
-2. Prayer Beads of Gluten: trade-off unbalanced — loses ~75 DPS for +0.5 p.p. aura. Needs `AuraPotencyMultiplier` buff or rework.
+2. ~~Prayer Beads of Gluten: trade-off unbalanced.~~ **Resolved**: Prayer Beads now use ×2.0 `AuraPotencyMultiplier` (10% → 20%, fire rate also doubled), making the trade-off meaningful.

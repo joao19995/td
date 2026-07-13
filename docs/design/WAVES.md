@@ -32,11 +32,20 @@
 
 | Wave | Enemies | Spawn Interval |
 |------|---------|----------------|
-| Boss | 8x Sliced Bread Tourist + 4x Pigeon with a Stolen Baguette + 3x Lazy Alley Cat + 2x Industrial Bread Dragon | 0.5s |
+| Boss | 8x Sliced Bread Tourist + 4x Pigeon with a Stolen Baguette + 3x Lazy Alley Cat + 2x Industrial Bread Dragon + **1x Gluten Null Bishop** | **1.0s** |
+
+## Classic Mode Waves
+
+Used directly by `level1.tres` and `level2.tres` (Map 1 and Map 2 in classic/free-play mode).
+
+| Wave | Enemies | Spawn Interval |
+|------|---------|----------------|
+| Wave 1 (root) | 5x Sliced Bread Tourist | 1.0s |
+| Wave 3 (root) | 6x Sliced Bread Tourist + 6x Grocery Run Jogger | 1.5s |
 
 ## Unused / Legacy Waves
 
 | Wave | Enemies | Spawn Interval |
 |------|---------|----------------|
-| Wave 3 (root) | 6x Sliced Bread Tourist + 6x Grocery Run Jogger | 1.5s |
+| Wave 2 (root) | 8x Pigeon with a Stolen Baguette | 1.0s |
 | Wave 4 (root) | 2x Industrial Bread Dragon + 4x Lazy Alley Cat | 2.5s |

@@ -101,7 +101,7 @@ not implementation details.
 - **Meta tokens**: awarded at the end of every run (win or lose). Token reward scales: `base × (1 + fightsCompleted / totalFights)`. Victory bonus: +50% tokens if the boss was defeated.
 - **Unlocked towers**: Bread Baker, Bread Courier, and Aroma Keeper start unlocked by default. All other 7 towers are purchased with tokens in the Meta Shop.
 - **Meta Shop**: accessible from the Main Menu via a "Meta Shop" button. Has tabbed categories: **All**, **Unlocks**, **Upgrades**, **Stats**, **Economy**. Lists all available upgrades with current level, cost, and Buy/MAX status. Purchases use meta-tokens exclusively.
-- **24 meta-upgrades** organized into Tower Unlocks, Tower Upgrade Unlocks, Feature Unlocks, Stat Upgrades, and Economy Upgrades — see [`design/META_PROGRESSION.md`](../design/META_PROGRESSION.md) for full list.
+- **65 meta-upgrades** organized into Tower Unlocks, Tower Upgrade-Path Unlocks, Feature Unlocks, Stat Upgrades, Economy Upgrades, Equipment Unlocks, Trinket Unlocks, Shop Item Unlocks, and Random Unlocks — see [`design/META_PROGRESSION.md`](../design/META_PROGRESSION.md) for full list.
 - **Multi-level upgrades**: costs scale by level. Buying level 1 costs `CostTokens x 1`, level 2 costs `CostTokens x 2`, etc. Each level grants the configured bonus.
 - **Tower upgrades locked by default**: each tower's upgrade path (4 tiers) is locked until the corresponding "Unlock [Tower] Upgrades" meta-upgrade is purchased. Purchase is per-tower, 15 tokens each, in a new **Upgrades** tab. Once unlocked, upgrades work as normal (gold cost in-run). The Seasoned Recruits meta-upgrade (starting at level 1) is independent and still works even without the per-tower upgrade unlock — you get the free starting level but cannot upgrade further until unlocked.
 - **Stat application**: damage bonus applies multiplicatively to all towers (`EffectiveDamage x (1 + metaPercent)`). Starting gold/lives bonuses are added before the run begins. Shop discount reduces displayed costs in the shop UI. Reroll cost reduction applies at the slot machine. Enemy gold bonus multiplies all enemy gold rewards. Starter Gear Voucher picks a random equipment for a random loadout tower at run start. Seasoned Recruits sets all loadout towers to level 1 at run start.
@@ -147,8 +147,13 @@ not implementation details.
 ### Wave Decoupling (Run Mode)
 
 - Waves are **decoupled from map layout** during runs. Each fight picks waves from a **difficulty tier** based on `FightsCompleted`:
-  - Act 1 uses `tier1` for all fights (same 4 enemy types across the whole run).
-  - Act 2 uses `tier1` → `tier2` → `tier3` progression.
+  - Act 1 ("The Innocent Herd") uses `tier1` for all fights (same 4 enemy types across the whole run).
+  - Act 2 ("The Full Pantry") uses `tier1` → `tier2` → `tier3` progression.
+
+### Acts
+
+- **Act 1 ("The Innocent Herd")**: `FightsPerRunOverride = 5` → 5 fights + 1 boss. Tier1WaveDir = Tier2WaveDir = Tier3WaveDir = `tier1/`. All waves draw from the same pool regardless of `FightsCompleted`.
+- **Act 2 ("The Full Pantry")**: `FightsPerRunOverride = -1` → default (3 fights + 1 boss). Tier1WaveDir = `tier1/`, Tier2WaveDir = `tier2/`, Tier3WaveDir = `tier3/`. Waves escalate by tier as `FightsCompleted` increases. Requires completing Act 1 first (`RequiredPreviousActId = "act1"`).
 - Waves are stored in `resources/wave_data/tier1/`, `tier2/`, `tier3/`. Adding a `.tres` to a folder is zero-code-change. 7 waves in tier1 for run mode variety.
 - `LevelData.Waves` is used only in classic mode (non-run) — unchanged.
 - **Boss fights** ignore the tier system and always use `BossWaveData` (set in `LevelManager` Inspector).
@@ -174,7 +179,7 @@ not implementation details.
 - **10 tower types**, each with configurable damage, fire rate, range, cost, and projectile via TowerData resource — see [`content/towers/README.md`](../content/towers/README.md) for overview or [`content/towers/`](../content/towers/) for per-tower details (stats, lore, equipment, upgrades, synergies, open questions).
 - **Placement**: towers can only be placed on designated buildable tiles. Already-occupied tiles are blocked.
 - **Selection**: clicking a placed tower selects it. A semi-transparent circle shows its range. Right-click deselects.
-- **Upgrades**: each tower has a fixed upgrade path (2 tiers per tower). Upgrades increase damage, fire rate, and/or range.
+- **Upgrades**: each tower has a fixed upgrade path (**4 tiers per tower**). Upgrades increase damage, fire rate, and/or range.
 - **Targeting priority**: each tower can be set to target the first enemy in range, the closest, the strongest (most health), or the most recent.
 - **EffectiveDamage formula** (updated):
   ```
@@ -345,12 +350,13 @@ The following can be modified by editing resource files (`.tres`) in the project
 | Level setup | `LevelData` | Scene path, preview image, starting money/lives, world size |
 | Screen/overlay config | `UIScreenData` | Scene path, whether it pauses the game |
 | Synergy combos | `SynergyData` | Required tower IDs, min tower count, bonus percentages (damage/fire rate/range) |
-| Run engine (slot machine) | `SlotManager` Inspector | Fight count per run, outcome weights, heal amount, miniboss multiplier, reroll cost, skew factor |
+| Run engine (slot machine) | `ActData` resource (via `FightsPerRunOverride`) + `SlotManager` Inspector | Fight count per run (FightsPerRunOverride on ActData; -1 = default), outcome weights, heal amount, miniboss multiplier, reroll cost, skew factor. `SlotManager` is registered as an autoload `.cs` (no `.tscn`). |
 | Shop items (run upgrades) | `ShopItemData` resource | Item ID, name, cost, stat bonus percent, heavy damage bonus, first-purchase discount |
 | Tower equipment | `EquipData` resource | Item ID, name, cost, target tower type, stat percent bonuses |
 | Trinkets | `TrinketData` resource | Item ID, name, rarity (Common/Rare), damage/fire rate/range/crit damage/status duration/status strength percent bonuses, heal/gold amount, passive gold interval |
 | Status effects | `PoisonEffectData`, `SlowEffectData` | Duration, damage per tick, speed multiplier |
-| Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted`. 5 waves per tier (15 total) |
+| Game balance globals | `game_balance.tres` | `MinWaves`, `MaxWaves`, `DifficultyCurveMin/Range`, `Tier2Threshold`, `Tier3Threshold`, `FinalStretchWaveOffset`, `ModifierStartWave`, `HardModifierWaveOffset`, `AntiBuffMultiplier`, `AuraScanInterval`, `JudgmentProtocolCooldown`, `JudgmentSealCooldown`, `StartingGold`, `PassiveGoldAmount/Interval`, `TokenRewardMultipliers` |
+| Wave tiers (run mode) | directory `wave_data/tier1/`, `tier2/`, `tier3/` | Add `.tres` files to a tier folder — selected by `FightsCompleted`. tier1=7, tier2=3, tier3=3 (13 total waves) |
 | Wave entries (per-type counts) | `WaveEntry` sub-resource inside each `WaveData` | Enemy type + count per entry |
 | Wave modifiers | `WaveModifier` enum on `WaveData` | `None`, `Horde` (2× enemies, 0.5× interval), `Armored` (2× HP), `Swift` (1.5× speed), `GoldRush` (2× gold) |
 | Wave generation (run mode) | `RunState.PickRunWaves()` | 4-7 waves per fight, `DifficultyMultiplier` 0.9x-1.2x scaling, per-fight scaling +20%, final stretch (last 3 waves ×1.5 count), random modifiers on waves 3+ |

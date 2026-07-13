@@ -66,4 +66,10 @@
 <!-- AGENT: auto-generated from data patterns + PLAYER: can override/add -->
 
 ## Decisions
+<!-- AGENT DRAFT → PLAYER CONFIRMATION REQUIRED -->
+<!--
+  O agente pode preparar um draft baseado nos dados, mas apresenta-o primeiro
+  ao jogador e só escreve no relatório após confirmação explícita.
+  Esta secção nunca é preenchida automaticamente.
+-->
 <!-- PLAYER: what will change, what stays, what needs more data -->

@@ -183,5 +183,7 @@ List of relevant rules verified.
 
 ## Documentation check
 
-- GAME_STATUS update required: `YES` / `NO`
-- ROADMAP update required: `YES` / `NO`
+- Docs update required: `YES` / `NO`
+- `@code`'s suspected paths reviewed: list or `None`
+- Doc impact missed by `@code` (concrete paths per matrix): list or `None`
+- Notes: any doc-related observations

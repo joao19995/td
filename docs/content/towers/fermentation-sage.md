@@ -108,8 +108,8 @@ Where an Archsage walks, fermentation follows.
 
 | Item | Cost | Effect | Lore |
 |------|------|--------|------|
-| Golden Proofing Bowl | 110g | +15% status effect duration — ⚠️ **Broken**: Sage has no status effects, this item does nothing. | *A revered artifact whose original purpose has been completely forgotten.* |
-| Wild Yeast Culture | 165g | Chain +1 extra bounce, -10% initial damage (trade-off) | *Unstable, aggressive, and banned in three monasteries.* |
+| Golden Proofing Bowl | 100g | +1 chain bounce | *A revered artifact re-purposed to amplify chain fermentation.* |
+| Wild Yeast Culture | 150g | Chain +1 extra bounce, -10% initial damage (trade-off) | *Unstable, aggressive, and banned in three monasteries.* |
 
 ## Upgrades
 
@@ -140,5 +140,5 @@ The Order celebrates new bakeries with a chaotic festival involving monks, couri
 
 ## Open Questions
 
-1. No native HasPoison/HasSlow despite shared lore with Aroma Keeper / Taste Tester — breaks Golden Proofing Bowl equipment.
-2. Golden Proofing Bowl: currently broken. Fix or replace.
+1. No native HasPoison/HasSlow despite shared lore with Aroma Keeper / Taste Tester — equipment compatibility is limited.
+2. ~~Golden Proofing Bowl: currently broken.~~ **Resolved**: Golden Proofing Bowl redesigned — now grants +1 chain bounce (100g), no longer references status effects.

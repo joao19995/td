@@ -28,7 +28,7 @@ The victims usually agree afterward.
 
 | Stat | Value |
 |------|-------|
-| Cost | 286g |
+| Cost | 260g |
 | Damage | 35 |
 | Fire Rate | 1.0 |
 | Range | 50 |

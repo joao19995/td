@@ -191,8 +191,10 @@ Auto-generated suggestions based on data patterns:
 Player may add, remove, or override suggestions.
 
 ## Decisions
-[PLAYER: decisions made as a result of this playtest.
-What will change? What stays? What needs more data?]
+<!-- DRAFT — PLAYER CONFIRMATION REQUIRED -->
+The agent prepares a draft based on data + player notes, presents it to the
+player, and only writes it into the report after explicit confirmation.
+Never auto-fill this section.
 ```
 
 ---
@@ -250,7 +252,24 @@ Place the player's provided notes into the corresponding sections.
 If the player didn't provide notes for a section, leave it as
 `[PLAYER: not provided]` — do NOT invent content.
 
-## Step 7 — Write Report
+## Step 7 — Present Decisions Draft for Confirmation
+
+Prepare a draft of the **Decisions** section based on data patterns and
+player notes. Present it to the player and **wait for explicit confirmation**
+before including it in the final report. The draft must be clearly marked
+as pending confirmation.
+
+If the player has not provided enough information for any decision, ask
+clarifying questions. Do not fill this section without the player's go-ahead.
+
+## Step 8 — Ask Questions Before Finalizing
+
+Before writing the final report, if any data is unclear, contradictory,
+open to multiple interpretations, or if a player observation contradicts
+analytics data, ask the player for clarification. Do not assume or invent
+explanations.
+
+## Step 9 — Write Report
 
 Save to `docs/playtests/YYYY-MM-DD — Run X — Brief Description.md`
 using the naming convention from `docs/playtests/README.md`.
@@ -271,6 +290,20 @@ For multi-run reports, use: `YYYY-MM-DD — Runs X–Y — Brief Description.md`
 - **Respect the template structure exactly.** Do not add, remove, or rename
   sections.
 - **If data is missing or ambiguous**, note it explicitly rather than guessing.
+- **Decisions section requires player confirmation.** The agent may prepare a
+  draft based on data, but must present it to the player first and only write
+  it into the report after explicit confirmation. Never auto-fill this section.
+- **When in doubt, ask before writing.** If data is unclear, contradictory, or
+  open to multiple interpretations, ask the player for clarification before
+  producing the report. Do not assume or invent justifications.
+- **Never attribute motives the player didn't express.** Examples of what NOT
+  to do:
+  - ❌ "The player didn't spend gold because there were no attractive options"
+    — unless the player said so.
+  - ❌ "The leftover gold indicates the economy lacks sinks" — it might simply
+    be because the run was completed.
+  - ✅ "The leftover gold was 807g. The player explains the run was completed
+    and didn't need to spend more."
 
 ---
 

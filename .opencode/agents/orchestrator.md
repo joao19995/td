@@ -143,18 +143,33 @@ cycles, present the blocker to the user.
 
 ## Phase D — Documentation
 
-After `APPROVED`, invoke `@docs` only if:
+After `APPROVED`, invoke `@docs` based on the changed files:
 
-- observable behavior changed;
-- a feature was added;
-- game content was added;
-- a ROADMAP item was completed or changed;
-- `@code` or `@reviewer` indicated documentation is needed.
+### When to invoke `@docs`
+
+Invoke `@docs` if ANY changed file matches:
+- `.tres` under `resources/tower_data/`, `enemy_data/`, `equip_data/`, `trinket_data/`, `synergy_data/`, `wave_data/`, `level_data/`, `upgrade_data/`, `meta_upgrade_data/`, `run_data/`, `act_data/`; **OR**
+- `.cs` or `.tscn` that affects combat formula, economy/run engine, status effects, UI/screens/HUD, bestiary, or configurability; **OR**
+- a ROADMAP item was completed, changed, or removed; **OR**
+- `@code` or `@reviewer` reported concrete doc paths needing update.
+
+**Skip `@docs` only for:**
+- pure `.cs` refactor with no behaviour or data change;
+- renames without behaviour change;
+- doc-only manual edits;
+- investigations with no implementation;
+- tasks where `@code`/`@reviewer` explicitly confirmed NO docs need updating and no `.tres`/`.tscn` files were changed.
+
+When in doubt, invoke `@docs` — a cheap `NO_CHANGES_REQUIRED` is better than a silent stale doc.
+
+### What to provide `@docs`
 
 Provide `@docs` with:
 - original request;
 - final implementation summary;
-- changed files;
+- changed files list (ALL changed files, not just `.cs`);
+- `@code`'s documentation report (suspected doc paths);
+- `@reviewer`'s documentation audit (if any missed doc impact);
 - ROADMAP item information, if applicable.
 
 At the end, present a summary of completed phases.

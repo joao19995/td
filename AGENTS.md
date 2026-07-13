@@ -50,9 +50,10 @@ deve seguir neste repositório. Não é opcional e não é "boa prática sugerid
 4. Se a tarefa mudou comportamento do jogo observável (novo mecanismo, novo
    ecrã, novo outcome do slot machine) ou se completaste um item do
    `ROADMAP.md`, **não edites a documentação directamente** — indica no
-   relatório que `docs/status/GAME_STATUS.md` e/ou `ROADMAP.md` precisam de ser
-   actualizados. Se existir um agente `docs` disponível no teu sistema,
-   delega a actualização.
+   relatório os paths concretos dos docs que precisam de actualização,
+   usando a matriz do `.opencode/skills/doc-update/SKILL.md` como referência
+   (carrega o `docs/README.md` como router se necessário). Se existir um
+   agente `docs` disponível no teu sistema, delega a actualização.
 
 ---
 
@@ -67,6 +68,10 @@ deve seguir neste repositório. Não é opcional e não é "boa prática sugerid
    relevantes para a tarefa usando a tabela "Quick Route".
 5. Carrega **apenas os documentos necessários** para a tarefa. Não carregues
    toda a documentação.
+6. **Matriz de decisão (mudança → docs)**: vive em
+   `.opencode/skills/doc-update/SKILL.md`. `docs/README.md` é o router
+   obrigatório para o passo de documentação. Não duplicar a matriz noutros
+   ficheiros — todos os agentes referenciam o skill.
 
 A documentação está organizada em:
 

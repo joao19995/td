@@ -28,7 +28,7 @@ No member of the Order has dared test whether the legend is true.
 
 | Stat | Value |
 |------|-------|
-| Cost | 352g |
+| Cost | 320g |
 | Damage | 40 |
 | Fire Rate | 0.9 |
 | Range | 56 (highest in the game) |

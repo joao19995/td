@@ -21,20 +21,20 @@ Factual baseline of all 10 towers at V0 state. **Facts** are from `.tres` resour
 
 ### Upgrade Costs
 
-Each tower has 2 upgrade tiers. Total upgrade investment per tower:
+Each tower has **4 upgrade tiers**. Total upgrade investment per tower:
 
-| Tower | Tier 1 Cost | Tier 2 Cost | Upgrade Total | Full Investment (cost + upgrades) |
-|---|---|---|---|---|
-| Bread Baker | 250 | 366 | 616 | 691 |
-| Bread Courier | 250 | 454 | 704 | 794 |
-| Aroma Keeper | 250 | 454 | 704 | 804 |
-| Taste Tester | 300 | 492 | 792 | 912 |
-| Bakery Truck | 350 | 530 | 880 | 1,020 |
-| Bread Monk | 350 | 442 | 792 | 952 |
-| Fermentation Sage | 350 | 497 | 847 | 1,027 |
-| Crust Crusader | 400 | 557 | 957 | 1,177 |
-| Dough Exorcist | 480 | 554 | 1,034 | 1,294 |
-| High Prophet | 550 | 704 | 1,254 | 1,574 |
+| Tower | Tier 1 | Tier 2 | Tier 3 | Tier 4 | Upgrade Total | Full Investment (cost + upgrades) |
+|---|---|---|---|---|---|---|
+| Bread Baker | 66 | 110 | 176 | 264 | 616 | 691 |
+| Bread Courier | 88 | 132 | 198 | 286 | 704 | 794 |
+| Aroma Keeper | 88 | 132 | 198 | 286 | 704 | 804 |
+| Taste Tester | 110 | 154 | 220 | 308 | 792 | 912 |
+| Bakery Truck | 132 | 176 | 242 | 330 | 880 | 1,020 |
+| Bread Monk | 110 | 154 | 220 | 308 | 792 | 952 |
+| Fermentation Sage | 110 | 165 | 242 | 330 | 847 | 1,027 |
+| Crust Crusader | 132 | 187 | 264 | 374 | 957 | 1,177 |
+| Dough Exorcist | 143 | 209 | 286 | 396 | 1,034 | 1,294 |
+| High Prophet | 176 | 264 | 352 | 462 | 1,254 | 1,574 |
 
 ---
 
